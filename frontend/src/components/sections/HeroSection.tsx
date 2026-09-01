@@ -48,7 +48,7 @@ export function HeroSection({ profile }: { profile: Profile | null }) {
               </Button>
             </a>
             <a href="#projects">
-              <Button variant="outline" size="lg" className="border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)]/10 font-bold rounded-full px-10 py-6">
+              <Button variant="outline" size="lg" className="border-[var(--primary)] text-[var(--primary)] hover:bg-[#FFD700] hover:text-black hover:border-[#FFD700] transition-colors font-bold rounded-full px-10 py-6">
                 View Projects
               </Button>
             </a>
