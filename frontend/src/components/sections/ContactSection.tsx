@@ -47,9 +47,9 @@ export function ContactSection({
       
       <div className="grid lg:grid-cols-5 gap-12 mt-16 max-w-6xl mx-auto">
         <div className="lg:col-span-2 space-y-8">
-          <h3 className="text-3xl font-bold">Let's talk about your next project</h3>
+          <h3 className="text-3xl font-bold">Let’s Build Something Great Together</h3>
           <p className="text-[var(--text-secondary)]">
-            Whether you have a question, a project idea, or just want to say hi, I'll try my best to get back to you!
+            Have a project, an idea, or an exciting opportunity? Let’s connect and turn it into something impactful.
           </p>
           
           <div className="space-y-6 mt-8">
