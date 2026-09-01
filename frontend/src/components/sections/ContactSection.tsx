@@ -115,22 +115,22 @@ export function ContactSection({
         <div className="lg:col-span-3">
           <Card>
             <CardContent className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="flex flex-col gap-4">
                     <label htmlFor="name" className="text-sm text-white/80">Your Name</label>
                     <Input id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="John Doe" />
                   </div>
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-4">
                     <label htmlFor="email" className="text-sm text-white/80">Your Email</label>
                     <Input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} placeholder="john@example.com" />
                   </div>
                 </div>
-                <div className="space-y-2">
+                <div className="flex flex-col gap-4">
                   <label htmlFor="subject" className="text-sm text-white/80">Subject</label>
                   <Input id="subject" name="subject" value={formData.subject} onChange={handleChange} placeholder="Project Inquiry" />
                 </div>
-                <div className="space-y-2">
+                <div className="flex flex-col gap-4">
                   <label htmlFor="message" className="text-sm text-white/80">Message</label>
                   <Textarea id="message" name="message" required value={formData.message} onChange={handleChange} placeholder="Tell me about your project..." />
                 </div>
