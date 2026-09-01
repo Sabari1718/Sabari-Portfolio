@@ -111,19 +111,19 @@ export function ContactSection({
                 href="https://www.linkedin.com/in/sabarishwaran-s-812438291/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:border-[var(--primary)]/50 hover:bg-[var(--primary)]/10 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] hover:-translate-y-1 cursor-pointer"
+                className="group flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:border-[#FFD700]/50 hover:bg-[#FFD700]/10 transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:-translate-y-1 cursor-pointer"
               >
-                <LinkedinIcon size={20} className="text-[var(--primary)] group-hover:text-white transition-colors duration-300 group-hover:scale-110 transform group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]" />
-                <span className="text-sm font-medium text-white/90 group-hover:text-white transition-colors duration-300 group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]">LinkedIn</span>
+                <LinkedinIcon size={20} className="text-[var(--primary)] group-hover:text-[#FFD700] transition-colors duration-300 group-hover:scale-110 transform" />
+                <span className="text-sm font-medium text-white/90 group-hover:text-[#FFD700] transition-colors duration-300">LinkedIn</span>
               </a>
               <a 
                 href="https://github.com/Sabari1718" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:border-[var(--primary)]/50 hover:bg-[var(--primary)]/10 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] hover:-translate-y-1 cursor-pointer"
+                className="group flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:border-[#FFD700]/50 hover:bg-[#FFD700]/10 transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:-translate-y-1 cursor-pointer"
               >
-                <GithubIcon size={20} className="text-[var(--primary)] group-hover:text-white transition-colors duration-300 group-hover:scale-110 transform group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]" />
-                <span className="text-sm font-medium text-white/90 group-hover:text-white transition-colors duration-300 group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]">GitHub</span>
+                <GithubIcon size={20} className="text-[var(--primary)] group-hover:text-[#FFD700] transition-colors duration-300 group-hover:scale-110 transform" />
+                <span className="text-sm font-medium text-white/90 group-hover:text-[#FFD700] transition-colors duration-300">GitHub</span>
               </a>
             </div>
           </div>
