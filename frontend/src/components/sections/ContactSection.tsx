@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { PortfolioAPI } from "@/services/api";
-import { Send, Mail, MapPin, Phone, Link as LinkIcon } from "lucide-react";
+import { Send, Mail, MapPin, Phone, Link as LinkIcon, Linkedin, Github } from "lucide-react";
 import { SocialLink, Profile } from "@/types";
 
 export function ContactSection({ 
@@ -90,26 +90,29 @@ export function ContactSection({
             )}
           </div>
 
-          {socialLinks && socialLinks.length > 0 && (
-            <div className="pt-8 mt-8 border-t border-white/10">
-              <p className="text-sm text-[var(--text-secondary)] mb-4">Follow me on</p>
-              <div className="flex gap-4">
-                {socialLinks.map(link => {
-                  return (
-                    <a 
-                      key={link.id} 
-                      href={link.url} 
-                      target="_blank" 
-                      rel="noreferrer"
-                      className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-[var(--primary)] hover:text-black transition-colors"
-                    >
-                      <LinkIcon size={18} />
-                    </a>
-                  )
-                })}
-              </div>
+          <div className="pt-8 mt-8 border-t border-white/10">
+            <p className="text-sm text-[var(--text-secondary)] mb-6">Connect with me</p>
+            <div className="flex flex-wrap gap-4">
+              <a 
+                href={socialLinks?.find(l => l.platform.toLowerCase().includes('linkedin'))?.url || '#'} 
+                target="_blank" 
+                rel="noreferrer"
+                className="group flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:border-[#FFD700]/50 hover:bg-[#FFD700]/10 transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:-translate-y-1 cursor-pointer"
+              >
+                <Linkedin size={20} className="text-[var(--primary)] group-hover:text-[#FFD700] transition-colors duration-300 group-hover:scale-110 transform" />
+                <span className="text-sm font-medium text-white/90 group-hover:text-[#FFD700] transition-colors duration-300">LinkedIn</span>
+              </a>
+              <a 
+                href={socialLinks?.find(l => l.platform.toLowerCase().includes('github'))?.url || '#'} 
+                target="_blank" 
+                rel="noreferrer"
+                className="group flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:border-[#FFD700]/50 hover:bg-[#FFD700]/10 transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:-translate-y-1 cursor-pointer"
+              >
+                <Github size={20} className="text-[var(--primary)] group-hover:text-[#FFD700] transition-colors duration-300 group-hover:scale-110 transform" />
+                <span className="text-sm font-medium text-white/90 group-hover:text-[#FFD700] transition-colors duration-300">GitHub</span>
+              </a>
             </div>
-          )}
+          </div>
         </div>
 
         <div className="lg:col-span-3">
