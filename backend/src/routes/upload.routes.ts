@@ -1,26 +1,24 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from '../utils/cloudinary';
 import { protect, admin } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
-// Ensure uploads directory exists
-const uploadDir = path.join(__dirname, '../../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure multer storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
+// Configure Cloudinary storage for Multer
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    // extract original extension without dot
+    const ext = file.originalname.split('.').pop() || 'png';
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    return {
+      folder: 'portfolio_uploads',
+      format: ext, // supports promises as well
+      public_id: `profile-${uniqueSuffix}`,
+    };
   },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalname));
-  }
 });
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
@@ -31,10 +29,10 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilt
   cb(null, true);
 };
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
 });
 
 // Upload endpoint
@@ -43,17 +41,17 @@ router.post('/', protect, admin, upload.single('image'), (req: Request, res: Res
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
-    
-    // Construct the URL to access the uploaded file
-    const fileUrl = `/uploads/${req.file.filename}`;
-    
+
+    // req.file.path contains the secure Cloudinary URL when using CloudinaryStorage
+    const fileUrl = req.file.path;
+
     res.status(200).json({
       success: true,
-      message: 'File uploaded successfully',
+      message: 'File uploaded successfully to Cloudinary',
       data: {
         url: fileUrl,
-        filename: req.file.filename
-      }
+        filename: req.file.filename,
+      },
     });
   } catch (error) {
     console.error('Upload error:', error);

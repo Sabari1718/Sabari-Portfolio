@@ -43,18 +43,18 @@ export function HeroSection({ profile }: { profile: Profile | null }) {
 
           <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-6">
             <a href="#contact">
-              <Button size="lg" className="bg-[var(--primary)] text-black hover:bg-[var(--primary)]/90 font-bold rounded-full px-10 py-6">
+              <Button size="lg" className="bg-[#00E5FF] text-black hover:bg-[#00b8cc] font-bold rounded-full px-8 py-4 h-auto text-lg">
                 Let's Talk
               </Button>
             </a>
             <a href="#projects">
-              <Button variant="outline" size="lg" className="border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)]/10 font-bold rounded-full px-10 py-6">
+              <Button variant="outline" size="lg" className="border-[#00E5FF] text-[#00E5FF] hover:bg-[#FDE047] hover:text-black hover:border-[#FDE047] font-bold rounded-full px-8 py-4 h-auto text-lg transition-colors">
                 View Projects
               </Button>
             </a>
             {profile?.resume_url && (
               <a href={profile.resume_url} target="_blank" rel="noreferrer">
-                <Button variant="outline" size="lg" className="gap-2 px-10 py-6 rounded-full">
+                <Button variant="outline" size="lg" className="gap-2 px-8 py-4 h-auto text-lg rounded-full">
                   Resume <Download size={18} />
                 </Button>
               </a>
