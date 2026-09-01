@@ -38,7 +38,7 @@ export function HeroSection({ profile }: { profile: Profile | null }) {
           </h2>
           <p className="text-lg text-[var(--text-secondary)] max-w-xl mx-auto md:mx-0 mb-10">
             {profile?.bio ||
-              "I craft high-performance, beautiful applications that solve real-world problems. Let's build something amazing together."}
+              "I turn ideas into high-performance mobile and web experiences that solve real-world problems. Building impactful products with Flutter and modern full-stack technologies."}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-6">
