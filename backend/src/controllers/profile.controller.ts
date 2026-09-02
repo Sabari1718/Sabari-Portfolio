@@ -54,7 +54,7 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
     const safeTwitterUrl   = twitter_url?.trim() ?? null;
 
     // Check if profile exists
-    const [existingProfile] = await pool.query('SELECT id FROM profile LIMIT 1');
+    const [existingProfile] = await pool.query('SELECT * FROM profile LIMIT 1');
     const profiles = existingProfile as any[];
 
     if (profiles.length === 0) {
@@ -71,7 +71,10 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
       ]);
       res.status(201).json({ success: true, message: 'Profile created successfully' });
     } else {
-      // Update existing profile
+      // Update existing profile (preserve existing profile_image if not provided)
+      const currentProfile = profiles[0];
+      const finalProfileImage = profile_image !== undefined ? safeProfileImage : currentProfile.profile_image;
+
       const query = `
         UPDATE profile 
         SET name = ?, display_name = ?, headline = ?, bio = ?, profile_image = ?,
@@ -80,10 +83,10 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
         WHERE id = ?
       `;
       await pool.query(query, [
-        safeName, safeDisplayName, safeHeadline, safeBio, safeProfileImage,
+        safeName, safeDisplayName, safeHeadline, safeBio, finalProfileImage,
         safeLocation, safeEmail, safePhone, safeResumeUrl,
         safeGithubUrl, safeLinkedinUrl, safePortfolioUrl, safeTwitterUrl,
-        profiles[0].id
+        currentProfile.id
       ]);
       res.status(200).json({ success: true, message: 'Profile updated successfully' });
     }
