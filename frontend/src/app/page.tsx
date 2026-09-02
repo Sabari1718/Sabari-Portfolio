@@ -6,6 +6,9 @@ import { SkillsSection } from '@/components/sections/SkillsSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 import { Profile, Project, Skill, Experience, Education, SocialLink } from '@/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function Home() {
   // Fetch all data from our Node.js backend
   const [
