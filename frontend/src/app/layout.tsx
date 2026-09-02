@@ -25,11 +25,14 @@ export default async function RootLayout({
 }>) {
   const profileRes = await PortfolioAPI.getProfile();
   const profileName = profileRes.success && profileRes.data ? profileRes.data.name : "Sabari Portfolio";
+  
+  const navbarRes = await PortfolioAPI.getNavbarSettings();
+  const navbarSettings = navbarRes.success && navbarRes.data ? navbarRes.data : null;
 
   return (
     <html lang="en" className={`${outfit.variable} scroll-smooth`}>
       <body className="min-h-full flex flex-col font-sans">
-        <Navbar title="Sabari Portfolio" />
+        <Navbar settings={navbarSettings} />
         {children}
       </body>
     </html>

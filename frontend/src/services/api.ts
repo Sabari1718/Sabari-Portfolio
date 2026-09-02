@@ -56,6 +56,14 @@ export const PortfolioAPI = {
     body: JSON.stringify(data),
   }),
 
+  // ── Navbar ───────────────────────────────────────────────
+  getNavbarSettings: () => fetchAPI('/navbar', { cache: 'no-store' } as any),
+
+  updateNavbarSettings: (data: any) => fetchAPI('/navbar', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }),
+
   // ── Upload ───────────────────────────────────────────────
   uploadImage: async (file: File) => {
     const token = getToken();

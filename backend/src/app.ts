@@ -12,6 +12,7 @@ import certificationRoutes from './routes/certification.routes';
 import socialRoutes from './routes/social.routes';
 import contactRoutes from './routes/contact.routes';
 import uploadRoutes from './routes/upload.routes';
+import navbarRoutes from './routes/navbar.routes';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -37,6 +38,7 @@ app.use('/api/certifications', certificationRoutes);
 app.use('/api/social-links', socialRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/navbar', navbarRoutes);
 
 // Health check endpoint (Phase 1)
 app.get('/api/health', (req: Request, res: Response) => {

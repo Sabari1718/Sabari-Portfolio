@@ -111,6 +111,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold">Content</p>
           </div>
           <SidebarLink href="/admin/profile" currentPath={pathname} icon={<Settings size={18}/>} text="Profile Settings" />
+          <SidebarLink href="/admin/navbar" currentPath={pathname} icon={<Menu size={18}/>} text="Navbar Settings" />
           <SidebarLink href="/admin/profile/photo" currentPath={pathname} icon={<ImageIcon size={18}/>} text="Profile Photo" />
           <SidebarLink href="/admin/projects" currentPath={pathname} icon={<Folder size={18}/>} text="Projects" />
           <SidebarLink href="/admin/experience" currentPath={pathname} icon={<Briefcase size={18}/>} text="Experience" />

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 
-export function Navbar({ title = "Portfolio" }: { title?: string }) {
+export function Navbar({ settings }: { settings?: any }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -24,11 +24,25 @@ export function Navbar({ title = "Portfolio" }: { title?: string }) {
     return null;
   }
 
+  const defaultSettings = {
+    logo_name: "Sabari Portfolio",
+    about_label: "About",
+    projects_label: "Projects",
+    skills_label: "Skills",
+    contact_label: "Contact",
+    show_about: true,
+    show_projects: true,
+    show_skills: true,
+    show_contact: true,
+  };
+
+  const navSettings = settings || defaultSettings;
+
   const navLinks = [
-    { name: "About", href: "#about" },
-    { name: "Projects", href: "#projects" },
-    { name: "Skills", href: "#skills" },
-    { name: "Contact", href: "#contact" },
+    ...(navSettings.show_about ? [{ name: navSettings.about_label || "About", href: "#about" }] : []),
+    ...(navSettings.show_projects ? [{ name: navSettings.projects_label || "Projects", href: "#projects" }] : []),
+    ...(navSettings.show_skills ? [{ name: navSettings.skills_label || "Skills", href: "#skills" }] : []),
+    ...(navSettings.show_contact ? [{ name: navSettings.contact_label || "Contact", href: "#contact" }] : []),
   ];
 
   return (
@@ -44,7 +58,7 @@ export function Navbar({ title = "Portfolio" }: { title?: string }) {
       )}>
         <Link href="/" onClick={() => setMobileMenuOpen(false)}>
           <span className="text-xl md:text-2xl font-bold text-[#00E5FF] tracking-wide drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]">
-            {title}
+            {navSettings.logo_name || "Sabari Portfolio"}
           </span>
         </Link>
 
