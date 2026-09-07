@@ -313,13 +313,14 @@ export default function AdminProjects() {
       {/* Add / Edit Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm overflow-hidden">
-          <div className="bg-[#121212] border border-[#F5C542]/30 shadow-[0_0_40px_rgba(245,197,66,0.15)] rounded-2xl w-full max-w-3xl flex flex-col max-h-full overflow-hidden">
+          <div className="bg-[#121212] border border-[#F5C542]/30 shadow-[0_0_40px_rgba(245,197,66,0.15)] rounded-2xl w-full max-w-3xl flex flex-col max-h-[100%] sm:max-h-[90vh]">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 bg-[#121212]">
-              <h2 className="text-xl font-bold text-white">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 bg-[#121212] rounded-t-2xl">
+              <div className="text-xl font-bold text-white">
                 {editingProject ? "Edit Project" : "Add New Project"}
-              </h2>
+              </div>
               <button
+                type="button"
                 onClick={closeModal}
                 className="text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-all"
               >
@@ -328,7 +329,7 @@ export default function AdminProjects() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSave} className="flex flex-col overflow-hidden min-h-0">
+            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
               <div className="flex-1 overflow-y-auto p-6 space-y-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <ModalField label="Project Name *" name="title" value={form.title} onChange={handleTitleChange} placeholder="My Awesome Project" required />
@@ -405,7 +406,7 @@ export default function AdminProjects() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-4 px-6 py-5 border-t border-white/10 shrink-0 bg-[#121212]">
+              <div className="flex gap-4 px-6 py-5 border-t border-white/10 shrink-0 bg-[#121212] rounded-b-2xl">
                 <button type="submit" disabled={saveStatus === "saving"}
                   className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#F5C542] text-black font-bold rounded-xl hover:bg-[#F5C542]/90 hover:shadow-[0_0_20px_rgba(245,197,66,0.3)] transition-all disabled:opacity-60 disabled:hover:shadow-none">
                   {saveStatus === "saving" ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle size={18} />}
