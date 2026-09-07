@@ -1,9 +1,5 @@
 import { PortfolioAPI } from '@/services/api';
-import { HeroSection } from '@/components/sections/HeroSection';
-import { AboutSection } from '@/components/sections/AboutSection';
-import { ProjectsSection } from '@/components/sections/ProjectsSection';
-import { SkillsSection } from '@/components/sections/SkillsSection';
-import { ContactSection } from '@/components/sections/ContactSection';
+import { PortfolioMain } from '@/components/sections/PortfolioMain';
 import { Profile, Project, Skill, Experience, Education, SocialLink } from '@/types';
 
 // Always SSR — never serve cached HTML from Vercel CDN
@@ -40,21 +36,14 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen">
-      <HeroSection profile={profile} />
-      
-      {(experience.length > 0 || education.length > 0) && (
-        <AboutSection experiences={experience} education={education} />
-      )}
-      
-      {projects.length > 0 && (
-        <ProjectsSection projects={projects} />
-      )}
-      
-      {skills.length > 0 && (
-        <SkillsSection skills={skills} />
-      )}
-      
-      <ContactSection profile={profile} socialLinks={socialLinks} />
+      <PortfolioMain 
+        profile={profile}
+        projects={projects}
+        skills={skills}
+        experience={experience}
+        education={education}
+        socialLinks={socialLinks}
+      />
       
       <footer className="py-8 text-center text-[var(--text-secondary)] border-t border-white/10">
         <p>© {new Date().getFullYear()} {profile?.name || 'Sabari'}. All rights reserved.</p>
@@ -62,3 +51,4 @@ export default async function Home() {
     </main>
   );
 }
+
