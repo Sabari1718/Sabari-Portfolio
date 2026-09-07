@@ -12,7 +12,7 @@ export function HeroSection({ profile }: { profile: Profile | null }) {
     : null;
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden mb-24 md:mb-32">
+    <section id="about" className="relative min-h-[90vh] flex items-center justify-center overflow-hidden mb-24 md:mb-32 scroll-mt-24">
       {/* Background Elements */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--primary)]/30 rounded-full blur-[100px] -z-10 animate-pulse-glow" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--secondary)]/30 rounded-full blur-[100px] -z-10" />

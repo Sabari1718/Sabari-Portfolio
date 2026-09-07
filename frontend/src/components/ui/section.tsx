@@ -13,7 +13,7 @@ export function Section({ id, children, className, ...props }: SectionProps) {
   return (
     <section
       id={id}
-      className={cn("py-20 md:py-32 relative overflow-hidden", className)}
+      className={cn("py-20 md:py-32 relative overflow-hidden scroll-mt-24", className)}
       {...props}
     >
       <motion.div

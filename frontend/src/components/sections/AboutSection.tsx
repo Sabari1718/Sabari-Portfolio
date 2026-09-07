@@ -29,12 +29,12 @@ export function AboutSection({
   };
 
   return (
-    <Section id="about">
+    <Section id="about_section">
       <SectionHeading>Experience & Education</SectionHeading>
       
       <div className="grid md:grid-cols-2 gap-12 mt-16">
         {/* Experience Timeline */}
-        <div>
+        <div id="experience" className="scroll-mt-32">
           <div className="flex items-center gap-3 mb-8">
             <Briefcase className="text-[var(--primary)]" size={28} />
             <h3 className="text-2xl font-bold">Experience</h3>
@@ -77,7 +77,7 @@ export function AboutSection({
         </div>
 
         {/* Education Timeline */}
-        <div>
+        <div id="education" className="scroll-mt-32">
           <div className="flex items-center gap-3 mb-8">
             <GraduationCap className="text-[var(--secondary)]" size={28} />
             <h3 className="text-2xl font-bold">Education</h3>

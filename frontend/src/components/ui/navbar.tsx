@@ -40,7 +40,9 @@ export function Navbar({ settings }: { settings?: any }) {
 
   const navLinks = [
     ...(navSettings.show_about ? [{ name: navSettings.about_label || "About", href: "#about" }] : []),
+    { name: "Experience", href: "#experience" },
     ...(navSettings.show_projects ? [{ name: navSettings.projects_label || "Projects", href: "#projects" }] : []),
+    { name: "Education", href: "#education" },
     ...(navSettings.show_skills ? [{ name: navSettings.skills_label || "Skills", href: "#skills" }] : []),
     ...(navSettings.show_contact ? [{ name: navSettings.contact_label || "Contact", href: "#contact" }] : []),
   ];
