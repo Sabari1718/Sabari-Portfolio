@@ -312,10 +312,10 @@ export default function AdminProjects() {
 
       {/* Add / Edit Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-[#121212] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm overflow-hidden">
+          <div className="bg-[#121212] border border-[#F5C542]/30 shadow-[0_0_40px_rgba(245,197,66,0.15)] rounded-2xl w-full max-w-3xl flex flex-col max-h-full overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 bg-[#121212]">
               <h2 className="text-xl font-bold text-white">
                 {editingProject ? "Edit Project" : "Add New Project"}
               </h2>
@@ -328,89 +328,91 @@ export default function AdminProjects() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSave} className="p-6 space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <ModalField label="Title *" name="title" value={form.title} onChange={handleTitleChange} placeholder="My Awesome Project" required />
-                <ModalField label="Category" name="category" value={form.category} onChange={handleChange} placeholder="e.g. Web App, Mobile" />
-              </div>
+            <form onSubmit={handleSave} className="flex flex-col overflow-hidden min-h-0">
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <ModalField label="Project Name *" name="title" value={form.title} onChange={handleTitleChange} placeholder="My Awesome Project" required />
+                  <ModalField label="Slug *" name="slug" value={form.slug} onChange={handleChange} placeholder="my-awesome-project" required />
+                </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <ModalField label="Slug (URL key)" name="slug" value={form.slug} onChange={handleChange} placeholder="my-awesome-project" required />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-white/80">Type</label>
+                    <select name="type" value={form.type} onChange={handleChange}
+                      className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#F5C542] focus:ring-1 focus:ring-[#F5C542]/50 transition-all">
+                      <option value="web">Web</option>
+                      <option value="mobile">Mobile</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <ModalField label="Category" name="category" value={form.category} onChange={handleChange} placeholder="e.g. Web App, Mobile" />
+                </div>
+
+                <ModalField label="Short Description" name="short_description" value={form.short_description} onChange={handleChange} placeholder="One-line summary" />
+
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-white/80">Type</label>
-                  <select name="type" value={form.type} onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] transition-all">
-                    <option value="web">Web</option>
-                    <option value="mobile">Mobile</option>
-                    <option value="other">Other</option>
-                  </select>
+                  <label className="block text-sm font-medium text-white/80">Full Description</label>
+                  <textarea name="description" value={form.description} onChange={handleChange} rows={4}
+                    placeholder="Detailed description of the project..."
+                    className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[#F5C542] focus:ring-1 focus:ring-[#F5C542]/50 transition-all resize-none" />
                 </div>
-              </div>
 
-              <ModalField label="Short Description" name="short_description" value={form.short_description} onChange={handleChange} placeholder="One-line summary" />
+                <ModalField label="Image URL" name="image_url" value={form.image_url} onChange={handleChange} placeholder="https://..." type="url" />
 
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-white/80">Full Description</label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows={4}
-                  placeholder="Detailed description of the project..."
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--primary)] transition-all resize-none" />
-              </div>
-
-              <ModalField label="Image URL" name="image_url" value={form.image_url} onChange={handleChange} placeholder="https://..." type="url" />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <ModalField label="GitHub URL" name="github_url" value={form.github_url} onChange={handleChange} placeholder="https://github.com/..." type="url" />
-                <ModalField label="Live URL" name="live_url" value={form.live_url} onChange={handleChange} placeholder="https://..." type="url" />
-              </div>
-
-              <div className="grid grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-white/80">Status</label>
-                  <select name="status" value={form.status} onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] transition-all">
-                    <option value="completed">Completed</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="archived">Archived</option>
-                  </select>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <ModalField label="GitHub URL" name="github_url" value={form.github_url} onChange={handleChange} placeholder="https://github.com/..." type="url" />
+                  <ModalField label="Live URL" name="live_url" value={form.live_url} onChange={handleChange} placeholder="https://..." type="url" />
                 </div>
-                <ModalField label="Display Order" name="display_order" value={String(form.display_order)} onChange={handleChange} placeholder="0" type="number" />
-              </div>
 
-              {/* Checkboxes */}
-              <div className="flex gap-8 pt-2">
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange}
-                    className="w-4 h-4 accent-[#FDE047]" />
-                  <span className="text-sm text-white/80 group-hover:text-white transition-colors">Featured project</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <input type="checkbox" name="is_visible" checked={form.is_visible} onChange={handleChange}
-                    className="w-4 h-4 accent-[#FDE047]" />
-                  <span className="text-sm text-white/80 group-hover:text-white transition-colors">Visible on portfolio</span>
-                </label>
-              </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-white/80">Status</label>
+                    <select name="status" value={form.status} onChange={handleChange}
+                      className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#F5C542] focus:ring-1 focus:ring-[#F5C542]/50 transition-all">
+                      <option value="completed">Completed</option>
+                      <option value="in-progress">In Progress</option>
+                      <option value="archived">Archived</option>
+                    </select>
+                  </div>
+                  <ModalField label="Display Order" name="display_order" value={String(form.display_order)} onChange={handleChange} placeholder="0" type="number" />
+                </div>
 
-              {/* Status Messages */}
-              {saveStatus === "error" && (
-                <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
-                  <AlertCircle size={16} /> {errorMsg}
+                {/* Checkboxes */}
+                <div className="flex flex-wrap gap-8 pt-2">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange}
+                      className="w-4 h-4 accent-[#F5C542] bg-[#1A1A1A] border-white/20 rounded cursor-pointer" />
+                    <span className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">Featured Project</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input type="checkbox" name="is_visible" checked={form.is_visible} onChange={handleChange}
+                      className="w-4 h-4 accent-[#F5C542] bg-[#1A1A1A] border-white/20 rounded cursor-pointer" />
+                    <span className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">Visible on Portfolio</span>
+                  </label>
                 </div>
-              )}
-              {saveStatus === "success" && (
-                <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 text-sm">
-                  <CheckCircle size={16} /> Saved to MySQL successfully!
-                </div>
-              )}
+
+                {/* Status Messages */}
+                {saveStatus === "error" && (
+                  <div className="flex items-center gap-2 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+                    <AlertCircle size={16} /> {errorMsg}
+                  </div>
+                )}
+                {saveStatus === "success" && (
+                  <div className="flex items-center gap-2 p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 text-sm">
+                    <CheckCircle size={16} /> Saved successfully!
+                  </div>
+                )}
+              </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-4 px-6 py-5 border-t border-white/10 shrink-0 bg-[#121212]">
                 <button type="submit" disabled={saveStatus === "saving"}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#FDE047] text-black font-bold rounded-xl hover:bg-[#FDE047]/90 transition-all disabled:opacity-60">
-                  {saveStatus === "saving" ? <Loader2 size={17} className="animate-spin" /> : <CheckCircle size={17} />}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#F5C542] text-black font-bold rounded-xl hover:bg-[#F5C542]/90 hover:shadow-[0_0_20px_rgba(245,197,66,0.3)] transition-all disabled:opacity-60 disabled:hover:shadow-none">
+                  {saveStatus === "saving" ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle size={18} />}
                   {saveStatus === "saving" ? "Saving..." : editingProject ? "Save Changes" : "Create Project"}
                 </button>
                 <button type="button" onClick={closeModal}
-                  className="flex-1 py-3 border border-white/10 text-white/60 font-medium rounded-xl hover:bg-white/5 hover:text-white transition-all">
+                  className="flex-1 py-3 border border-white/10 text-white/80 font-medium rounded-xl hover:bg-white/5 hover:text-white transition-all">
                   Cancel
                 </button>
               </div>
@@ -433,8 +435,8 @@ function ModalField({
       <label className="block text-sm font-medium text-white/80">{label}</label>
       <input type={type} name={name} value={value} onChange={onChange}
         placeholder={placeholder} required={required}
-        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30
-          focus:outline-none focus:border-[var(--primary)] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.1)] transition-all" />
+        className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30
+          focus:outline-none focus:border-[#F5C542] focus:ring-1 focus:ring-[#F5C542]/50 transition-all" />
     </div>
   );
 }
