@@ -6,11 +6,12 @@ import { SkillsSection } from '@/components/sections/SkillsSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 import { Profile, Project, Skill, Experience, Education, SocialLink } from '@/types';
 
+// Always SSR — never serve cached HTML from Vercel CDN
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function Home() {
-  // Fetch all data from our Node.js backend
+  // Fetch all data from our Node.js backend — cache: 'no-store' is set inside fetchAPI
   const [
     profileRes,
     projectsRes,
@@ -27,18 +28,20 @@ export default async function Home() {
     PortfolioAPI.getSocialLinks(),
   ]);
 
+  // Log on server so we can debug via Vercel logs
+  console.log('[page] projects:', projectsRes.success, 'count:', projectsRes.data?.length ?? 0, projectsRes.message || '');
+
   const profile: Profile | null = profileRes.success ? profileRes.data : null;
-  const projects: Project[] = projectsRes.success ? projectsRes.data : [];
-  const skills: Skill[] = skillsRes.success ? skillsRes.data : [];
-  const experience: Experience[] = experienceRes.success ? experienceRes.data : [];
-  const education: Education[] = educationRes.success ? educationRes.data : [];
-  const socialLinks: SocialLink[] = socialLinksRes.success ? socialLinksRes.data : [];
+  const projects: Project[] = (projectsRes.success && Array.isArray(projectsRes.data)) ? projectsRes.data : [];
+  const skills: Skill[] = (skillsRes.success && Array.isArray(skillsRes.data)) ? skillsRes.data : [];
+  const experience: Experience[] = (experienceRes.success && Array.isArray(experienceRes.data)) ? experienceRes.data : [];
+  const education: Education[] = (educationRes.success && Array.isArray(educationRes.data)) ? educationRes.data : [];
+  const socialLinks: SocialLink[] = (socialLinksRes.success && Array.isArray(socialLinksRes.data)) ? socialLinksRes.data : [];
 
   return (
     <main className="min-h-screen">
       <HeroSection profile={profile} />
       
-      {/* Show other sections if data exists */}
       {(experience.length > 0 || education.length > 0) && (
         <AboutSection experiences={experience} education={education} />
       )}
@@ -53,7 +56,6 @@ export default async function Home() {
       
       <ContactSection profile={profile} socialLinks={socialLinks} />
       
-      {/* Footer */}
       <footer className="py-8 text-center text-[var(--text-secondary)] border-t border-white/10">
         <p>© {new Date().getFullYear()} {profile?.name || 'Sabari'}. All rights reserved.</p>
       </footer>

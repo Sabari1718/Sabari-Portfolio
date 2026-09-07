@@ -22,8 +22,11 @@ async function fetchAPI(endpoint: string, options: RequestInit & { skipContentTy
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  // Build final options — always include cache: 'no-store' so Next.js data cache
+  // never serves stale content for any endpoint.
   const finalOptions: RequestInit = {
-    ...fetchOptions,
+    cache: 'no-store',   // <-- default: always bypass Next.js fetch cache
+    ...fetchOptions,     // caller can override (e.g. for mutations)
     headers: {
       ...headers,
       ...((fetchOptions.headers as Record<string, string>) || {}),
@@ -32,6 +35,11 @@ async function fetchAPI(endpoint: string, options: RequestInit & { skipContentTy
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, finalOptions);
+    if (!response.ok) {
+      const text = await response.text();
+      console.error(`API ${response.status} on ${endpoint}:`, text);
+      return { success: false, message: `Server error ${response.status}` };
+    }
     const data = await response.json();
     return data;
   } catch (error) {
