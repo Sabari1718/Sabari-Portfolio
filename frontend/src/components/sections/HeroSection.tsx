@@ -3,86 +3,204 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Profile } from "@/types";
-import { ArrowRight, Download } from "lucide-react";
+import { Download, ArrowDown, MapPin, Briefcase } from "lucide-react";
 import { getFileUrl } from "@/services/api";
+import { CountUp } from "@/components/ui/CountUp";
 
-export function HeroSection({ profile }: { profile: Profile | null }) {
-  const profileImageUrl = profile?.profile_image
-    ? getFileUrl(profile.profile_image)
-    : null;
+interface Props {
+  profile: Profile | null;
+  projectCount: number;
+}
+
+const TITLES = ["Flutter Developer", "Full-Stack Developer", "Mobile App Engineer", "React & Next.js Developer"];
+
+export function HeroSection({ profile, projectCount }: Props) {
+  const profileImageUrl = profile?.profile_image ? getFileUrl(profile.profile_image) : null;
+
+  const stats = [
+    { label: "Years Experience", value: 2, suffix: "+" },
+    { label: "Projects Built", value: projectCount || 5, suffix: "+" },
+    { label: "Technologies", value: 15, suffix: "+" },
+    { label: "GitHub Repos", value: 10, suffix: "+" },
+  ];
 
   return (
-    <section id="about" className="relative min-h-[90vh] flex items-center justify-center overflow-hidden mb-24 md:mb-32 scroll-mt-24">
-      {/* Background Elements */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--primary)]/30 rounded-full blur-[100px] -z-10 animate-pulse-glow" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--secondary)]/30 rounded-full blur-[100px] -z-10" />
+    <section id="home" className="hero-section relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Animated background */}
+      <div className="hero-bg-blob hero-blob-1" />
+      <div className="hero-bg-blob hero-blob-2" />
+      <div className="hero-bg-grid" />
 
-      <div className="container mx-auto px-6 pt-32 md:pt-40 relative z-10 text-center md:text-left flex flex-col md:flex-row items-center gap-12">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex-1"
-        >
-          <p className="text-[var(--primary)] font-bold tracking-[0.2em] uppercase mb-4 text-sm md:text-base drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]">
-            WELCOME TO MY WORLD
-          </p>
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-[0_0_15px_rgba(0,229,255,0.3)]">
-            Hi, I'm <br className="hidden md:block" />
-            <span className="text-gradient drop-shadow-[0_0_20px_rgba(0,229,255,0.4)]">
+      <div className="container mx-auto px-6 py-32 relative z-10">
+        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+
+          {/* Left: Text Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex-1 text-center lg:text-left"
+          >
+            {/* Availability badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-sm font-medium mb-6"
+            >
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              Available for Work
+            </motion.div>
+
+            {/* Greeting */}
+            <p className="text-[var(--primary)] font-bold tracking-[0.25em] uppercase text-sm md:text-base mb-4">
+              Hello, I'm
+            </p>
+
+            {/* Name */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 leading-tight">
               {profile?.display_name || profile?.name || "Sabarishwaran S"}
-            </span>
-          </h1>
-          <h2 className="text-2xl md:text-4xl text-[var(--primary)] font-medium mb-6 drop-shadow-[0_0_10px_rgba(0,229,255,0.4)]">
-            {profile?.headline || "Full-Stack Developer"}
-          </h2>
-          <p className="text-lg text-[var(--text-secondary)] max-w-xl mx-auto md:mx-0 mb-10">
-            {profile?.bio ||
-              "I turn ideas into high-performance mobile and web experiences that solve real-world problems. Building impactful products with Flutter and modern full-stack technologies."}
-          </p>
+            </h1>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-6">
-            <a href="#contact">
-              <Button size="lg" className="bg-[var(--primary)] text-black hover:bg-[var(--primary)]/90 font-bold rounded-full px-10 py-6">
-                Let's Talk
-              </Button>
-            </a>
-            <a href="#projects">
-              <Button variant="outline" size="lg" className="border-[var(--primary)] text-[var(--primary)] hover:bg-[#FFD700] hover:text-black hover:border-[#FFD700] transition-colors font-bold rounded-full px-10 py-6">
-                View Projects
-              </Button>
-            </a>
-            {profile?.resume_url && (
-              <a href={profile.resume_url} target="_blank" rel="noreferrer">
-                <Button variant="outline" size="lg" className="gap-2 px-10 py-6 rounded-full">
-                  Resume <Download size={18} />
+            {/* Animated Title */}
+            <AnimatedTitles titles={TITLES} />
+
+            {/* Location */}
+            {profile?.location && (
+              <div className="flex items-center gap-2 justify-center lg:justify-start text-[var(--text-secondary)] text-sm mb-6">
+                <MapPin size={14} />
+                <span>{profile.location}</span>
+              </div>
+            )}
+
+            {/* Bio */}
+            <p className="text-base md:text-lg text-[var(--text-secondary)] max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed">
+              {profile?.bio || "I build high-performance mobile and web applications that solve real-world problems. Specializing in Flutter, React, and Node.js."}
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-16">
+              <a href="#contact">
+                <Button size="lg" className="hire-btn rounded-full px-8 py-6 font-bold text-base">
+                  <Briefcase size={18} className="mr-2" />
+                  Hire Me
                 </Button>
               </a>
-            )}
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex-1 flex justify-center md:justify-end"
-        >
-          <div className="relative w-56 h-56 md:w-80 md:h-80 lg:w-[22rem] lg:h-[22rem] rounded-full p-1.5 md:p-2 bg-gradient-to-tr from-[var(--primary)] to-[var(--secondary)] shadow-[0_0_30px_rgba(0,229,255,0.3)] hover:shadow-[0_0_50px_rgba(0,229,255,0.5)] transition-shadow duration-500">
-            <div className="w-full h-full rounded-full overflow-hidden bg-[var(--background)] flex items-center justify-center">
-              <img
-                src={profileImageUrl || "/placeholder-avatar.png"}
-                alt={profile?.name || "Portfolio Owner"}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=" +
-                    encodeURIComponent(profile?.name || "S") + "&background=121212&color=FDE047&size=400";
-                }}
-              />
+              <a href="#projects">
+                <Button variant="outline" size="lg" className="view-work-btn rounded-full px-8 py-6 font-bold text-base border-[var(--primary)] text-[var(--primary)]">
+                  View My Work
+                </Button>
+              </a>
+              {profile?.resume_url && (
+                <a href={profile.resume_url} target="_blank" rel="noreferrer">
+                  <Button variant="ghost" size="lg" className="rounded-full px-8 py-6 font-bold text-base gap-2 text-white/70 hover:text-white border border-white/10">
+                    Resume <Download size={16} />
+                  </Button>
+                </a>
+              )}
             </div>
-          </div>
+
+            {/* Stats Row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl mx-auto lg:mx-0">
+              {stats.map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + i * 0.1 }}
+                  className="stat-card text-center p-4 rounded-2xl"
+                >
+                  <div className="text-2xl md:text-3xl font-extrabold text-[var(--primary)]">
+                    <CountUp end={stat.value} suffix={stat.suffix} />
+                  </div>
+                  <div className="text-xs text-[var(--text-secondary)] mt-1 leading-tight">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right: Profile Photo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
+            className="flex-shrink-0 flex justify-center"
+          >
+            <div className="profile-photo-wrapper">
+              <div className="profile-photo-ring" />
+              <div className="profile-photo-inner">
+                <img
+                  src={profileImageUrl || "https://ui-avatars.com/api/?name=S&background=121212&color=00E5FF&size=400"}
+                  alt={profile?.name || "Sabarishwaran"}
+                  className="w-full h-full object-cover rounded-full"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "https://ui-avatars.com/api/?name=" +
+                      encodeURIComponent(profile?.name || "S") +
+                      "&background=121212&color=00E5FF&size=400";
+                  }}
+                />
+              </div>
+              {/* Floating badges */}
+              <motion.div
+                animate={{ y: [-4, 4, -4] }}
+                transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                className="floating-badge floating-badge-1"
+              >
+                <span className="text-lg">⚡</span>
+                <span className="text-xs font-bold text-white">Flutter Expert</span>
+              </motion.div>
+              <motion.div
+                animate={{ y: [4, -4, 4] }}
+                transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
+                className="floating-badge floating-badge-2"
+              >
+                <span className="text-lg">🚀</span>
+                <span className="text-xs font-bold text-white">Full-Stack Dev</span>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--text-secondary)]"
+        >
+          <span className="text-xs tracking-widest uppercase">Scroll</span>
+          <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+            <ArrowDown size={18} />
+          </motion.div>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function AnimatedTitles({ titles }: { titles: string[] }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((i) => (i + 1) % titles.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [titles.length]);
+
+  return (
+    <div className="h-10 md:h-12 overflow-hidden mb-4">
+      <motion.h2
+        key={index}
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -40, opacity: 0 }}
+        transition={{ duration: 0.4 }}
+        className="text-xl md:text-2xl lg:text-3xl font-bold text-[var(--primary)]"
+      >
+        {titles[index]}
+      </motion.h2>
+    </div>
   );
 }
