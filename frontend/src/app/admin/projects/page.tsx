@@ -313,7 +313,7 @@ export default function AdminProjects() {
       {/* Add / Edit Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm overflow-hidden">
-          <div className="bg-[#121212] border border-[#F5C542]/30 shadow-[0_0_40px_rgba(245,197,66,0.15)] rounded-2xl w-full max-w-3xl flex flex-col max-h-[100%] sm:max-h-[90vh]">
+          <div className="bg-[#121212] border border-[#F5C542]/30 shadow-[0_0_40px_rgba(245,197,66,0.15)] rounded-2xl w-full max-w-3xl flex flex-col max-h-[90vh]">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 bg-[#121212] rounded-t-2xl">
               <div className="text-xl font-bold text-white">
@@ -330,13 +330,13 @@ export default function AdminProjects() {
 
             {/* Modal Form */}
             <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
-              <div className="flex-1 overflow-y-auto p-6 space-y-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex-1 overflow-y-auto p-5 space-y-5 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <ModalField label="Project Name *" name="title" value={form.title} onChange={handleTitleChange} placeholder="My Awesome Project" required />
                   <ModalField label="Slug *" name="slug" value={form.slug} onChange={handleChange} placeholder="my-awesome-project" required />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-white/80">Type</label>
                     <select name="type" value={form.type} onChange={handleChange}
@@ -353,19 +353,19 @@ export default function AdminProjects() {
 
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-white/80">Full Description</label>
-                  <textarea name="description" value={form.description} onChange={handleChange} rows={4}
+                  <textarea name="description" value={form.description} onChange={handleChange} rows={3}
                     placeholder="Detailed description of the project..."
                     className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[#F5C542] focus:ring-1 focus:ring-[#F5C542]/50 transition-all resize-none" />
                 </div>
 
                 <ModalField label="Image URL" name="image_url" value={form.image_url} onChange={handleChange} placeholder="https://..." type="url" />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <ModalField label="GitHub URL" name="github_url" value={form.github_url} onChange={handleChange} placeholder="https://github.com/..." type="url" />
                   <ModalField label="Live URL" name="live_url" value={form.live_url} onChange={handleChange} placeholder="https://..." type="url" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-white/80">Status</label>
                     <select name="status" value={form.status} onChange={handleChange}
