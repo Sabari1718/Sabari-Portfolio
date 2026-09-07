@@ -29,7 +29,7 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
 
   return (
     <Section id="experience">
-      <div className="flex items-center gap-4 mb-16 justify-center">
+      <div className="flex items-center gap-4 mb-20 justify-center">
         <div className="w-12 h-12 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center">
           <Briefcase className="text-[var(--primary)]" size={24} />
         </div>
@@ -47,7 +47,7 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
           {/* Timeline line */}
           <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--primary)] via-white/10 to-transparent hidden sm:block" />
 
-          <div className="space-y-8">
+          <div className="space-y-12">
             {experiences.map((exp, i) => (
               <motion.div key={exp.id || i} variants={item} className="relative sm:pl-20">
                 {/* Timeline dot */}
@@ -60,11 +60,11 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
                 </div>
 
                 <Card className="exp-card hover:border-[var(--primary)]/40 transition-all duration-300 group">
-                  <CardContent className="p-6">
-                    <div className="flex flex-wrap justify-between items-start gap-3 mb-3">
+                  <CardContent className="p-8 sm:p-10">
+                    <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                       <div>
-                        <h3 className="text-xl font-bold text-white group-hover:text-[var(--primary)] transition-colors">{exp.role}</h3>
-                        <h4 className="text-[var(--primary)] font-semibold">{exp.company}</h4>
+                        <h3 className="text-2xl font-bold text-white group-hover:text-[var(--primary)] transition-colors mb-1">{exp.role}</h3>
+                        <h4 className="text-lg text-[var(--primary)] font-medium">{exp.company}</h4>
                       </div>
                       {exp.currently_working && (
                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-500/15 border border-green-500/30 text-green-400 flex-shrink-0">
@@ -127,7 +127,7 @@ export function EducationSection({ education }: { education: Education[] }) {
 
   return (
     <Section id="education" className="bg-white/[0.015]">
-      <div className="flex items-center gap-4 mb-16 justify-center">
+      <div className="flex items-center gap-4 mb-20 justify-center">
         <div className="w-12 h-12 rounded-xl bg-[var(--secondary)]/10 flex items-center justify-center">
           <GraduationCap className="text-[var(--secondary)]" size={24} />
         </div>
@@ -144,7 +144,7 @@ export function EducationSection({ education }: { education: Education[] }) {
         >
           <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--secondary)] via-white/10 to-transparent hidden sm:block" />
 
-          <div className="space-y-8">
+          <div className="space-y-12">
             {education.map((edu, i) => (
               <motion.div key={edu.id || i} variants={item} className="relative sm:pl-20">
                 <div className="absolute left-0 top-6 w-12 h-12 rounded-full bg-[var(--background)] border-2 border-[var(--secondary)] flex items-center justify-center shadow-[0_0_15px_rgba(0,184,212,0.4)] hidden sm:flex">
@@ -152,13 +152,13 @@ export function EducationSection({ education }: { education: Education[] }) {
                 </div>
 
                 <Card className="edu-card hover:border-[var(--secondary)]/40 transition-all duration-300 group">
-                  <CardContent className="p-6">
-                    <div className="flex flex-wrap justify-between items-start gap-3 mb-3">
+                  <CardContent className="p-8 sm:p-10">
+                    <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                       <div>
-                        <h3 className="text-xl font-bold text-white group-hover:text-[var(--secondary)] transition-colors">
+                        <h3 className="text-2xl font-bold text-white group-hover:text-[var(--secondary)] transition-colors mb-1">
                           {edu.degree}{edu.field ? ` in ${edu.field}` : ""}
                         </h3>
-                        <h4 className="text-[var(--secondary)] font-semibold">{edu.institution}</h4>
+                        <h4 className="text-lg text-[var(--secondary)] font-medium">{edu.institution}</h4>
                       </div>
                       {edu.grade && (
                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-[var(--secondary)]/10 border border-[var(--secondary)]/30 text-[var(--secondary)] flex-shrink-0">
