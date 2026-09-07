@@ -55,7 +55,7 @@ export function Navbar({ settings }: { settings?: any }) {
       )}
     >
       <nav className={cn(
-        "navbar max-w-4xl mx-auto relative pointer-events-auto transition-all duration-300",
+        "navbar max-w-6xl w-11/12 mx-auto relative pointer-events-auto transition-all duration-300",
         scrolled ? "mt-0 mb-0 shadow-none border-white/10" : "mt-2"
       )}>
         <Link href="/" onClick={() => setMobileMenuOpen(false)}>

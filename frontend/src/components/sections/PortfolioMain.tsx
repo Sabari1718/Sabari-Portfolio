@@ -25,23 +25,50 @@ export function PortfolioMain({
   education,
   socialLinks,
 }: Props) {
-  return (
-    <div className="pt-8 pb-20">
-      <HeroSection profile={profile} />
+  const [activeTab, setActiveTab] = useState("about"); // default to Hero ("About")
 
-      {(experience.length > 0 || education.length > 0) && (
-        <AboutSection experiences={experience} education={education} />
+  useEffect(() => {
+    // Determine active tab based on URL hash
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "");
+      if (["about", "experience", "education", "projects", "skills", "contact"].includes(hash)) {
+        setActiveTab(hash);
+      } else {
+        setActiveTab("about");
+      }
+    };
+
+    // Run once on mount
+    handleHashChange();
+
+    // Listen for hash changes
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  return (
+    <div className="pt-8 pb-20 animate-fade-in">
+      {activeTab === "about" && <HeroSection profile={profile} />}
+
+      {activeTab === "experience" && experience.length > 0 && (
+        <AboutSection experiences={experience} education={[]} />
       )}
 
-      {projects.length > 0 && (
+      {activeTab === "education" && education.length > 0 && (
+        <AboutSection experiences={[]} education={education} />
+      )}
+
+      {activeTab === "projects" && projects.length > 0 && (
         <ProjectsSection projects={projects} />
       )}
 
-      {skills.length > 0 && (
+      {activeTab === "skills" && skills.length > 0 && (
         <SkillsSection skills={skills} />
       )}
 
-      <ContactSection profile={profile} socialLinks={socialLinks} />
+      {activeTab === "contact" && (
+        <ContactSection profile={profile} socialLinks={socialLinks} />
+      )}
     </div>
   );
 }
