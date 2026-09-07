@@ -312,7 +312,7 @@ export default function AdminProjects() {
 
       {/* Add / Edit Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm overflow-hidden">
+        <div className="modal-backdrop">
           <div className="bg-[#121212] border border-[#F5C542]/30 shadow-[0_0_40px_rgba(245,197,66,0.15)] rounded-2xl w-full max-w-3xl flex flex-col max-h-[90vh]">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 bg-[#121212] rounded-t-2xl">

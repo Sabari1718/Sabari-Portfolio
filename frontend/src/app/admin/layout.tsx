@@ -58,7 +58,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex relative overflow-hidden text-white font-sans">
+    <div className="min-h-screen bg-[#050505] flex relative text-white font-sans">
       {/* Dynamic Background Glows */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[var(--primary)]/5 rounded-full blur-[120px]" />

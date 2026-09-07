@@ -223,16 +223,17 @@ export default function AdminSkills() {
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-[#121212] border border-white/10 rounded-2xl w-full max-w-lg shadow-2xl">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
-              <h2 className="text-xl font-bold text-white">{editing ? "Edit Skill" : "Add Skill"}</h2>
-              <button onClick={closeModal} className="text-white/40 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
+        <div className="modal-backdrop">
+          <div className="bg-[#121212] border border-[#F5C542]/30 shadow-[0_0_40px_rgba(245,197,66,0.15)] rounded-2xl w-full max-w-lg flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 rounded-t-2xl">
+              <span className="text-xl font-bold text-white">{editing ? "Edit Skill" : "Add Skill"}</span>
+              <button type="button" onClick={closeModal} className="text-white/40 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
                 <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="p-6 space-y-5">
+            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
+              <div className="flex-1 overflow-y-auto p-6 space-y-5">
               <SField label="Skill Name *" name="name" value={form.name} onChange={handleChange} placeholder="React" required />
 
               <div className="space-y-2">
@@ -278,9 +279,11 @@ export default function AdminSkills() {
                 </div>
               )}
 
-              <div className="flex gap-3 pt-2">
+              </div>
+
+              <div className="flex gap-3 px-6 py-5 border-t border-white/10 shrink-0 rounded-b-2xl">
                 <button type="submit" disabled={saveStatus === "saving"}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#FDE047] text-black font-bold rounded-xl hover:bg-[#FDE047]/90 transition-all disabled:opacity-60">
+                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#F5C542] text-black font-bold rounded-xl hover:bg-[#F5C542]/90 transition-all disabled:opacity-60">
                   {saveStatus === "saving" ? <Loader2 size={17} className="animate-spin" /> : <CheckCircle size={17} />}
                   {saveStatus === "saving" ? "Saving..." : editing ? "Save Changes" : "Add Skill"}
                 </button>
