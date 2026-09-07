@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { PortfolioAPI } from "@/services/api";
 import { Experience } from "@/types";
 import {
@@ -234,9 +235,9 @@ export default function AdminExperience() {
       </div>
 
       {/* Modal */}
-      {modalOpen && (
-        <div className="modal-backdrop">
-          <div className="bg-[#121212] border border-[#F5C542]/30 shadow-[0_0_40px_rgba(245,197,66,0.15)] rounded-2xl w-full max-w-2xl flex flex-col max-h-[90vh]">
+      {modalOpen && createPortal(
+        <div style={{position:'fixed',inset:0,zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px',background:'rgba(0,0,0,0.85)',backdropFilter:'blur(6px)'}}>
+          <div style={{background:'#121212',border:'1px solid rgba(245,197,66,0.35)',boxShadow:'0 0 60px rgba(245,197,66,0.2)',borderRadius:'16px',width:'100%',maxWidth:'640px',display:'flex',flexDirection:'column',maxHeight:'90vh'}}>
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 rounded-t-2xl">
               <span className="text-xl font-bold text-white">{editing ? "Edit Experience" : "Add Experience"}</span>
               <button type="button" onClick={closeModal} className="text-white/40 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
@@ -307,7 +308,8 @@ export default function AdminExperience() {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
