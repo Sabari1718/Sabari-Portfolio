@@ -21,10 +21,10 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
 
   return (
     <Section id="projects" className="bg-white/[0.02]">
-      <SectionHeading className="mb-16">Featured Projects</SectionHeading>
+      <SectionHeading className="mb-20">Featured Projects</SectionHeading>
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap justify-center gap-4 mb-16">
+      <div className="flex flex-wrap justify-center gap-5 mb-24">
         {types.map((type) => (
           <button
             key={type}

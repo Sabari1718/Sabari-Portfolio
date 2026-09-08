@@ -47,7 +47,7 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
           {/* Timeline line */}
           <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--primary)] via-white/10 to-transparent hidden sm:block" />
 
-          <div className="space-y-12">
+          <div className="space-y-16">
             {experiences.map((exp, i) => (
               <motion.div key={exp.id || i} variants={item} className="relative sm:pl-20">
                 {/* Timeline dot */}
@@ -144,7 +144,7 @@ export function EducationSection({ education }: { education: Education[] }) {
         >
           <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--secondary)] via-white/10 to-transparent hidden sm:block" />
 
-          <div className="space-y-12">
+          <div className="space-y-16">
             {education.map((edu, i) => (
               <motion.div key={edu.id || i} variants={item} className="relative sm:pl-20">
                 <div className="absolute left-0 top-6 w-12 h-12 rounded-full bg-[var(--background)] border-2 border-[var(--secondary)] flex items-center justify-center shadow-[0_0_15px_rgba(0,184,212,0.4)] hidden sm:flex">

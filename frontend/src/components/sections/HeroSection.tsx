@@ -68,14 +68,14 @@ export function HeroSection({ profile, projectCount }: Props) {
 
             {/* Location */}
             {profile?.location && (
-              <div className="flex items-center gap-2 justify-center lg:justify-start text-[var(--text-secondary)] text-sm mb-6">
-                <MapPin size={14} />
-                <span>{profile.location}</span>
+              <div className="flex items-center gap-2 justify-center lg:justify-start text-[var(--text-secondary)] mb-8 mt-6">
+                <MapPin size={18} />
+                <span className="text-base font-medium uppercase tracking-wider">{profile.location}</span>
               </div>
             )}
 
             {/* Bio */}
-            <p className="text-base md:text-lg text-[var(--text-secondary)] max-w-xl mx-auto lg:mx-0 mb-12 leading-relaxed">
+            <p className="text-base md:text-lg text-[var(--text-secondary)] max-w-xl mx-auto lg:mx-0 mb-16 leading-relaxed">
               {profile?.bio || "I build high-performance mobile and web applications that solve real-world problems. Specializing in Flutter, React, and Node.js."}
             </p>
 
