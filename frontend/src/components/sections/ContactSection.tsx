@@ -83,8 +83,8 @@ export function ContactSection({
 
   return (
     <Section id="contact" className="bg-white/[0.015]">
-      <SectionHeading>Get In Touch</SectionHeading>
-      <p className="text-center text-[var(--text-secondary)] max-w-xl mx-auto -mt-8 mb-16">
+      <SectionHeading className="mb-16">Get In Touch</SectionHeading>
+      <p className="text-center text-[var(--text-secondary)] max-w-xl mx-auto -mt-10 mb-20">
         Have a project or an opportunity? I'd love to hear from you. Fill in the form or reach out directly.
       </p>
 
@@ -149,9 +149,9 @@ export function ContactSection({
           viewport={{ once: true }}
           className="lg:col-span-3"
         >
-          <Card>
-            <CardContent className="p-8">
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <Card className="rounded-3xl border border-white/5 bg-[var(--glass-bg)] shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+            <CardContent className="p-8 md:p-10">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-7">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2">
                     <label htmlFor="name" className="text-sm text-white/70 font-medium">Your Name</label>

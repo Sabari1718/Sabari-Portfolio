@@ -30,9 +30,9 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
 
   return (
     <Section id="skills">
-      <SectionHeading>Technical Skills</SectionHeading>
+      <SectionHeading className="mb-16">Technical Skills</SectionHeading>
 
-      <div className="max-w-5xl mx-auto grid sm:grid-cols-2 gap-8 mt-4">
+      <div className="max-w-5xl mx-auto grid sm:grid-cols-2 gap-10 mt-4">
         {Object.entries(categories).map(([category, catSkills], catIdx) => {
           const color = getColor(category);
           return (
@@ -42,7 +42,7 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: catIdx * 0.1, duration: 0.5 }}
-              className="skill-group-card rounded-2xl p-6 border border-white/10 bg-[var(--glass-bg)] hover:border-white/20 transition-all duration-300"
+              className="skill-group-card rounded-3xl p-8 border border-white/5 bg-[var(--glass-bg)] hover:border-white/20 transition-all duration-400"
             >
               {/* Category header */}
               <div className="flex items-center gap-3 mb-6">

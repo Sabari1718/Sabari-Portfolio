@@ -59,7 +59,7 @@ export function HeroSection({ profile, projectCount }: Props) {
             </p>
 
             {/* Name */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight">
               {profile?.display_name || profile?.name || "Sabarishwaran S"}
             </h1>
 
@@ -75,26 +75,26 @@ export function HeroSection({ profile, projectCount }: Props) {
             )}
 
             {/* Bio */}
-            <p className="text-base md:text-lg text-[var(--text-secondary)] max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed">
+            <p className="text-base md:text-lg text-[var(--text-secondary)] max-w-xl mx-auto lg:mx-0 mb-12 leading-relaxed">
               {profile?.bio || "I build high-performance mobile and web applications that solve real-world problems. Specializing in Flutter, React, and Node.js."}
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5 mb-20">
               <a href="#contact">
-                <Button size="lg" className="hire-btn rounded-full px-8 py-6 font-bold text-base">
+                <Button size="lg" className="hire-btn rounded-full px-10 h-14 font-bold text-base flex items-center justify-center">
                   <Briefcase size={18} className="mr-2" />
                   Hire Me
                 </Button>
               </a>
               <a href="#projects">
-                <Button variant="outline" size="lg" className="view-work-btn rounded-full px-8 py-6 font-bold text-base border-[var(--primary)] text-[var(--primary)]">
+                <Button variant="outline" size="lg" className="view-work-btn rounded-full px-10 h-14 font-bold text-base border-[var(--primary)] text-[var(--primary)] flex items-center justify-center">
                   View My Work
                 </Button>
               </a>
               {profile?.resume_url && (
                 <a href={profile.resume_url} target="_blank" rel="noreferrer">
-                  <Button variant="ghost" size="lg" className="rounded-full px-8 py-6 font-bold text-base gap-2 text-white/70 hover:text-white border border-white/10">
+                  <Button variant="ghost" size="lg" className="rounded-full px-8 h-14 font-bold text-base gap-2 text-white/70 hover:text-white border border-white/10 flex items-center justify-center">
                     Resume <Download size={16} />
                   </Button>
                 </a>

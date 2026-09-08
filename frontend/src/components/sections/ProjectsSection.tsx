@@ -21,15 +21,15 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
 
   return (
     <Section id="projects" className="bg-white/[0.02]">
-      <SectionHeading className="mb-12">Featured Projects</SectionHeading>
+      <SectionHeading className="mb-16">Featured Projects</SectionHeading>
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap justify-center gap-3 mb-12">
+      <div className="flex flex-wrap justify-center gap-4 mb-16">
         {types.map((type) => (
           <button
             key={type}
             onClick={() => setActiveFilter(type)}
-            className={`px-6 py-2.5 rounded-full text-base font-semibold border transition-all duration-300 ${
+            className={`px-8 py-3 rounded-full text-sm font-bold border transition-all duration-300 ${
               activeFilter === type
                 ? "bg-[var(--primary)] text-black border-[var(--primary)] shadow-[0_0_20px_rgba(0,229,255,0.4)]"
                 : "bg-white/5 border-white/10 text-white/70 hover:border-[var(--primary)]/50 hover:text-white"

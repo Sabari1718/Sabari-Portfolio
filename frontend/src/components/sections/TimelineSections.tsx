@@ -29,9 +29,9 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
 
   return (
     <Section id="experience">
-      <div className="flex items-center gap-4 mb-20 justify-center">
-        <div className="w-12 h-12 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center">
-          <Briefcase className="text-[var(--primary)]" size={24} />
+      <div className="flex items-center gap-5 mb-24 justify-center">
+        <div className="w-14 h-14 rounded-2xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.1)]">
+          <Briefcase className="text-[var(--primary)]" size={26} />
         </div>
         <SectionHeading className="mb-0">Work Experience</SectionHeading>
       </div>
@@ -59,12 +59,12 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
                   )}
                 </div>
 
-                <Card className="exp-card hover:border-[var(--primary)]/40 transition-all duration-300 group">
-                  <CardContent className="p-8 sm:p-10">
-                    <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
+                <Card className="exp-card hover:border-[var(--primary)]/30 transition-all duration-400 group">
+                  <CardContent className="p-8 md:p-12">
+                    <div className="flex flex-wrap justify-between items-start gap-5 mb-6">
                       <div>
-                        <h3 className="text-2xl font-bold text-white group-hover:text-[var(--primary)] transition-colors mb-1">{exp.role}</h3>
-                        <h4 className="text-lg text-[var(--primary)] font-medium">{exp.company}</h4>
+                        <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-[var(--primary)] transition-colors mb-2">{exp.role}</h3>
+                        <h4 className="text-lg md:text-xl text-[var(--primary)] font-medium">{exp.company}</h4>
                       </div>
                       {exp.currently_working && (
                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-500/15 border border-green-500/30 text-green-400 flex-shrink-0">
@@ -126,10 +126,10 @@ export function EducationSection({ education }: { education: Education[] }) {
   const item = { hidden: { opacity: 0, x: 30 }, show: { opacity: 1, x: 0, transition: { duration: 0.5 } } };
 
   return (
-    <Section id="education" className="bg-white/[0.015]">
-      <div className="flex items-center gap-4 mb-20 justify-center">
-        <div className="w-12 h-12 rounded-xl bg-[var(--secondary)]/10 flex items-center justify-center">
-          <GraduationCap className="text-[var(--secondary)]" size={24} />
+    <Section id="education" className="bg-white/[0.02]">
+      <div className="flex items-center gap-5 mb-24 justify-center">
+        <div className="w-14 h-14 rounded-2xl bg-[var(--secondary)]/10 border border-[var(--secondary)]/20 flex items-center justify-center shadow-[0_0_20px_rgba(0,184,212,0.1)]">
+          <GraduationCap className="text-[var(--secondary)]" size={26} />
         </div>
         <SectionHeading className="mb-0">Education</SectionHeading>
       </div>
@@ -151,14 +151,14 @@ export function EducationSection({ education }: { education: Education[] }) {
                   <GraduationCap size={18} className="text-[var(--secondary)]" />
                 </div>
 
-                <Card className="edu-card hover:border-[var(--secondary)]/40 transition-all duration-300 group">
-                  <CardContent className="p-8 sm:p-10">
-                    <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
+                <Card className="edu-card hover:border-[var(--secondary)]/30 transition-all duration-400 group">
+                  <CardContent className="p-8 md:p-12">
+                    <div className="flex flex-wrap justify-between items-start gap-5 mb-6">
                       <div>
-                        <h3 className="text-2xl font-bold text-white group-hover:text-[var(--secondary)] transition-colors mb-1">
+                        <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-[var(--secondary)] transition-colors mb-2">
                           {edu.degree}{edu.field ? ` in ${edu.field}` : ""}
                         </h3>
-                        <h4 className="text-lg text-[var(--secondary)] font-medium">{edu.institution}</h4>
+                        <h4 className="text-lg md:text-xl text-[var(--secondary)] font-medium">{edu.institution}</h4>
                       </div>
                       {edu.grade && (
                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-[var(--secondary)]/10 border border-[var(--secondary)]/30 text-[var(--secondary)] flex-shrink-0">
