@@ -4,6 +4,8 @@ import "./globals.css";
 import { Navbar } from "@/components/ui/navbar";
 import { PortfolioAPI } from "@/services/api";
 
+export const dynamic = 'force-dynamic';
+
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
