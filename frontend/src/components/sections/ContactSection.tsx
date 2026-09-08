@@ -84,17 +84,19 @@ export function ContactSection({
   return (
     <Section id="contact" className="bg-white/[0.015]">
       <SectionHeading className="mb-16">Get In Touch</SectionHeading>
-      <p className="text-center text-[var(--text-secondary)] max-w-xl mx-auto -mt-10 mb-20">
+      <div style={{ height: '60px' }} />
+      <p className="text-center text-[var(--text-secondary)] max-w-xl mx-auto -mt-10" style={{ marginBottom: '100px' }}>
         Have a project or an opportunity? I'd love to hear from you. Fill in the form or reach out directly.
       </p>
 
-      <div className="grid lg:grid-cols-5 gap-10 max-w-6xl mx-auto">
+      <div className="grid lg:grid-cols-5 max-w-6xl mx-auto" style={{ gap: '60px' }}>
         {/* Left: Info */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="lg:col-span-2 space-y-6"
+          className="lg:col-span-2"
+          style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
         >
           <h3 className="text-2xl font-bold text-white">Let's Work Together</h3>
           <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
@@ -102,7 +104,7 @@ export function ContactSection({
           </p>
 
           {/* Contact Info */}
-          <div className="space-y-4 mt-8">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '40px' }}>
             {contactInfo.map(({ icon: Icon, label, value, href }) => (
               <div key={label} className="flex items-center gap-4 group">
                 <div className="w-11 h-11 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] group-hover:bg-[var(--primary)]/20 transition-colors flex-shrink-0">
@@ -150,9 +152,9 @@ export function ContactSection({
           className="lg:col-span-3"
         >
           <Card className="rounded-3xl border border-white/5 bg-[var(--glass-bg)] shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
-            <CardContent className="p-8 md:p-10">
-              <form onSubmit={handleSubmit} className="flex flex-col gap-7">
-                <div className="grid md:grid-cols-2 gap-6">
+            <CardContent style={{ padding: '40px' }}>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                <div className="grid md:grid-cols-2" style={{ gap: '24px' }}>
                   <div className="flex flex-col gap-2">
                     <label htmlFor="name" className="text-sm text-white/70 font-medium">Your Name</label>
                     <Input id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="Sabarishwaran" />

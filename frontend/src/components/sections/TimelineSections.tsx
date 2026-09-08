@@ -47,11 +47,11 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
           {/* Timeline line */}
           <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--primary)] via-white/10 to-transparent hidden sm:block" />
 
-          <div className="space-y-16">
+          <div className="flex flex-col">
             {experiences.map((exp, i) => (
-              <motion.div key={exp.id || i} variants={item} className="relative sm:pl-20">
+              <motion.div key={exp.id || i} variants={item} className="relative sm:pl-20" style={{ marginBottom: '80px' }}>
                 {/* Timeline dot */}
-                <div className="absolute left-0 top-6 w-12 h-12 rounded-full bg-[var(--background)] border-2 border-[var(--primary)] flex items-center justify-center shadow-[0_0_15px_rgba(0,229,255,0.4)] hidden sm:flex">
+                <div className="absolute left-0 top-6 w-12 h-12 rounded-full bg-[var(--background)] border-2 border-[var(--primary)] hidden sm:flex items-center justify-center shadow-[0_0_15px_rgba(0,229,255,0.4)]">
                   {exp.logo_url ? (
                     <img src={exp.logo_url} alt={exp.company} className="w-7 h-7 rounded-full object-cover" />
                   ) : (
@@ -60,8 +60,8 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
                 </div>
 
                 <Card className="exp-card hover:border-[var(--primary)]/30 transition-all duration-400 group">
-                  <CardContent className="p-8 md:p-12">
-                    <div className="flex flex-wrap justify-between items-start gap-5 mb-6">
+                  <CardContent style={{ padding: '40px' }}>
+                    <div className="flex flex-wrap justify-between items-start" style={{ gap: '20px', marginBottom: '24px' }}>
                       <div>
                         <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-[var(--primary)] transition-colors mb-2">{exp.role}</h3>
                         <h4 className="text-lg md:text-xl text-[var(--primary)] font-medium">{exp.company}</h4>
@@ -73,7 +73,7 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
                       )}
                     </div>
 
-                    <div className="flex flex-wrap gap-4 text-sm text-[var(--text-secondary)] mb-4">
+                    <div className="flex flex-wrap text-sm text-[var(--text-secondary)]" style={{ gap: '16px', marginBottom: '16px' }}>
                       <div className="flex items-center gap-1.5">
                         <Calendar size={13} />
                         <span>
@@ -144,16 +144,16 @@ export function EducationSection({ education }: { education: Education[] }) {
         >
           <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--secondary)] via-white/10 to-transparent hidden sm:block" />
 
-          <div className="space-y-16">
+          <div className="flex flex-col">
             {education.map((edu, i) => (
-              <motion.div key={edu.id || i} variants={item} className="relative sm:pl-20">
-                <div className="absolute left-0 top-6 w-12 h-12 rounded-full bg-[var(--background)] border-2 border-[var(--secondary)] flex items-center justify-center shadow-[0_0_15px_rgba(0,184,212,0.4)] hidden sm:flex">
+              <motion.div key={edu.id || i} variants={item} className="relative sm:pl-20" style={{ marginBottom: '80px' }}>
+                <div className="absolute left-0 top-6 w-12 h-12 rounded-full bg-[var(--background)] border-2 border-[var(--secondary)] hidden sm:flex items-center justify-center shadow-[0_0_15px_rgba(0,184,212,0.4)]">
                   <GraduationCap size={18} className="text-[var(--secondary)]" />
                 </div>
 
                 <Card className="edu-card hover:border-[var(--secondary)]/30 transition-all duration-400 group">
-                  <CardContent className="p-8 md:p-12">
-                    <div className="flex flex-wrap justify-between items-start gap-5 mb-6">
+                  <CardContent style={{ padding: '40px' }}>
+                    <div className="flex flex-wrap justify-between items-start" style={{ gap: '20px', marginBottom: '24px' }}>
                       <div>
                         <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-[var(--secondary)] transition-colors mb-2">
                           {edu.degree}{edu.field ? ` in ${edu.field}` : ""}

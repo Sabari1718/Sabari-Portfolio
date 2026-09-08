@@ -22,7 +22,7 @@ async function testUpload() {
       },
       body: form
     });
-    
+
     const text = await res.text();
     console.log('Upload Result Status:', res.status);
     console.log('Upload Result Body:', text);

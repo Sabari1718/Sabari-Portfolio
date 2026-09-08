@@ -31,8 +31,9 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
   return (
     <Section id="skills">
       <SectionHeading className="mb-16">Technical Skills</SectionHeading>
+      <div style={{ height: '60px' }} />
 
-      <div className="max-w-5xl mx-auto grid sm:grid-cols-2 gap-10 mt-4">
+      <div className="max-w-5xl mx-auto grid sm:grid-cols-2 mt-4" style={{ gap: '40px' }}>
         {Object.entries(categories).map(([category, catSkills], catIdx) => {
           const color = getColor(category);
           return (
@@ -42,10 +43,11 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: catIdx * 0.1, duration: 0.5 }}
-              className="skill-group-card rounded-3xl p-8 border border-white/5 bg-[var(--glass-bg)] hover:border-white/20 transition-all duration-400"
+              className="skill-group-card rounded-3xl border border-white/5 bg-[var(--glass-bg)] hover:border-white/20 transition-all duration-400"
+              style={{ padding: '40px' }}
             >
               {/* Category header */}
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center" style={{ gap: '16px', marginBottom: '32px' }}>
                 <div
                   className="w-3 h-10 rounded-full"
                   style={{ background: color, boxShadow: `0 0 12px ${color}66` }}
@@ -57,7 +59,7 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
               </div>
 
               {/* Skill bars */}
-              <div className="space-y-5">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {catSkills.map((skill, skillIdx) => (
                   <div key={skill.id}>
                     <div className="flex justify-between items-center mb-2">

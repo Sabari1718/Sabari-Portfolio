@@ -24,7 +24,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
       <SectionHeading className="mb-20">Featured Projects</SectionHeading>
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap justify-center gap-5 mb-24">
+      <div className="flex flex-wrap justify-center gap-5 mb-24" style={{ marginTop: '50px', marginBottom: '60px', gap: '20px' }}>
         {types.map((type) => (
           <button
             key={type}
@@ -46,7 +46,8 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+        style={{ gap: '40px' }}
       >
         {filtered.map((project, index) => (
           <motion.div key={project.id || index} variants={item}>
@@ -85,7 +86,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
               </div>
 
               {/* Content */}
-              <div className="flex flex-col flex-1 p-6">
+              <div className="flex flex-col flex-1 p-6" style={{ padding: '30px' }}>
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="text-xl font-bold text-white group-hover:text-[var(--primary)] transition-colors leading-tight">
                     {project.title}

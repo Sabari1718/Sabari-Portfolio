@@ -13,7 +13,7 @@ interface Props {
   projectCount: number;
 }
 
-const TITLES = ["Flutter Developer", "Full-Stack Developer", "Mobile App Engineer", "React & Next.js Developer"];
+const TITLES = ["Flutter Developer", "Full-Stack Developer", "Mobile App Developer", "React & Next.js Developer"];
 
 export function HeroSection({ profile, projectCount }: Props) {
   const profileImageUrl = profile?.profile_image ? getFileUrl(profile.profile_image) : null;
@@ -68,7 +68,7 @@ export function HeroSection({ profile, projectCount }: Props) {
 
             {/* Location */}
             {profile?.location && (
-              <div className="flex items-center gap-2 justify-center lg:justify-start text-[var(--text-secondary)] mb-8 mt-6">
+              <div className="flex items-center gap-2 justify-center lg:justify-start text-[var(--text-secondary)]" style={{ marginTop: '30px', marginBottom: '30px' }}>
                 <MapPin size={18} />
                 <span className="text-base font-medium uppercase tracking-wider">{profile.location}</span>
               </div>
@@ -191,7 +191,7 @@ function AnimatedTitles({ titles }: { titles: string[] }) {
   }, [titles.length]);
 
   return (
-    <div className="h-10 md:h-12 overflow-hidden mb-4">
+    <div className="h-20 md:h-24 overflow-hidden mb-4">
       <motion.h2
         key={index}
         initial={{ y: 40, opacity: 0 }}
