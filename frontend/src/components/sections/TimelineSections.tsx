@@ -68,11 +68,11 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
                         <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-[var(--primary)] transition-colors mb-2">{exp.role}</h3>
                         <h4 className="text-lg md:text-xl text-[var(--primary)] font-medium">{exp.company}</h4>
                       </div>
-                      {exp.currently_working && (
+                      {Boolean(exp.currently_working) ? (
                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-500/15 border border-green-500/30 text-green-400 flex-shrink-0">
                           Current
                         </span>
-                      )}
+                      ) : null}
                     </div>
 
                     <div className="flex flex-wrap text-sm text-[var(--text-secondary)]" style={{ gap: '16px', marginBottom: '16px' }}>
@@ -80,7 +80,7 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
                         <Calendar size={13} />
                         <span>
                           {exp.start_date ? new Date(exp.start_date).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "?"} —{" "}
-                          {exp.currently_working ? "Present" : exp.end_date ? new Date(exp.end_date).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "Present"}
+                          {Boolean(exp.currently_working) ? "Present" : exp.end_date ? new Date(exp.end_date).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "Present"}
                         </span>
                         {getDuration(exp) && (
                           <span className="px-2 py-0.5 rounded-full bg-white/5 text-xs">{getDuration(exp)}</span>

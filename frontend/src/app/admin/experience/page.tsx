@@ -206,11 +206,11 @@ export default function AdminExperience() {
                     <h3 className="text-lg font-bold text-white">{item.role}</h3>
                     <p className="text-[#FDE047] font-medium">{item.company}</p>
                   </div>
-                  {item.currently_working && (
+                  {Boolean(item.currently_working) ? (
                     <span className="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-xs font-semibold">
                       Current
                     </span>
-                  )}
+                  ) : null}
                 </div>
                 <div className="flex flex-wrap gap-4 text-sm text-white/50 mb-3">
                   {item.location && (
