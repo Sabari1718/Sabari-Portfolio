@@ -17,6 +17,8 @@ export interface Profile {
   projects_count?: string | number | null;
   technologies_count?: string | number | null;
   repos_count?: string | number | null;
+  badge_text?: string | null;
+  greeting_text?: string | null;
   created_at?: string;
   updated_at?: string;
 }

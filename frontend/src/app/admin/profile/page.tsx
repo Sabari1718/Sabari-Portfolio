@@ -6,17 +6,17 @@ import { Profile } from "@/types";
 import {
   User, Mail, Phone, MapPin, Globe, GitFork, Link2,
   Link as LinkIcon2, FileText, CheckCircle, AlertCircle, Loader2, Save,
-  Cpu, Folder, Briefcase
+  Cpu, Folder, Briefcase, Sparkles
 } from "lucide-react";
 import { AdminPageHeader, AdminCard } from "@/components/admin/admin-ui";
-import { extractProfileStats, embedProfileStats } from "@/lib/profile-stats";
+import { extractProfileStats, embedProfileStats, DEFAULT_BIO } from "@/lib/profile-stats";
 
 const EMPTY_PROFILE: Partial<Profile> = {
   name: "",
   display_name: "",
   headline: "",
-  bio: "",
-  location: "",
+  bio: DEFAULT_BIO,
+  location: "COIMBATORE",
   email: "",
   phone: "",
   resume_url: "",
@@ -28,6 +28,8 @@ const EMPTY_PROFILE: Partial<Profile> = {
   projects_count: "1+",
   technologies_count: "15+",
   repos_count: "10+",
+  badge_text: "Open to Opportunities",
+  greeting_text: "Hello, I'm",
 };
 
 type SaveStatus = "idle" | "saving" | "success" | "error";
@@ -51,11 +53,14 @@ export default function ProfileAdmin() {
         setForm((prev) => ({
           ...EMPTY_PROFILE,
           ...res.data,
-          bio: cleanBio,
+          bio: cleanBio || prev.bio || DEFAULT_BIO,
+          location: res.data.location || prev.location || "COIMBATORE",
           years_experience: extractedStats.years_experience || prev.years_experience || "2+",
           projects_count: extractedStats.projects_count || prev.projects_count || "1+",
           technologies_count: extractedStats.technologies_count || prev.technologies_count || "15+",
           repos_count: extractedStats.repos_count || prev.repos_count || "10+",
+          badge_text: extractedStats.badge_text || prev.badge_text || "Open to Opportunities",
+          greeting_text: extractedStats.greeting_text || prev.greeting_text || "Hello, I'm",
         }));
       }
     } catch {
@@ -119,11 +124,117 @@ export default function ProfileAdmin() {
         badge="Developer Identity"
         title="Profile"
         titleAccent="Settings"
-        subtitle="Configure your public developer brand, headline, contact channels, resume link, and social profiles."
+        subtitle="Configure your public developer brand, headline, recruitment badge, location, and social profiles."
         icon={<User size={13} />}
       />
 
       <form onSubmit={handleSave} className="flex flex-col gap-8">
+        {/* ── Hero Banner & Recruiter Introductions ── */}
+        <AdminCard
+          title="Hero Banner & Recruiter Introductions"
+          subtitle="Customize your job availability badge, greeting, location, and the bio tagline shown to companies on the homepage."
+        >
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Field
+                  label="Availability / Recruiter Status Badge"
+                  name="badge_text"
+                  value={form.badge_text ?? "Open to Opportunities"}
+                  onChange={handleChange}
+                  placeholder="e.g. Open to Opportunities"
+                  helperText="Displays in glowing pill above your greeting on the homepage"
+                  icon={<Sparkles size={16} />}
+                />
+                <div className="flex flex-wrap gap-2 -mt-2 mb-2">
+                  <span className="text-[10px] text-slate-400 self-center font-mono">Presets:</span>
+                  {["Open to Opportunities", "Open to Full-Time Roles", "Available for Work", "Actively Interviewing"].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setForm((p) => ({ ...p, badge_text: preset }))}
+                      className="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-300 border border-white/10 hover:border-emerald-500/40 transition-all cursor-pointer font-medium"
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Field
+                  label="Greeting / Subheading"
+                  name="greeting_text"
+                  value={form.greeting_text ?? "Hello, I'm"}
+                  onChange={handleChange}
+                  placeholder="e.g. Software Engineer or Hello, I'm"
+                  helperText="Displays above your name in glowing uppercase letters"
+                  icon={<User size={16} />}
+                />
+                <div className="flex flex-wrap gap-2 -mt-2 mb-2">
+                  <span className="text-[10px] text-slate-400 self-center font-mono">Presets:</span>
+                  {["Software Engineer", "Hello, I'm", "Full-Stack Developer", "Mobile Engineer"].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setForm((p) => ({ ...p, greeting_text: preset }))}
+                      className="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 border border-white/10 hover:border-cyan-500/40 transition-all cursor-pointer font-medium"
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Field
+                label="Headline (Role & Specialties)"
+                name="headline"
+                value={form.headline ?? ""}
+                onChange={handleChange}
+                placeholder="e.g. Flutter Developer | Full-Stack Mobile Engineer"
+                helperText="Appears below your name in dynamic rotating titles"
+              />
+              <Field
+                label="Current Location"
+                name="location"
+                value={form.location ?? ""}
+                onChange={handleChange}
+                placeholder="e.g. Coimbatore, Tamil Nadu, India"
+                icon={<MapPin size={16} />}
+                helperText="Shown with a location pin directly on your hero banner"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs md:text-sm font-semibold text-slate-200 tracking-wide">
+                  Hero Introduction & Bio Tagline
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setForm((p) => ({ ...p, bio: DEFAULT_BIO }))}
+                  className="text-[11px] text-cyan-400 hover:underline cursor-pointer font-mono"
+                >
+                  ↺ Reset to default text
+                </button>
+              </div>
+              <textarea
+                name="bio"
+                value={form.bio ?? ""}
+                onChange={handleChange}
+                rows={4}
+                placeholder="Introduce yourself, your engineering philosophy, and what problems you solve..."
+                className="w-full bg-white/[0.04] border border-white/10 rounded-xl p-4 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all resize-none leading-relaxed font-sans"
+              />
+              <p className="text-[11px] text-slate-400 ml-1">
+                This exact text displays directly under your location pin on the homepage hero.
+              </p>
+            </div>
+          </div>
+        </AdminCard>
+
         {/* ── Basic Info ──────────────────────────────── */}
         <AdminCard title="Personal & Professional Identity" subtitle="Core identity details shown on the hero banner and navigation.">
           <div className="space-y-6">
@@ -142,26 +253,6 @@ export default function ProfileAdmin() {
                 value={form.display_name ?? ""}
                 onChange={handleChange}
                 placeholder="Sabari (shown on portfolio logo & banner)"
-              />
-            </div>
-            <Field
-              label="Headline"
-              name="headline"
-              value={form.headline ?? ""}
-              onChange={handleChange}
-              placeholder="e.g. Flutter Developer | Full-Stack Mobile Engineer"
-            />
-            <div className="space-y-2">
-              <label className="block text-xs md:text-sm font-semibold text-slate-200 tracking-wide">
-                Professional Bio & Summary
-              </label>
-              <textarea
-                name="bio"
-                value={form.bio ?? ""}
-                onChange={handleChange}
-                rows={5}
-                placeholder="Introduce yourself, your engineering philosophy, and what problems you solve..."
-                className="w-full bg-white/[0.04] border border-white/10 rounded-xl p-4 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all resize-none leading-relaxed"
               />
             </div>
           </div>
@@ -281,14 +372,6 @@ export default function ProfileAdmin() {
               icon={<Phone size={16} />}
             />
             <Field
-              label="Location"
-              name="location"
-              value={form.location ?? ""}
-              onChange={handleChange}
-              placeholder="Chennai, Tamil Nadu, India"
-              icon={<MapPin size={16} />}
-            />
-            <Field
               label="Resume URL"
               name="resume_url"
               value={form.resume_url ?? ""}
@@ -296,6 +379,7 @@ export default function ProfileAdmin() {
               placeholder="https://drive.google.com/..."
               type="url"
               icon={<FileText size={16} />}
+              helperText="Google Drive or direct PDF link for Hire Me & Resume buttons"
             />
           </div>
         </Section>

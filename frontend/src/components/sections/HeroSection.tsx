@@ -68,20 +68,22 @@ export function HeroSection({ profile, projectCount }: Props) {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="flex-1 text-center lg:text-left"
           >
-            {/* Availability badge */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-sm font-medium mb-6"
-            >
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              Available for Work
-            </motion.div>
+            {/* Availability / Status Badge */}
+            {profileStats.badge_text && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-medium mb-6"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                {profileStats.badge_text}
+              </motion.div>
+            )}
 
-            {/* Greeting */}
+            {/* Greeting / Subheading */}
             <p className="text-[var(--primary)] font-bold tracking-[0.25em] uppercase text-sm md:text-base mb-4">
-              Hello, I'm
+              {profileStats.greeting_text || "Hello, I'm"}
             </p>
 
             {/* Name */}

@@ -5,12 +5,17 @@ export interface HeroStatsData {
   projects_count?: string | number | null;
   technologies_count?: string | number | null;
   repos_count?: string | number | null;
+  badge_text?: string | null;
+  greeting_text?: string | null;
 }
 
+export const DEFAULT_BIO =
+  "I build high-performance mobile and web applications that solve real-world problems. Specializing in Flutter, React, and Node.js.";
+
 /**
- * Extracts hero stat metrics from profile.
+ * Extracts hero stat metrics, badge text, greeting, and bio from profile.
  * Prefers direct column values if available, otherwise seamlessly extracts
- * from metadata embedded in bio. Also strips metadata from bio for clean UI display.
+ * from metadata embedded in bio.
  */
 export function extractProfileStats(profile: Profile | null) {
   const stats: HeroStatsData = {
@@ -18,6 +23,8 @@ export function extractProfileStats(profile: Profile | null) {
     projects_count: profile?.projects_count,
     technologies_count: profile?.technologies_count,
     repos_count: profile?.repos_count,
+    badge_text: profile?.badge_text,
+    greeting_text: profile?.greeting_text,
   };
 
   let cleanBio = profile?.bio || "";
@@ -39,6 +46,12 @@ export function extractProfileStats(profile: Profile | null) {
         if (!stats.repos_count && parsed.repos_count) {
           stats.repos_count = parsed.repos_count;
         }
+        if (!stats.badge_text && parsed.badge_text) {
+          stats.badge_text = parsed.badge_text;
+        }
+        if (!stats.greeting_text && parsed.greeting_text) {
+          stats.greeting_text = parsed.greeting_text;
+        }
       }
       cleanBio = cleanBio.replace(/<!--STATS:[\s\S]*?-->/g, "").trim();
     } catch {
@@ -52,15 +65,17 @@ export function extractProfileStats(profile: Profile | null) {
       projects_count: stats.projects_count || "1+",
       technologies_count: stats.technologies_count || "15+",
       repos_count: stats.repos_count || "10+",
+      badge_text: stats.badge_text || "Open to Opportunities",
+      greeting_text: stats.greeting_text || "Hello, I'm",
     },
-    cleanBio,
+    cleanBio: cleanBio || DEFAULT_BIO,
   };
 }
 
 /**
  * Embeds stats metadata into the bio string.
  * This guarantees that even if the backend is running a version without
- * the new table columns, the stats are 100% saved and persisted into MySQL.
+ * new table columns, the stats, badge, and greeting are 100% saved into MySQL.
  */
 export function embedProfileStats(
   rawBio: string | null | undefined,
@@ -72,6 +87,8 @@ export function embedProfileStats(
     projects_count: stats.projects_count || "1+",
     technologies_count: stats.technologies_count || "15+",
     repos_count: stats.repos_count || "10+",
+    badge_text: stats.badge_text || "Open to Opportunities",
+    greeting_text: stats.greeting_text || "Hello, I'm",
   });
 
   return clean ? `${clean}\n\n<!--STATS:${payload}-->` : `<!--STATS:${payload}-->`;
