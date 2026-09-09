@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Section, SectionHeading } from "@/components/ui/section";
+import { Section, MassSectionHeader } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Experience, Education } from "@/types";
 import { Briefcase, GraduationCap, Calendar, MapPin, Award, Building, Sparkles } from "lucide-react";
@@ -29,12 +29,14 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
 
   return (
     <Section id="experience">
-      <div className="flex items-center gap-5 mb-24 justify-center">
-        <div className="w-14 h-14 rounded-2xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.1)]">
-          <Briefcase className="text-[var(--primary)]" size={26} />
-        </div>
-        <SectionHeading className="mb-0">Work Experience</SectionHeading>
-      </div>
+      <MassSectionHeader
+        badge="Career Milestones"
+        titleWhite="Work"
+        titleGradient="Experience"
+        subtitle="Professional roles, engineering impact, and production deployments across my journey."
+        watermark="EXPERIENCE"
+        icon={<Briefcase size={14} />}
+      />
 
       <div className="max-w-3xl mx-auto">
         <motion.div
@@ -128,16 +130,14 @@ export function EducationSection({ education }: { education: Education[] }) {
   return (
     <Section id="education" className="bg-white/[0.02]">
       {/* Section Header */}
-      <div className="flex flex-col items-center justify-center text-center" style={{ marginBottom: '56px' }}>
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--primary)]/10 border border-[var(--primary)]/25 text-[var(--primary)] text-xs font-bold tracking-widest uppercase mb-4 shadow-[0_0_16px_rgba(0,229,255,0.12)]">
-          <GraduationCap size={15} />
-          Academic Background
-        </div>
-        <SectionHeading className="mb-3">Education & Qualifications</SectionHeading>
-        <p className="text-slate-400 text-sm md:text-base max-w-lg mx-auto">
-          Academic foundations and degree milestones that shaped my software engineering skillset.
-        </p>
-      </div>
+      <MassSectionHeader
+        badge="Academic Background"
+        titleWhite="Education &"
+        titleGradient="Qualifications"
+        subtitle="Academic foundations and degree milestones that shaped my software engineering skillset."
+        watermark="EDUCATION"
+        icon={<GraduationCap size={14} />}
+      />
 
       <div className="max-w-4xl mx-auto">
         <motion.div

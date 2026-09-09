@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Section, SectionHeading } from "@/components/ui/section";
+import { Section, MassSectionHeader } from "@/components/ui/section";
 import { Project } from "@/types";
 import { Code, ExternalLink, Star, Sparkles, Smartphone, Globe, ArrowUpRight } from "lucide-react";
 
@@ -19,35 +19,38 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
   const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
   const item = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 
+  const formatFilterLabel = (t: string) => {
+    if (t.toLowerCase() === "all") return "All Work";
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  };
+
   return (
     <Section id="projects" className="bg-white/[0.02]">
       {/* Section Header */}
-      <div className="flex flex-col items-center justify-center text-center" style={{ marginBottom: '48px' }}>
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--primary)]/10 border border-[var(--primary)]/25 text-[var(--primary)] text-xs font-bold tracking-widest uppercase mb-4 shadow-[0_0_16px_rgba(0,229,255,0.12)]">
-          <Sparkles size={14} />
-          Portfolio Showcase
-        </div>
-        <SectionHeading className="mb-3">Featured Projects</SectionHeading>
-        <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto">
-          A selection of production-grade mobile applications and full-stack systems engineered with passion and modern architectures.
-        </p>
-      </div>
+      <MassSectionHeader
+        badge="Portfolio Showcase"
+        titleWhite="Featured"
+        titleGradient="Projects"
+        subtitle="A curated selection of production-grade mobile applications and full-stack systems engineered with passion and precision."
+        watermark="PROJECTS"
+        icon={<Sparkles size={14} />}
+      />
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap justify-center items-center" style={{ gap: '12px', marginBottom: '56px' }}>
+      <div className="flex flex-wrap justify-center items-center" style={{ gap: '14px', marginBottom: '56px' }}>
         {types.map((type) => {
           const isActive = activeFilter === type;
           return (
             <button
               key={type}
               onClick={() => setActiveFilter(type)}
-              className={`px-6 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 ${
+              className={`px-7 py-2.5 rounded-full text-xs md:text-sm font-bold tracking-wide transition-all duration-300 ${
                 isActive
-                  ? "bg-[var(--primary)] text-black shadow-[0_0_24px_rgba(0,229,255,0.45)] scale-105"
-                  : "bg-slate-900/60 text-slate-300 border border-white/10 hover:border-[var(--primary)]/40 hover:text-white"
+                  ? "bg-gradient-to-r from-[var(--primary)] to-[#00B8D4] text-black shadow-[0_0_24px_rgba(0,229,255,0.45)] scale-105 font-extrabold"
+                  : "bg-slate-900/70 text-slate-300 border border-white/10 hover:border-[var(--primary)]/40 hover:text-white"
               }`}
             >
-              {type}
+              {formatFilterLabel(type)}
             </button>
           );
         })}

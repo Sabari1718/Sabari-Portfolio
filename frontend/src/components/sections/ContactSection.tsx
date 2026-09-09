@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Section, SectionHeading } from "@/components/ui/section";
+import { Section, MassSectionHeader } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -83,11 +83,14 @@ export function ContactSection({
 
   return (
     <Section id="contact" className="bg-white/[0.015]">
-      <SectionHeading className="mb-16">Get In Touch</SectionHeading>
-      <div style={{ height: '60px' }} />
-      <p className="text-center text-[var(--text-secondary)] max-w-xl mx-auto -mt-10" style={{ marginBottom: '100px' }}>
-        Have a project or an opportunity? I'd love to hear from you. Fill in the form or reach out directly.
-      </p>
+      <MassSectionHeader
+        badge="Direct Connection"
+        titleWhite="Get In"
+        titleGradient="Touch"
+        subtitle="Have an ambitious project, mobile app idea, or opportunity? Let's connect and build something extraordinary."
+        watermark="CONTACT"
+        icon={<Mail size={14} />}
+      />
 
       <div className="grid lg:grid-cols-5 max-w-6xl mx-auto" style={{ gap: '60px' }}>
         {/* Left: Info */}

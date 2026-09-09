@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Section, SectionHeading } from "@/components/ui/section";
+import { Section, MassSectionHeader } from "@/components/ui/section";
 import { Skill } from "@/types";
+import { Cpu } from "lucide-react";
 
 const CATEGORY_COLORS: Record<string, string> = {
   "Frontend": "var(--primary)",
@@ -30,8 +31,14 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
 
   return (
     <Section id="skills">
-      <SectionHeading className="mb-16">Technical Skills</SectionHeading>
-      <div style={{ height: '60px' }} />
+      <MassSectionHeader
+        badge="Technical Arsenal"
+        titleWhite="Technical"
+        titleGradient="Skills"
+        subtitle="Languages, mobile toolkits, cloud services, and frameworks I leverage to ship robust products."
+        watermark="SKILLS"
+        icon={<Cpu size={14} />}
+      />
 
       <div className="max-w-5xl mx-auto grid sm:grid-cols-2 mt-4" style={{ gap: '40px' }}>
         {Object.entries(categories).map(([category, catSkills], catIdx) => {
