@@ -6,13 +6,16 @@ import { Skill } from "@/types";
 import { Cpu } from "lucide-react";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "Frontend": "var(--primary)",
-  "Backend": "#a78bfa",
-  "Mobile": "#34d399",
-  "Database": "#fb923c",
-  "DevOps": "#f472b6",
-  "Tools": "#fbbf24",
-  "Other": "#94a3b8",
+  "Mobile": "#00E5FF",
+  "Frontend": "#38BDF8",
+  "Backend": "#A78BFA",
+  "Database": "#FB923C",
+  "Tools": "#FBBF24",
+  "Languages": "#34D399",
+  "Cloud": "#60A5FA",
+  "DevOps": "#F472B6",
+  "Design": "#F43F5E",
+  "Other": "#94A3B8",
 };
 
 function getColor(category: string) {
