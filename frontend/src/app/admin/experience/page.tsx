@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { PortfolioAPI } from "@/services/api";
 import { Experience } from "@/types";
@@ -86,7 +86,16 @@ export default function AdminExperience() {
     setForm((prev: any) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
+      ...(name === "currently_working" && checked ? { end_date: "" } : {}),
     }));
+  };
+
+  const cleanDate = (d: any): string | null => {
+    if (!d || typeof d !== "string") return null;
+    const trimmed = d.trim();
+    if (!trimmed || trimmed.includes("dd") || trimmed.includes("mm") || trimmed.includes("yyyy")) return null;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return null;
+    return trimmed;
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -97,17 +106,26 @@ export default function AdminExperience() {
     if (!form.role?.trim()) {
       setSaveStatus("error"); setErrorMsg("Role is required."); return;
     }
-    if (!form.start_date) {
-      setSaveStatus("error"); setErrorMsg("Start date is required."); return;
+    
+    const validStartDate = cleanDate(form.start_date);
+    if (!validStartDate) {
+      setSaveStatus("error");
+      setErrorMsg("Please select a valid Start Date from the calendar.");
+      return;
     }
+
+    const isCurrently = form.currently_working ? true : false;
+    const validEndDate = isCurrently ? null : cleanDate(form.end_date);
+
     setSaveStatus("saving");
     setErrorMsg("");
 
     const payload = {
       ...form,
-      currently_working: form.currently_working ? true : false,
+      start_date: validStartDate,
+      end_date: validEndDate,
+      currently_working: isCurrently,
       display_order: Number(form.display_order) || 0,
-      end_date: form.currently_working ? null : (form.end_date || null),
     };
 
     try {
@@ -258,17 +276,25 @@ export default function AdminExperience() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <MField label="Start Date *" name="start_date" value={form.start_date} onChange={handleChange} type="date" required />
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-white/80">End Date</label>
-                  <input type="date" name="end_date" value={form.end_date} onChange={handleChange}
-                    disabled={form.currently_working}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white disabled:opacity-30 focus:outline-none focus:border-[var(--primary)] transition-all" />
-                </div>
+                <DatePickerField
+                  label="Start Date *"
+                  name="start_date"
+                  value={form.start_date}
+                  onChange={handleChange}
+                  required
+                />
+                <DatePickerField
+                  label="End Date"
+                  name="end_date"
+                  value={form.end_date}
+                  onChange={handleChange}
+                  disabled={form.currently_working}
+                  helperText={form.currently_working ? "Present (currently working)" : undefined}
+                />
               </div>
 
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" name="currently_working" checked={form.currently_working} onChange={handleChange} className="w-4 h-4 accent-[#FDE047]" />
+              <label className="flex items-center gap-3 cursor-pointer select-none">
+                <input type="checkbox" name="currently_working" checked={form.currently_working} onChange={handleChange} className="w-4 h-4 accent-[#FDE047] cursor-pointer" />
                 <span className="text-sm text-white/80">Currently working here</span>
               </label>
 
@@ -311,6 +337,88 @@ export default function AdminExperience() {
         </div>,
         document.body
       )}
+    </div>
+  );
+}
+
+function DatePickerField({
+  label,
+  name,
+  value,
+  onChange,
+  required,
+  disabled,
+  helperText,
+}: {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: any) => void;
+  required?: boolean;
+  disabled?: boolean;
+  helperText?: string;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const openCalendar = () => {
+    if (disabled) return;
+    try {
+      inputRef.current?.showPicker?.();
+    } catch {
+      inputRef.current?.focus();
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <label className="block text-sm font-medium text-white/80">{label}</label>
+        {helperText ? (
+          <span className="text-[11px] text-white/40">{helperText}</span>
+        ) : !disabled ? (
+          <span
+            onClick={openCalendar}
+            className="text-[11px] text-[#F5C542] hover:underline cursor-pointer flex items-center gap-1 font-medium"
+          >
+            Open Calendar
+          </span>
+        ) : null}
+      </div>
+      <div
+        onClick={openCalendar}
+        className={`relative flex items-center w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 cursor-pointer hover:border-[#F5C542]/50 hover:bg-white/[0.08] transition-all group ${
+          disabled ? "opacity-30 cursor-not-allowed pointer-events-none" : ""
+        }`}
+      >
+        <input
+          ref={inputRef}
+          type="date"
+          name={name}
+          value={value}
+          onChange={onChange}
+          required={required}
+          disabled={disabled}
+          onClick={(e) => {
+            e.stopPropagation();
+            try {
+              (e.currentTarget as any).showPicker?.();
+            } catch {}
+          }}
+          className="w-full bg-transparent text-white font-medium focus:outline-none cursor-pointer [color-scheme:dark]"
+        />
+        <button
+          type="button"
+          tabIndex={-1}
+          onClick={(e) => {
+            e.stopPropagation();
+            openCalendar();
+          }}
+          className="p-1 text-white/40 group-hover:text-[#F5C542] hover:bg-white/10 rounded-lg transition-all ml-1 shrink-0 cursor-pointer"
+          title="Pick date from calendar"
+        >
+          <Calendar size={18} />
+        </button>
+      </div>
     </div>
   );
 }

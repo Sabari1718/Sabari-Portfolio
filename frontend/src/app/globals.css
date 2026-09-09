@@ -607,3 +607,23 @@ a { text-decoration: none; transition: all 0.3s ease; }
   margin: 0 auto;
   line-height: 1.7;
 }
+
+/* ── Admin Date Picker Styling ─────────────────────────────── */
+input[type="date"] {
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.85) sepia(100%) saturate(300%) hue-rotate(15deg);
+  opacity: 0.85;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.18);
+  background: rgba(245, 197, 66, 0.15);
+}
