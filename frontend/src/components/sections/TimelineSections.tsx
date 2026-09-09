@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Experience, Education } from "@/types";
-import { Briefcase, GraduationCap, Calendar, MapPin, ExternalLink } from "lucide-react";
+import { Briefcase, GraduationCap, Calendar, MapPin, Award, Building, Sparkles } from "lucide-react";
 
 export function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   if (!experiences || experiences.length === 0) return null;
@@ -123,66 +123,83 @@ export function EducationSection({ education }: { education: Education[] }) {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.15 } },
   };
-  const item = { hidden: { opacity: 0, x: 30 }, show: { opacity: 1, x: 0, transition: { duration: 0.5 } } };
+  const item = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
 
   return (
     <Section id="education" className="bg-white/[0.02]">
-      <div className="flex items-center gap-5 mb-24 justify-center">
-        <div className="w-14 h-14 rounded-2xl bg-[var(--secondary)]/10 border border-[var(--secondary)]/20 flex items-center justify-center shadow-[0_0_20px_rgba(0,184,212,0.1)]">
-          <GraduationCap className="text-[var(--secondary)]" size={26} />
+      {/* Section Header */}
+      <div className="flex flex-col items-center justify-center text-center" style={{ marginBottom: '56px' }}>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--primary)]/10 border border-[var(--primary)]/25 text-[var(--primary)] text-xs font-bold tracking-widest uppercase mb-4 shadow-[0_0_16px_rgba(0,229,255,0.12)]">
+          <GraduationCap size={15} />
+          Academic Background
         </div>
-        <SectionHeading className="mb-0">Education</SectionHeading>
+        <SectionHeading className="mb-3">Education & Qualifications</SectionHeading>
+        <p className="text-slate-400 text-sm md:text-base max-w-lg mx-auto">
+          Academic foundations and degree milestones that shaped my software engineering skillset.
+        </p>
       </div>
 
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="relative"
+          className="grid grid-cols-1 md:grid-cols-2"
+          style={{ gap: '32px' }}
         >
-          <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--secondary)] via-white/10 to-transparent hidden sm:block" />
+          {education.map((edu, i) => {
+            const startYear = edu.start_date ? new Date(edu.start_date).getFullYear() : "";
+            const endYear = edu.end_date ? new Date(edu.end_date).getFullYear() : "Present";
+            const dateStr = startYear ? `${startYear} — ${endYear}` : endYear;
 
-          <div className="flex flex-col">
-            {education.map((edu, i) => (
-              <motion.div key={edu.id || i} variants={item} className="relative sm:pl-20" style={{ marginBottom: '80px' }}>
-                <div className="absolute left-0 top-6 w-12 h-12 rounded-full bg-[var(--background)] border-2 border-[var(--secondary)] hidden sm:flex items-center justify-center shadow-[0_0_15px_rgba(0,184,212,0.4)]">
-                  <GraduationCap size={18} className="text-[var(--secondary)]" />
-                </div>
-
-                <Card className="edu-card hover:border-[var(--secondary)]/30 transition-all duration-400 group">
-                  <CardContent style={{ padding: '40px' }}>
-                    <div className="flex flex-wrap justify-between items-start" style={{ gap: '20px', marginBottom: '24px' }}>
-                      <div>
-                        <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-[var(--secondary)] transition-colors mb-2">
-                          {edu.degree}{edu.field ? ` in ${edu.field}` : ""}
-                        </h3>
-                        <h4 className="text-lg md:text-xl text-[var(--secondary)] font-medium">{edu.institution}</h4>
+            return (
+              <motion.div key={edu.id || i} variants={item} className="h-full flex">
+                <Card className="edu-card w-full flex flex-col justify-between group hover:border-[var(--primary)]/40 transition-all duration-400">
+                  <CardContent style={{ padding: '36px 32px' }} className="flex flex-col flex-1">
+                    {/* Top row: Icon & Dates */}
+                    <div className="flex items-center justify-between" style={{ marginBottom: '22px' }}>
+                      <div className="w-12 h-12 rounded-2xl bg-[var(--primary)]/10 border border-[var(--primary)]/25 flex items-center justify-center text-[var(--primary)] shadow-[0_0_16px_rgba(0,229,255,0.15)] group-hover:scale-105 transition-transform">
+                        <GraduationCap size={22} />
                       </div>
-                      {edu.grade && (
-                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-[var(--secondary)]/10 border border-[var(--secondary)]/30 text-[var(--secondary)] flex-shrink-0">
-                          {edu.grade}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-3">
-                      <Calendar size={13} />
-                      <span>
-                        {edu.start_date ? new Date(edu.start_date).getFullYear() : "?"} —{" "}
-                        {edu.end_date ? new Date(edu.end_date).getFullYear() : "Present"}
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-slate-300">
+                        <Calendar size={13} className="text-[var(--primary)]" />
+                        {dateStr}
                       </span>
                     </div>
 
+                    {/* Degree */}
+                    <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-[var(--primary)] transition-colors leading-snug" style={{ marginBottom: '8px' }}>
+                      {edu.degree}{edu.field ? ` in ${edu.field}` : ""}
+                    </h3>
+
+                    {/* Institution */}
+                    <div className="flex items-start gap-2 text-sm md:text-base text-slate-300 font-medium" style={{ marginBottom: '18px' }}>
+                      <Building size={16} className="text-[var(--primary)] flex-shrink-0 mt-1" />
+                      <span>{edu.institution}</span>
+                    </div>
+
+                    {/* Grade Badge */}
+                    {edu.grade && (
+                      <div style={{ marginBottom: '18px' }}>
+                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.15)]">
+                          <Award size={13} className="text-emerald-400" />
+                          CGPA: {edu.grade}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Description */}
                     {edu.description && (
-                      <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{edu.description}</p>
+                      <p className="text-sm text-slate-400 leading-relaxed mt-auto pt-2 border-t border-white/5">
+                        {edu.description}
+                      </p>
                     )}
                   </CardContent>
                 </Card>
               </motion.div>
-            ))}
-          </div>
+            );
+          })}
         </motion.div>
       </div>
     </Section>

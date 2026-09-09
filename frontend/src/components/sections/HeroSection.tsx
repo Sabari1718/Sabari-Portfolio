@@ -68,33 +68,44 @@ export function HeroSection({ profile, projectCount }: Props) {
 
             {/* Location */}
             {profile?.location && (
-              <div className="flex items-center gap-2 justify-center lg:justify-start text-[var(--text-secondary)]" style={{ marginTop: '30px', marginBottom: '30px' }}>
-                <MapPin size={18} />
-                <span className="text-base font-medium uppercase tracking-wider">{profile.location}</span>
+              <div
+                className="flex items-center gap-2.5 justify-center lg:justify-start text-[var(--text-secondary)]"
+                style={{ marginTop: '24px', marginBottom: '24px' }}
+              >
+                <div className="w-8 h-8 rounded-full bg-[var(--primary)]/10 border border-[var(--primary)]/25 flex items-center justify-center text-[var(--primary)] shadow-[0_0_12px_rgba(0,229,255,0.15)]">
+                  <MapPin size={15} />
+                </div>
+                <span className="text-sm md:text-base font-semibold uppercase tracking-wider text-slate-300">{profile.location}</span>
               </div>
             )}
 
             {/* Bio */}
-            <p className="text-base md:text-lg text-[var(--text-secondary)] max-w-xl mx-auto lg:mx-0 mb-16 leading-relaxed">
+            <p
+              className="text-base md:text-lg text-[var(--text-secondary)] max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal"
+              style={{ marginBottom: '32px' }}
+            >
               {profile?.bio || "I build high-performance mobile and web applications that solve real-world problems. Specializing in Flutter, React, and Node.js."}
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5 mb-20">
+            <div
+              className="hero-cta-group"
+              style={{ gap: '18px', marginTop: '10px', marginBottom: '44px' }}
+            >
               <a href="#contact">
-                <Button size="lg" className="hire-btn rounded-full px-10 h-14 font-bold text-base flex items-center justify-center">
-                  <Briefcase size={18} className="mr-2" />
+                <Button size="lg" className="hire-btn rounded-full font-bold text-base flex items-center justify-center gap-2">
+                  <Briefcase size={18} />
                   Hire Me
                 </Button>
               </a>
               <a href="#projects">
-                <Button variant="outline" size="lg" className="view-work-btn rounded-full px-10 h-14 font-bold text-base border-[var(--primary)] text-[var(--primary)] flex items-center justify-center">
+                <Button size="lg" className="view-work-btn rounded-full font-bold text-base flex items-center justify-center">
                   View My Work
                 </Button>
               </a>
               {profile?.resume_url && (
                 <a href={profile.resume_url} target="_blank" rel="noreferrer">
-                  <Button variant="ghost" size="lg" className="rounded-full px-8 h-14 font-bold text-base gap-2 text-white/70 hover:text-white border border-white/10 flex items-center justify-center">
+                  <Button size="lg" className="resume-btn rounded-full font-bold text-base flex items-center justify-center gap-2">
                     Resume <Download size={16} />
                   </Button>
                 </a>
@@ -102,19 +113,24 @@ export function HeroSection({ profile, projectCount }: Props) {
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl mx-auto lg:mx-0">
+            <div
+              className="hero-stats-grid"
+              style={{ gap: '16px', marginTop: '16px', marginBottom: '20px' }}
+            >
               {stats.map((stat, i) => (
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
-                  className="stat-card text-center p-4 rounded-2xl"
+                  className="stat-card group"
                 >
-                  <div className="text-2xl md:text-3xl font-extrabold text-[var(--primary)]">
+                  <div className="text-2xl md:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[#38BDF8]">
                     <CountUp end={stat.value} suffix={stat.suffix} />
                   </div>
-                  <div className="text-xs text-[var(--text-secondary)] mt-1 leading-tight">{stat.label}</div>
+                  <div className="text-[11px] md:text-xs font-semibold text-slate-400 mt-1.5 uppercase tracking-wider leading-tight group-hover:text-slate-200 transition-colors">
+                    {stat.label}
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -163,16 +179,16 @@ export function HeroSection({ profile, projectCount }: Props) {
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator - safely placed and hidden on compact screens */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 0.7 }}
           transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--text-secondary)]"
+          className="hidden 2xl:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-[var(--text-secondary)] pointer-events-none"
         >
-          <span className="text-xs tracking-widest uppercase">Scroll</span>
-          <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-            <ArrowDown size={18} />
+          <span className="text-[10px] tracking-[0.25em] uppercase font-semibold">Scroll Down</span>
+          <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.6 }}>
+            <ArrowDown size={16} className="text-[var(--primary)]" />
           </motion.div>
         </motion.div>
       </div>
