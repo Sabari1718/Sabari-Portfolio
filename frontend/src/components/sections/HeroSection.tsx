@@ -7,6 +7,7 @@ import { Profile } from "@/types";
 import { Download, ArrowDown, MapPin, Briefcase } from "lucide-react";
 import { getFileUrl } from "@/services/api";
 import { CountUp } from "@/components/ui/CountUp";
+import { extractProfileStats } from "@/lib/profile-stats";
 
 interface Props {
   profile: Profile | null;
@@ -17,6 +18,7 @@ const TITLES = ["Flutter Developer", "Full-Stack Developer", "Mobile App Develop
 
 export function HeroSection({ profile, projectCount }: Props) {
   const profileImageUrl = profile?.profile_image ? getFileUrl(profile.profile_image) : null;
+  const { stats: profileStats, cleanBio } = extractProfileStats(profile);
 
   // Parse number and suffix from strings like "2+", "1+", "15+", or number
   const parseStat = (
@@ -37,10 +39,10 @@ export function HeroSection({ profile, projectCount }: Props) {
     return { value: num, suffix: suffix || (str.match(/^\d+$/) ? "+" : "") };
   };
 
-  const expStat = parseStat(profile?.years_experience, 2, "+");
-  const projStat = parseStat(profile?.projects_count, projectCount || 1, "+");
-  const techStat = parseStat(profile?.technologies_count, 15, "+");
-  const repoStat = parseStat(profile?.repos_count, 10, "+");
+  const expStat = parseStat(profileStats.years_experience, 2, "+");
+  const projStat = parseStat(profileStats.projects_count, projectCount || 1, "+");
+  const techStat = parseStat(profileStats.technologies_count, 15, "+");
+  const repoStat = parseStat(profileStats.repos_count, 10, "+");
 
   const stats = [
     { label: "Years Experience", value: expStat.value, suffix: expStat.suffix },
@@ -108,7 +110,7 @@ export function HeroSection({ profile, projectCount }: Props) {
               className="text-base md:text-lg text-[var(--text-secondary)] max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal"
               style={{ marginBottom: '32px' }}
             >
-              {profile?.bio || "I build high-performance mobile and web applications that solve real-world problems. Specializing in Flutter, React, and Node.js."}
+              {cleanBio || "I build high-performance mobile and web applications that solve real-world problems. Specializing in Flutter, React, and Node.js."}
             </p>
 
             {/* CTA Buttons */}

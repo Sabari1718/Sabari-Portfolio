@@ -9,6 +9,7 @@ import {
   Cpu, Folder, Briefcase
 } from "lucide-react";
 import { AdminPageHeader, AdminCard } from "@/components/admin/admin-ui";
+import { extractProfileStats, embedProfileStats } from "@/lib/profile-stats";
 
 const EMPTY_PROFILE: Partial<Profile> = {
   name: "",
@@ -46,13 +47,15 @@ export default function ProfileAdmin() {
     try {
       const res = await PortfolioAPI.getProfile();
       if (res.success && res.data) {
+        const { stats: extractedStats, cleanBio } = extractProfileStats(res.data);
         setForm((prev) => ({
           ...EMPTY_PROFILE,
           ...res.data,
-          years_experience: res.data.years_experience ?? prev.years_experience ?? "2+",
-          projects_count: res.data.projects_count ?? prev.projects_count ?? "1+",
-          technologies_count: res.data.technologies_count ?? prev.technologies_count ?? "15+",
-          repos_count: res.data.repos_count ?? prev.repos_count ?? "10+",
+          bio: cleanBio,
+          years_experience: extractedStats.years_experience || prev.years_experience || "2+",
+          projects_count: extractedStats.projects_count || prev.projects_count || "1+",
+          technologies_count: extractedStats.technologies_count || prev.technologies_count || "15+",
+          repos_count: extractedStats.repos_count || prev.repos_count || "10+",
         }));
       }
     } catch {
@@ -78,11 +81,18 @@ export default function ProfileAdmin() {
     }
     setSaveStatus("saving");
     setErrorMsg("");
+
+    // Send dual-layer payload so both existing and updated backend persist the stats
+    const payload = {
+      ...form,
+      bio: embedProfileStats(form.bio, form),
+    };
+
     try {
-      const res = await PortfolioAPI.updateProfile(form);
+      const res = await PortfolioAPI.updateProfile(payload);
       if (res.success) {
         setSaveStatus("success");
-        // Keep user's typed changes in form state
+        // Keep user's clean form state
         setForm((prev) => ({ ...prev, ...form }));
         setTimeout(() => setSaveStatus("idle"), 3000);
       } else {
