@@ -46,7 +46,14 @@ export default function ProfileAdmin() {
     try {
       const res = await PortfolioAPI.getProfile();
       if (res.success && res.data) {
-        setForm({ ...EMPTY_PROFILE, ...res.data });
+        setForm((prev) => ({
+          ...EMPTY_PROFILE,
+          ...res.data,
+          years_experience: res.data.years_experience ?? prev.years_experience ?? "2+",
+          projects_count: res.data.projects_count ?? prev.projects_count ?? "1+",
+          technologies_count: res.data.technologies_count ?? prev.technologies_count ?? "15+",
+          repos_count: res.data.repos_count ?? prev.repos_count ?? "10+",
+        }));
       }
     } catch {
       // profile might not exist yet — use empty form
@@ -75,7 +82,8 @@ export default function ProfileAdmin() {
       const res = await PortfolioAPI.updateProfile(form);
       if (res.success) {
         setSaveStatus("success");
-        await fetchProfile(); // Re-fetch to confirm persistence
+        // Keep user's typed changes in form state
+        setForm((prev) => ({ ...prev, ...form }));
         setTimeout(() => setSaveStatus("idle"), 3000);
       } else {
         setSaveStatus("error");
