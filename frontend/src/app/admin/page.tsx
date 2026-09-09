@@ -112,6 +112,11 @@ export default function AdminDashboard() {
             href="/admin/profile"
           />
           <ActionLink
+            title="Hero Stat Counters ⚡"
+            desc="Configure 2+ yrs experience, 1+ projects, 15+ tech & repo stats."
+            href="/admin/profile#hero-stats"
+          />
+          <ActionLink
             title="Projects & Showcase"
             desc="Add new builds, screenshots, live URLs & GitHub links."
             href="/admin/projects"

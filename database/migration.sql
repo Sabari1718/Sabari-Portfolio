@@ -14,12 +14,16 @@ ALTER TABLE education
   ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 -- -----------------------------------------------------------
--- 2. PROFILE — add display_name, portfolio_url, twitter_url
+-- 2. PROFILE — add display_name, portfolio_url, twitter_url & hero stats
 -- -----------------------------------------------------------
 ALTER TABLE profile
   ADD COLUMN IF NOT EXISTS display_name VARCHAR(255) AFTER name,
   ADD COLUMN IF NOT EXISTS portfolio_url VARCHAR(255) AFTER linkedin_url,
-  ADD COLUMN IF NOT EXISTS twitter_url VARCHAR(255) AFTER portfolio_url;
+  ADD COLUMN IF NOT EXISTS twitter_url VARCHAR(255) AFTER portfolio_url,
+  ADD COLUMN IF NOT EXISTS years_experience VARCHAR(50) DEFAULT '2+',
+  ADD COLUMN IF NOT EXISTS projects_count VARCHAR(50) DEFAULT '1+',
+  ADD COLUMN IF NOT EXISTS technologies_count VARCHAR(50) DEFAULT '15+',
+  ADD COLUMN IF NOT EXISTS repos_count VARCHAR(50) DEFAULT '10+';
 
 -- -----------------------------------------------------------
 -- 3. PROJECTS — add category, type, display_order, is_visible

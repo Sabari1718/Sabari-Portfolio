@@ -13,6 +13,10 @@ export interface Profile {
   linkedin_url: string | null;
   portfolio_url: string | null;
   twitter_url: string | null;
+  years_experience?: string | number | null;
+  projects_count?: string | number | null;
+  technologies_count?: string | number | null;
+  repos_count?: string | number | null;
   created_at?: string;
   updated_at?: string;
 }

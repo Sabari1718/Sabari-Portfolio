@@ -38,6 +38,10 @@ CREATE TABLE IF NOT EXISTS profile (
     linkedin_url VARCHAR(500),
     portfolio_url VARCHAR(500),
     twitter_url VARCHAR(500),
+    years_experience VARCHAR(50) DEFAULT '2+',
+    projects_count VARCHAR(50) DEFAULT '1+',
+    technologies_count VARCHAR(50) DEFAULT '15+',
+    repos_count VARCHAR(50) DEFAULT '10+',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

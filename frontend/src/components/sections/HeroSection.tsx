@@ -18,11 +18,35 @@ const TITLES = ["Flutter Developer", "Full-Stack Developer", "Mobile App Develop
 export function HeroSection({ profile, projectCount }: Props) {
   const profileImageUrl = profile?.profile_image ? getFileUrl(profile.profile_image) : null;
 
+  // Parse number and suffix from strings like "2+", "1+", "15+", or number
+  const parseStat = (
+    val: string | number | undefined | null,
+    fallbackNum: number,
+    fallbackSuffix = "+"
+  ) => {
+    if (val === undefined || val === null || String(val).trim() === "") {
+      return { value: fallbackNum, suffix: fallbackSuffix };
+    }
+    const str = String(val).trim();
+    const numMatch = str.match(/\d+/);
+    const suffixMatch = str.match(/[^\d\s]+/);
+
+    const num = numMatch ? parseInt(numMatch[0], 10) : fallbackNum;
+    const suffix = suffixMatch ? suffixMatch[0] : (str.includes("+") ? "+" : "");
+
+    return { value: num, suffix: suffix || (str.match(/^\d+$/) ? "+" : "") };
+  };
+
+  const expStat = parseStat(profile?.years_experience, 2, "+");
+  const projStat = parseStat(profile?.projects_count, projectCount || 1, "+");
+  const techStat = parseStat(profile?.technologies_count, 15, "+");
+  const repoStat = parseStat(profile?.repos_count, 10, "+");
+
   const stats = [
-    { label: "Years Experience", value: 2, suffix: "+" },
-    { label: "Projects Built", value: projectCount || 5, suffix: "+" },
-    { label: "Technologies", value: 15, suffix: "+" },
-    { label: "GitHub Repos", value: 10, suffix: "+" },
+    { label: "Years Experience", value: expStat.value, suffix: expStat.suffix },
+    { label: "Projects Built", value: projStat.value, suffix: projStat.suffix },
+    { label: "Technologies", value: techStat.value, suffix: techStat.suffix },
+    { label: "GitHub Repos", value: repoStat.value, suffix: repoStat.suffix },
   ];
 
   return (

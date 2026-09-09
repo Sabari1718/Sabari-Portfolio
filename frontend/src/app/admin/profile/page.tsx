@@ -5,7 +5,8 @@ import { PortfolioAPI } from "@/services/api";
 import { Profile } from "@/types";
 import {
   User, Mail, Phone, MapPin, Globe, GitFork, Link2,
-  Link as LinkIcon2, FileText, CheckCircle, AlertCircle, Loader2, Save
+  Link as LinkIcon2, FileText, CheckCircle, AlertCircle, Loader2, Save,
+  Cpu, Folder, Briefcase
 } from "lucide-react";
 import { AdminPageHeader, AdminCard } from "@/components/admin/admin-ui";
 
@@ -22,6 +23,10 @@ const EMPTY_PROFILE: Partial<Profile> = {
   linkedin_url: "",
   portfolio_url: "",
   twitter_url: "",
+  years_experience: "2+",
+  projects_count: "1+",
+  technologies_count: "15+",
+  repos_count: "10+",
 };
 
 type SaveStatus = "idle" | "saving" | "success" | "error";
@@ -143,6 +148,98 @@ export default function ProfileAdmin() {
             </div>
           </div>
         </AdminCard>
+
+        {/* ── Home Page Hero Metrics & Counters ──────── */}
+        <div id="hero-stats">
+          <AdminCard 
+            title="Home Page Hero Counters & Metrics" 
+            subtitle="Configure the 4 stat counter cards displayed right beneath your hero banner on the homepage."
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Field
+                label="Years Experience"
+                name="years_experience"
+                value={form.years_experience !== undefined && form.years_experience !== null ? String(form.years_experience) : "2+"}
+                onChange={handleChange}
+                placeholder="2+"
+                icon={<Briefcase size={16} />}
+                helperText="Displays as: Years Experience"
+              />
+              <Field
+                label="Projects Built"
+                name="projects_count"
+                value={form.projects_count !== undefined && form.projects_count !== null ? String(form.projects_count) : "1+"}
+                onChange={handleChange}
+                placeholder="1+"
+                icon={<Folder size={16} />}
+                helperText="Displays as: Projects Built"
+              />
+              <Field
+                label="Technologies"
+                name="technologies_count"
+                value={form.technologies_count !== undefined && form.technologies_count !== null ? String(form.technologies_count) : "15+"}
+                onChange={handleChange}
+                placeholder="15+"
+                icon={<Cpu size={16} />}
+                helperText="Displays as: Technologies"
+              />
+              <Field
+                label="GitHub Repos"
+                name="repos_count"
+                value={form.repos_count !== undefined && form.repos_count !== null ? String(form.repos_count) : "10+"}
+                onChange={handleChange}
+                placeholder="10+"
+                icon={<GitFork size={16} />}
+                helperText="Displays as: GitHub Repos"
+              />
+            </div>
+
+            {/* Live Interactive Preview */}
+            <div className="mt-8 pt-6 border-t border-white/[0.06]">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                  Live Home Page Preview:
+                </p>
+                <span className="text-[11px] text-cyan-400/90 font-mono font-medium">Updates in real-time</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-black/40 border border-white/5">
+                <div className="text-center p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                  <div className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[#38BDF8]">
+                    {form.years_experience || "2+"}
+                  </div>
+                  <div className="text-[10px] md:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5">
+                    Years Experience
+                  </div>
+                </div>
+                <div className="text-center p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                  <div className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[#38BDF8]">
+                    {form.projects_count || "1+"}
+                  </div>
+                  <div className="text-[10px] md:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5">
+                    Projects Built
+                  </div>
+                </div>
+                <div className="text-center p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                  <div className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[#38BDF8]">
+                    {form.technologies_count || "15+"}
+                  </div>
+                  <div className="text-[10px] md:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5">
+                    Technologies
+                  </div>
+                </div>
+                <div className="text-center p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                  <div className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[#38BDF8]">
+                    {form.repos_count || "10+"}
+                  </div>
+                  <div className="text-[10px] md:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5">
+                    GitHub Repos
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AdminCard>
+        </div>
 
         {/* ── Contact Info ────────────────────────────── */}
         <Section title="Contact Information" icon={<Mail size={20} />}>
@@ -296,6 +393,7 @@ function Field({
   type = "text",
   required,
   icon,
+  helperText,
 }: {
   label: string;
   name: string;
@@ -305,6 +403,7 @@ function Field({
   type?: string;
   required?: boolean;
   icon?: React.ReactNode;
+  helperText?: string;
 }) {
   return (
     <div className="flex flex-col mb-4">
@@ -335,6 +434,9 @@ function Field({
           }}
         />
       </div>
+      {helperText && (
+        <p className="text-[11px] text-slate-400 mt-1.5 ml-1">{helperText}</p>
+      )}
     </div>
   );
 }
