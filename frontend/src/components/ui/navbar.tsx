@@ -65,7 +65,7 @@ export function Navbar({ settings }: Props) {
       className={cn(
         "w-full z-[100] sticky top-0 transition-all duration-300 pointer-events-none",
         scrolled
-          ? "bg-[#080b12]/90 backdrop-blur-2xl border-b border-white/5 py-2.5 shadow-2xl"
+          ? "bg-[#080b12]/92 backdrop-blur-2xl border-b border-white/5 py-3 shadow-2xl"
           : "bg-transparent py-4"
       )}
     >
@@ -96,9 +96,9 @@ export function Navbar({ settings }: Props) {
           </span>
         </Link>
 
-        {/* Desktop Developer Dock */}
+        {/* Desktop Developer Dock with generous spacing & colorful interactions */}
         <div
-          className="hidden md:flex items-center gap-1 bg-[#090d16]/85 backdrop-blur-2xl border border-white/[0.08] p-1.5 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.6),0_0_20px_rgba(0,229,255,0.06)]"
+          className="hidden md:flex items-center gap-2 lg:gap-3 bg-[#0a0f1d]/90 backdrop-blur-2xl border border-white/10 p-2 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.6),0_0_25px_rgba(0,229,255,0.08)]"
           onMouseLeave={() => setHoveredLink(null)}
         >
           {NAV_LINKS.map((link) => {
@@ -112,66 +112,78 @@ export function Navbar({ settings }: Props) {
                 href={link.href}
                 onClick={() => setActiveSection(link.id)}
                 onMouseEnter={() => setHoveredLink(link.id)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.92 }}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.88 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
                 className={cn(
-                  "relative px-4 py-2 rounded-full text-xs lg:text-sm font-semibold transition-colors duration-200 flex items-center gap-1.5 select-none cursor-pointer",
-                  isActive ? "text-white font-bold" : "text-slate-400 hover:text-white"
+                  "relative px-4 lg:px-5 py-2.5 rounded-full text-xs lg:text-sm font-semibold transition-all duration-200 flex items-center gap-2 select-none cursor-pointer",
+                  isActive
+                    ? "text-white font-extrabold"
+                    : "text-slate-300 hover:text-white"
                 )}
               >
-                {/* Active Pill (Smooth Sliding Background) */}
+                {/* Active Electric Neon Capsule */}
                 {isActive && (
                   <motion.div
                     layoutId="active-nav-capsule"
                     className="absolute inset-0 rounded-full"
                     style={{
-                      background: `linear-gradient(135deg, ${link.color}25 0%, ${link.color}10 100%)`,
-                      borderColor: `${link.color}60`,
-                      borderWidth: "1px",
+                      background: `linear-gradient(135deg, ${link.color}30 0%, ${link.color}12 100%)`,
+                      borderColor: link.color,
+                      borderWidth: "1.5px",
                       borderStyle: "solid",
-                      boxShadow: `0 0 20px ${link.color}40, inset 0 0 12px ${link.color}20`,
+                      boxShadow: `0 0 24px ${link.color}55, 0 0 45px ${link.color}20, inset 0 0 14px ${link.color}30`,
                     }}
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    transition={{ type: "spring", stiffness: 420, damping: 28 }}
                   />
                 )}
 
-                {/* Hover Glow Pill */}
+                {/* Hover Glow Pill (Vibrant Color Aura) */}
                 {!isActive && isHovered && (
                   <motion.div
                     layoutId="hover-nav-capsule"
-                    className="absolute inset-0 rounded-full bg-white/[0.06] border border-white/10"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: `${link.color}15`,
+                      borderColor: `${link.color}45`,
+                      borderWidth: "1px",
+                      borderStyle: "solid",
+                      boxShadow: `0 0 16px ${link.color}35`,
+                    }}
+                    transition={{ type: "spring", stiffness: 450, damping: 30 }}
                   />
                 )}
 
-                {/* Icon with Dynamic Color */}
+                {/* Micro Icon with Dynamic Color and Pop */}
                 <Icon
-                  size={14}
-                  className="relative z-10 transition-transform duration-200"
+                  size={15}
+                  className="relative z-10 transition-all duration-200"
                   style={{
-                    color: isActive || isHovered ? link.color : "currentColor",
-                    filter: isActive ? `drop-shadow(0 0 6px ${link.color})` : "none",
+                    color: isActive || isHovered ? link.color : "#94a3b8",
+                    filter: isActive ? `drop-shadow(0 0 8px ${link.color})` : (isHovered ? `drop-shadow(0 0 5px ${link.color}80)` : "none"),
+                    transform: isHovered ? "scale(1.15)" : "scale(1)",
                   }}
                 />
 
-                {/* Text Label */}
+                {/* Text Label with Radiant Color Glow */}
                 <span
-                  className="relative z-10 tracking-wide"
+                  className="relative z-10 tracking-wide font-medium"
                   style={{
-                    color: isActive ? "#ffffff" : undefined,
-                    textShadow: isActive ? `0 0 12px ${link.color}60` : "none",
+                    color: isActive ? "#ffffff" : (isHovered ? link.color : undefined),
+                    textShadow: isActive ? `0 0 14px ${link.color}80` : (isHovered ? `0 0 10px ${link.color}50` : "none"),
+                    fontWeight: isActive ? 800 : 600,
                   }}
                 >
                   {link.name}
                 </span>
 
-                {/* Active Micro Neon Dot */}
+                {/* Active Micro Pulsing Dot */}
                 {isActive && (
                   <span
-                    className="relative z-10 w-1.5 h-1.5 rounded-full"
+                    className="relative z-10 w-1.5 h-1.5 rounded-full animate-pulse"
                     style={{
                       backgroundColor: link.color,
-                      boxShadow: `0 0 8px ${link.color}`,
+                      boxShadow: `0 0 10px ${link.color}, 0 0 16px ${link.color}`,
                     }}
                   />
                 )}
@@ -183,7 +195,7 @@ export function Navbar({ settings }: Props) {
         {/* Mobile Menu Button */}
         <motion.button
           whileTap={{ scale: 0.9 }}
-          className="md:hidden text-white hover:text-[var(--primary)] transition-colors p-2 rounded-xl bg-white/5 border border-white/10"
+          className="md:hidden text-white hover:text-[var(--primary)] transition-colors p-2.5 rounded-2xl bg-white/5 border border-white/10 shadow-lg"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -198,7 +210,7 @@ export function Navbar({ settings }: Props) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.96 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-[125%] left-0 w-full bg-[#080b12]/98 backdrop-blur-2xl border border-white/10 rounded-3xl p-4 flex flex-col gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(0,229,255,0.15)] md:hidden pointer-events-auto z-50"
+              className="absolute top-[125%] left-0 w-full bg-[#080b12]/98 backdrop-blur-2xl border border-white/10 rounded-3xl p-4 flex flex-col gap-2.5 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(0,229,255,0.15)] md:hidden pointer-events-auto z-50"
             >
               {NAV_LINKS.map((link) => {
                 const isActive = activeSection === link.id;
@@ -207,43 +219,43 @@ export function Navbar({ settings }: Props) {
                   <motion.a
                     key={link.name}
                     href={link.href}
-                    whileTap={{ scale: 0.95 }}
+                    whileTap={{ scale: 0.93 }}
                     onClick={() => {
                       setActiveSection(link.id);
                       setMobileMenuOpen(false);
                     }}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 cursor-pointer",
-                      isActive ? "text-white" : "text-slate-400 hover:text-white hover:bg-white/5"
+                      "flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all duration-200 cursor-pointer",
+                      isActive ? "text-white" : "text-slate-300 hover:text-white hover:bg-white/5"
                     )}
                     style={{
                       background: isActive
-                        ? `linear-gradient(135deg, ${link.color}25 0%, ${link.color}10 100%)`
+                        ? `linear-gradient(135deg, ${link.color}30 0%, ${link.color}12 100%)`
                         : undefined,
-                      borderColor: isActive ? `${link.color}50` : "transparent",
-                      borderWidth: "1px",
+                      borderColor: isActive ? link.color : "transparent",
+                      borderWidth: "1.5px",
                       borderStyle: "solid",
-                      boxShadow: isActive ? `0 0 15px ${link.color}30` : "none",
+                      boxShadow: isActive ? `0 0 20px ${link.color}40, inset 0 0 10px ${link.color}20` : "none",
                     }}
                   >
                     <div
-                      className="w-8 h-8 rounded-xl flex items-center justify-center border transition-all"
+                      className="w-9 h-9 rounded-xl flex items-center justify-center border transition-all"
                       style={{
-                        background: `${link.color}15`,
-                        borderColor: `${link.color}35`,
+                        background: `${link.color}20`,
+                        borderColor: `${link.color}50`,
                         color: link.color,
-                        boxShadow: isActive ? `0 0 10px ${link.color}50` : "none",
+                        boxShadow: isActive ? `0 0 12px ${link.color}60` : "none",
                       }}
                     >
-                      <Icon size={16} />
+                      <Icon size={17} />
                     </div>
-                    <span className="flex-1 text-left">{link.name}</span>
+                    <span className="flex-1 text-left tracking-wide">{link.name}</span>
                     {isActive && (
                       <span
                         className="w-2 h-2 rounded-full animate-pulse"
                         style={{
                           backgroundColor: link.color,
-                          boxShadow: `0 0 8px ${link.color}`,
+                          boxShadow: `0 0 10px ${link.color}`,
                         }}
                       />
                     )}
