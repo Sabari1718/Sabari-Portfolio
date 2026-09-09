@@ -93,7 +93,6 @@ export function HeroSection({ profile, projectCount }: Props) {
             {/* Name with Developer Aesthetic */}
             <h1 className="hero-developer-name text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 leading-tight tracking-tight">
               {profile?.display_name || profile?.name || "Sabarishwaran S"}
-              <span className="hero-dev-dot">.</span>
             </h1>
 
             {/* Animated Title */}
