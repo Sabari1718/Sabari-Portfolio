@@ -16,7 +16,7 @@ const SKILL_CATEGORIES = [
 
 const EMPTY_SKILL = {
   name: "",
-  category: "",
+  category: "Mobile",
   proficiency: 80,
   icon: "",
   display_order: 0,
