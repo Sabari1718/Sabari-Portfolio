@@ -8,6 +8,7 @@ import {
   Plus, Edit2, Trash2, Loader2, CheckCircle, AlertCircle,
   X, Award
 } from "lucide-react";
+import { AdminPageHeader, AdminModal, AdminField } from "@/components/admin/admin-ui";
 
 const SKILL_CATEGORIES = [
   "Web Development", "Frontend", "Backend", "Mobile", "Database", "DevOps",
@@ -141,183 +142,201 @@ export default function AdminSkills() {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-extrabold text-white mb-1">Skills</h1>
-          <p className="text-[var(--text-secondary)]">
-            {items.length} skill{items.length !== 1 ? "s" : ""} · Saved to MySQL
-          </p>
-        </div>
-        <button onClick={openAdd}
-          className="flex items-center gap-2 px-6 py-3 bg-[#FDE047] text-black font-bold rounded-xl hover:bg-[#FDE047]/90 hover:shadow-[0_0_20px_rgba(253,224,71,0.4)] transition-all">
-          <Plus size={18} /> Add Skill
-        </button>
-      </div>
+    <div className="space-y-10 animate-fade-in">
+      <AdminPageHeader
+        badge="Technical Arsenal"
+        title="Technical"
+        titleAccent="Skills"
+        subtitle={`Configure languages, frameworks, developer tools and proficiency percentages. (${items.length} skills)`}
+        icon={<Award size={13} />}
+        action={
+          <button
+            onClick={openAdd}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[#00B8D4] text-black font-bold text-sm shadow-[0_0_20px_rgba(0,229,255,0.3)] hover:shadow-[0_0_30px_rgba(0,229,255,0.5)] transition-all cursor-pointer"
+          >
+            <Plus size={18} />
+            <span>Add Skill</span>
+          </button>
+        }
+      />
 
-      {/* Category filter tabs */}
+      {/* Category Filter Pills */}
       {!loading && items.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFilterCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                filterCategory === cat
-                  ? "bg-[#FDE047] text-black"
-                  : "bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="flex flex-wrap gap-2.5 p-1.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] w-fit">
+          {categories.map((cat) => {
+            const isSelected = filterCategory === cat;
+            const count = cat === "All" ? items.length : items.filter(s => (s.category || "Other") === cat).length;
+            return (
+              <button
+                key={cat}
+                onClick={() => setFilterCategory(cat)}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-[var(--primary)] text-black shadow-[0_0_15px_rgba(0,229,255,0.3)]"
+                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <span>{cat}</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${isSelected ? "bg-black/20 text-black font-bold" : "bg-white/5 text-slate-400"}`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
 
       {/* Skills Grid */}
-      {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="animate-spin text-[var(--primary)]" size={32} />
-        </div>
-      ) : items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-4 text-[var(--text-secondary)] bg-white/[0.03] border border-white/10 rounded-2xl">
-          <Award size={48} className="opacity-30" />
-          <p className="text-lg">No skills yet.</p>
-          <button onClick={openAdd} className="text-[#FDE047] hover:underline text-sm">Add your first skill →</button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((skill) => (
-            <div key={skill.id}
-              className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-colors group relative">
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div>
-                  <h3 className="font-semibold text-white">{skill.name}</h3>
-                  {skill.category && (
-                    <span className="text-xs text-white/50 mt-0.5">{skill.category}</span>
-                  )}
-                </div>
-                <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => openEdit(skill)}
-                    className="p-1.5 text-white/40 hover:text-[#FDE047] hover:bg-[#FDE047]/10 rounded-lg transition-all">
-                    <Edit2 size={14} />
-                  </button>
-                  <button onClick={() => handleDelete(skill.id, skill.name)}
-                    disabled={deletingId === skill.id}
-                    className="p-1.5 text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all disabled:opacity-50">
-                    {deletingId === skill.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Proficiency bar */}
-              <div className="mt-3">
-                <div className="flex justify-between items-center mb-1.5">
-                  <span className="text-xs text-white/40">Proficiency</span>
-                  <span className="text-xs font-semibold text-[#FDE047]">{skill.proficiency}%</span>
-                </div>
-                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#FDE047] to-[var(--primary)] rounded-full transition-all duration-500"
-                    style={{ width: `${skill.proficiency}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Modal */}
-      {modalOpen && createPortal(
-        <div style={{position:'fixed',inset:0,zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px',background:'rgba(0,0,0,0.85)',backdropFilter:'blur(6px)'}}>
-          <div style={{background:'#121212',border:'1px solid rgba(245,197,66,0.35)',boxShadow:'0 0 60px rgba(245,197,66,0.2)',borderRadius:'16px',width:'100%',maxWidth:'500px',display:'flex',flexDirection:'column',maxHeight:'90vh'}}>
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 rounded-t-2xl">
-              <span className="text-xl font-bold text-white">{editing ? "Edit Skill" : "Add Skill"}</span>
-              <button type="button" onClick={closeModal} className="text-white/40 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
-              <div className="flex-1 overflow-y-auto p-6 space-y-5">
-              <SField label="Skill Name *" name="name" value={form.name} onChange={handleChange} placeholder="React" required />
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-white/80">Category</label>
-                <select name="category" value={form.category} onChange={handleChange}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] transition-all">
-                  <option value="">Select category...</option>
-                  {SKILL_CATEGORIES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Proficiency slider */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <label className="block text-sm font-medium text-white/80">Proficiency</label>
-                  <span className="text-[#FDE047] font-bold text-sm">{form.proficiency}%</span>
-                </div>
-                <input
-                  type="range" name="proficiency" min="0" max="100" step="5"
-                  value={form.proficiency}
-                  onChange={handleChange}
-                  className="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-[#FDE047]"
-                />
-                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-[#FDE047] to-[var(--primary)] rounded-full transition-all"
-                    style={{ width: `${form.proficiency}%` }} />
-                </div>
-              </div>
-
-              <SField label="Icon / Emoji (optional)" name="icon" value={form.icon} onChange={handleChange} placeholder="⚛️ or icon class name" />
-              <SField label="Display Order" name="display_order" value={String(form.display_order)} onChange={handleChange} type="number" placeholder="0" />
-
-              {saveStatus === "error" && (
-                <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
-                  <AlertCircle size={16} /> {errorMsg}
-                </div>
-              )}
-              {saveStatus === "success" && (
-                <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 text-sm">
-                  <CheckCircle size={16} /> Saved to MySQL!
-                </div>
-              )}
-
-              </div>
-
-              <div className="flex gap-3 px-6 py-5 border-t border-white/10 shrink-0 rounded-b-2xl">
-                <button type="submit" disabled={saveStatus === "saving"}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#F5C542] text-black font-bold rounded-xl hover:bg-[#F5C542]/90 transition-all disabled:opacity-60">
-                  {saveStatus === "saving" ? <Loader2 size={17} className="animate-spin" /> : <CheckCircle size={17} />}
-                  {saveStatus === "saving" ? "Saving..." : editing ? "Save Changes" : "Add Skill"}
-                </button>
-                <button type="button" onClick={closeModal}
-                  className="flex-1 py-3 border border-white/10 text-white/60 rounded-xl hover:bg-white/5 hover:text-white transition-all">
-                  Cancel
-                </button>
-              </div>
-            </form>
+      <div>
+        {loading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="animate-spin text-[var(--primary)]" size={36} />
           </div>
-        </div>,
-        document.body
-      )}
-    </div>
-  );
-}
+        ) : items.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-4 text-slate-400 bg-white/[0.02] border border-white/[0.08] rounded-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500">
+              <Award size={28} />
+            </div>
+            <p className="text-base font-semibold text-white">No skills added yet</p>
+            <p className="text-sm text-slate-400 max-w-sm text-center">Add technologies you use like Flutter, React, Next.js, and Node.js.</p>
+            <button
+              onClick={openAdd}
+              className="mt-2 text-[var(--primary)] hover:underline text-sm font-bold cursor-pointer"
+            >
+              + Add First Skill
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filtered.map((skill) => (
+              <div
+                key={skill.id}
+                className="rounded-2xl border border-white/[0.08] bg-[#0c101a]/80 backdrop-blur-xl p-6 hover:border-[var(--primary)]/30 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-200 group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <div>
+                      <h3 className="text-base font-bold text-white group-hover:text-[var(--primary)] transition-colors">{skill.name}</h3>
+                      <span className="inline-block text-[11px] font-medium text-slate-400 mt-0.5">
+                        {skill.category || "General"}
+                      </span>
+                    </div>
 
-function SField({ label, name, value, onChange, placeholder, type = "text", required }: {
-  label: string; name: string; value: string; onChange: (e: any) => void;
-  placeholder?: string; type?: string; required?: boolean;
-}) {
-  return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-white/80">{label}</label>
-      <input type={type} name={name} value={value} onChange={onChange} placeholder={placeholder} required={required}
-        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--primary)] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.1)] transition-all" />
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => openEdit(skill)}
+                        className="p-2 rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                        title="Edit Skill"
+                      >
+                        <Edit2 size={14} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(skill.id, skill.name)}
+                        disabled={deletingId === skill.id}
+                        className="p-2 rounded-lg border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all disabled:opacity-40 cursor-pointer"
+                        title="Delete Skill"
+                      >
+                        {deletingId === skill.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Meter Bar */}
+                  <div className="space-y-1.5 mt-2">
+                    <div className="flex justify-between items-center text-xs font-mono">
+                      <span className="text-slate-400">Proficiency</span>
+                      <span className="font-bold text-[var(--primary)]">{skill.proficiency}%</span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-900 rounded-full border border-white/5 overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-[var(--primary)]/80 to-[var(--primary)] rounded-full transition-all duration-500"
+                        style={{ width: `${skill.proficiency}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Roomy Modal */}
+      <AdminModal
+        open={modalOpen}
+        onClose={closeModal}
+        title={editing ? "Edit Skill" : "Add Technical Skill"}
+        subtitle="Set skill name, technology category domain, and proficiency rating percentage."
+        onSubmit={handleSave}
+        submitLabel={editing ? "Save Skill" : "Add Skill"}
+        isSaving={saveStatus === "saving"}
+        saveStatus={saveStatus}
+        errorMsg={errorMsg}
+        maxWidth="2xl"
+      >
+        <AdminField
+          label="Skill Name"
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          placeholder="e.g. Flutter, React, Next.js, MySQL"
+          required
+        />
+
+        <div className="space-y-2">
+          <label className="block text-xs md:text-sm font-semibold text-slate-200 tracking-wide">
+            Domain Category
+          </label>
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all cursor-pointer [color-scheme:dark]"
+          >
+            {SKILL_CATEGORIES.map((c) => (
+              <option key={c} value={c} className="bg-[#0c101a] text-white py-2">
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Proficiency Slider */}
+        <div className="p-5 rounded-2xl border border-white/[0.08] bg-white/[0.02] space-y-3">
+          <div className="flex justify-between items-center">
+            <label className="block text-xs md:text-sm font-semibold text-slate-200 tracking-wide">
+              Proficiency Rating
+            </label>
+            <span className="px-3 py-1 rounded-full text-xs font-bold font-mono bg-[var(--primary)]/15 border border-[var(--primary)]/30 text-[var(--primary)]">
+              {form.proficiency}%
+            </span>
+          </div>
+          <input
+            type="range"
+            name="proficiency"
+            min="10"
+            max="100"
+            value={form.proficiency}
+            onChange={handleChange}
+            className="w-full accent-[var(--primary)] cursor-pointer"
+          />
+          <div className="flex justify-between text-[11px] text-slate-400 font-mono">
+            <span>Beginner (20%)</span>
+            <span>Intermediate (50%)</span>
+            <span>Expert (90%+)</span>
+          </div>
+        </div>
+
+        <AdminField
+          label="Display Order"
+          name="display_order"
+          value={String(form.display_order)}
+          onChange={handleChange}
+          type="number"
+          placeholder="0"
+          helperText="Lower numbers appear first within category"
+        />
+      </AdminModal>
     </div>
   );
 }

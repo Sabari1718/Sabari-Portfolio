@@ -2,24 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { PortfolioAPI } from "@/services/api";
-import { Folder, Award, MessageSquare, ArrowRight, Activity } from "lucide-react";
+import { Folder, Award, MessageSquare, ArrowRight, Briefcase, GraduationCap, Sparkles, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { AdminPageHeader, AdminCard } from "@/components/admin/admin-ui";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     projects: 0,
     skills: 0,
-    messages: 0
+    messages: 0,
+    experience: 0,
+    education: 0,
   });
 
   useEffect(() => {
-    // Basic stats fetch simulation - in a real scenario you'd have an /api/stats endpoint
     const fetchStats = async () => {
       try {
-        const [projectsRes, skillsRes, messagesRes] = await Promise.all([
-          PortfolioAPI.getProjects(),
+        const [projectsRes, skillsRes, messagesRes, expRes, eduRes] = await Promise.all([
+          PortfolioAPI.getProjects(true),
           PortfolioAPI.getSkills(),
-          PortfolioAPI.getMessages()
+          PortfolioAPI.getMessages(),
+          PortfolioAPI.getExperience(),
+          PortfolioAPI.getEducation(),
         ]);
         
         let unreadCount = 0;
@@ -28,9 +32,11 @@ export default function AdminDashboard() {
         }
         
         setStats({
-          projects: projectsRes.success ? projectsRes.data.length : 0,
-          skills: skillsRes.success ? skillsRes.data.length : 0,
-          messages: unreadCount
+          projects: projectsRes.success ? (projectsRes.data || []).length : 0,
+          skills: skillsRes.success ? (skillsRes.data || []).length : 0,
+          messages: unreadCount,
+          experience: expRes.success ? (expRes.data || []).length : 0,
+          education: eduRes.success ? (eduRes.data || []).length : 0,
         });
       } catch (err) {
         console.error("Error fetching stats", err);
@@ -41,101 +47,162 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="space-y-12 animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-2 text-white">
-            Dashboard
-          </h1>
-          <p className="text-lg text-[var(--text-secondary)]">
-            Welcome back to your portfolio control center.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)]/10 text-[var(--primary)] rounded-full border border-[var(--primary)]/20 shadow-[0_0_15px_rgba(0,229,255,0.1)]">
-          <Activity size={16} className="animate-pulse" />
-          <span className="text-sm font-semibold tracking-wider uppercase">System Online</span>
-        </div>
-      </div>
+    <div className="space-y-10 animate-fade-in">
+      <AdminPageHeader
+        badge="Mission Control"
+        title="Admin"
+        titleAccent="Dashboard"
+        subtitle="Manage your developer portfolio content, track client messages, and configure live deployments."
+        icon={<Sparkles size={13} />}
+        action={
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[#00B8D4] text-black font-bold text-sm shadow-[0_0_20px_rgba(0,229,255,0.3)] hover:shadow-[0_0_30px_rgba(0,229,255,0.5)] transition-all cursor-pointer"
+          >
+            <span>Live Portfolio</span>
+            <ExternalLink size={15} />
+          </a>
+        }
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Projects Stat Card */}
-        <div className="glass-card flex flex-col justify-between group overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 transform translate-x-4 -translate-y-4">
-            <Folder size={120} />
-          </div>
-          <div className="flex items-center gap-4 mb-4 z-10">
-            <div className="p-3 bg-[var(--primary)]/20 rounded-xl border border-[var(--primary)]/30 text-[var(--primary)] shadow-[0_0_15px_rgba(0,229,255,0.2)]">
-              <Folder size={24} />
-            </div>
-            <h3 className="text-lg font-medium text-[var(--text-secondary)]">Total Projects</h3>
-          </div>
-          <div className="text-5xl font-black text-white z-10 drop-shadow-md">
-            {stats.projects}
-          </div>
-        </div>
-
-        {/* Skills Stat Card */}
-        <div className="glass-card flex flex-col justify-between group overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 transform translate-x-4 -translate-y-4">
-            <Award size={120} />
-          </div>
-          <div className="flex items-center gap-4 mb-4 z-10">
-            <div className="p-3 bg-[var(--secondary)]/20 rounded-xl border border-[var(--secondary)]/30 text-[var(--secondary)] shadow-[0_0_15px_rgba(0,184,212,0.2)]">
-              <Award size={24} />
-            </div>
-            <h3 className="text-lg font-medium text-[var(--text-secondary)]">Total Skills</h3>
-          </div>
-          <div className="text-5xl font-black text-white z-10 drop-shadow-md">
-            {stats.skills}
-          </div>
-        </div>
-
-        {/* Messages Stat Card */}
-        <div className="glass-card flex flex-col justify-between group overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 transform translate-x-4 -translate-y-4">
-            <MessageSquare size={120} />
-          </div>
-          <div className="flex items-center gap-4 mb-4 z-10">
-            <div className="p-3 bg-green-500/20 rounded-xl border border-green-500/30 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
-              <MessageSquare size={24} />
-            </div>
-            <h3 className="text-lg font-medium text-[var(--text-secondary)]">Unread Messages</h3>
-          </div>
-          <div className="text-5xl font-black text-white z-10 drop-shadow-md">
-            {stats.messages}
-          </div>
-        </div>
+      {/* KPI Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard
+          label="Featured Projects"
+          count={stats.projects}
+          href="/admin/projects"
+          icon={<Folder size={22} />}
+          color="#00E5FF"
+        />
+        <StatCard
+          label="Skills & Frameworks"
+          count={stats.skills}
+          href="/admin/skills"
+          icon={<Award size={22} />}
+          color="#38BDF8"
+        />
+        <StatCard
+          label="Work Milestones"
+          count={stats.experience}
+          href="/admin/experience"
+          icon={<Briefcase size={22} />}
+          color="#A78BFA"
+        />
+        <StatCard
+          label="Unread Messages"
+          count={stats.messages}
+          href="/admin/messages"
+          icon={<MessageSquare size={22} />}
+          color="#34D399"
+          badge={stats.messages > 0 ? "Needs Reply" : "Inbox Clear"}
+        />
       </div>
       
-      <div className="glass-card mt-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/5 to-transparent z-0" />
-        <div className="relative z-10">
-          <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-3">
-            Quick Actions
-            <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent ml-4" />
-          </h2>
-          <div className="flex flex-wrap gap-4">
-            <Link href="/admin/profile" className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl transition-all font-medium">
-              Manage Profile <ArrowRight size={16} className="opacity-50" />
-            </Link>
-            <Link href="/admin/projects" className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl transition-all font-medium">
-              Manage Projects <ArrowRight size={16} className="opacity-50" />
-            </Link>
-            <Link href="/admin/experience" className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl transition-all font-medium">
-              Manage Experience <ArrowRight size={16} className="opacity-50" />
-            </Link>
-            <Link href="/admin/education" className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl transition-all font-medium">
-              Manage Education <ArrowRight size={16} className="opacity-50" />
-            </Link>
-            <Link href="/admin/skills" className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl transition-all font-medium">
-              Manage Skills <ArrowRight size={16} className="opacity-50" />
-            </Link>
-            <a href="/" target="_blank" className="flex items-center gap-2 px-6 py-3 ml-auto btn-primary rounded-xl">
-              View Live Site <ArrowRight size={18} />
-            </a>
-          </div>
+      {/* Quick Action Hub */}
+      <AdminCard
+        title="Portfolio Management Hub"
+        subtitle="Quick shortcuts to modify live portfolio modules with zero downtime."
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <ActionLink
+            title="Profile & Identity"
+            desc="Update name, bio, social handles, and resume URL."
+            href="/admin/profile"
+          />
+          <ActionLink
+            title="Projects & Showcase"
+            desc="Add new builds, screenshots, live URLs & GitHub links."
+            href="/admin/projects"
+          />
+          <ActionLink
+            title="Career Experience"
+            desc="Manage work timeline, responsibilities & tech stacks."
+            href="/admin/experience"
+          />
+          <ActionLink
+            title="Education & Degrees"
+            desc="Manage academic history, CGPA grades & institutions."
+            href="/admin/education"
+          />
+          <ActionLink
+            title="Technical Skills"
+            desc="Tune proficiency ratings and skill categories."
+            href="/admin/skills"
+          />
+          <ActionLink
+            title="Navigation Menu"
+            desc="Toggle nav links and customize resume download button."
+            href="/admin/navbar"
+          />
         </div>
-      </div>
+      </AdminCard>
     </div>
+  );
+}
+
+function StatCard({
+  label,
+  count,
+  href,
+  icon,
+  color,
+  badge,
+}: {
+  label: string;
+  count: number;
+  href: string;
+  icon: React.ReactNode;
+  color: string;
+  badge?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group relative rounded-2xl border border-white/[0.08] bg-[#0c101a]/80 backdrop-blur-xl p-6 flex flex-col justify-between hover:border-[var(--primary)]/40 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.5),0_0_24px_rgba(0,229,255,0.1)] transition-all duration-300"
+    >
+      <div className="flex items-center justify-between mb-6">
+        <div
+          className="w-12 h-12 rounded-xl flex items-center justify-center border border-white/10 transition-transform group-hover:scale-110"
+          style={{ background: `${color}15`, color, borderColor: `${color}30` }}
+        >
+          {icon}
+        </div>
+        {badge ? (
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            {badge}
+          </span>
+        ) : (
+          <ArrowRight size={16} className="text-slate-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+        )}
+      </div>
+
+      <div>
+        <div className="text-4xl font-black text-white tracking-tight group-hover:text-[var(--primary)] transition-colors">
+          {count}
+        </div>
+        <p className="text-xs md:text-sm text-slate-400 font-medium mt-1">{label}</p>
+      </div>
+    </Link>
+  );
+}
+
+function ActionLink({ title, desc, href }: { title: string; desc: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      className="group flex flex-col justify-between p-5 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05] hover:border-[var(--primary)]/30 transition-all duration-200"
+    >
+      <div>
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-bold text-white group-hover:text-[var(--primary)] transition-colors">
+            {title}
+          </h4>
+          <ArrowRight size={14} className="text-slate-500 group-hover:text-[var(--primary)] group-hover:translate-x-0.5 transition-all" />
+        </div>
+        <p className="text-xs text-slate-400 mt-2 leading-relaxed">{desc}</p>
+      </div>
+    </Link>
   );
 }

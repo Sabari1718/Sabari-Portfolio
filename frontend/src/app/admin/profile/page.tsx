@@ -7,6 +7,7 @@ import {
   User, Mail, Phone, MapPin, Globe, GitFork, Link2,
   Link as LinkIcon2, FileText, CheckCircle, AlertCircle, Loader2, Save
 } from "lucide-react";
+import { AdminPageHeader, AdminCard } from "@/components/admin/admin-ui";
 
 const EMPTY_PROFILE: Partial<Profile> = {
   name: "",
@@ -90,55 +91,58 @@ export default function ProfileAdmin() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold mb-8">
-          <span className="text-[var(--primary)] drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">Profile</span>{" "}
-          <span className="text-[#FDE047] drop-shadow-[0_0_8px_rgba(253,224,71,0.4)]">Settings</span>
-        </h1>
-      </div>
+    <div className="space-y-10 animate-fade-in max-w-5xl mx-auto">
+      <AdminPageHeader
+        badge="Developer Identity"
+        title="Profile"
+        titleAccent="Settings"
+        subtitle="Configure your public developer brand, headline, contact channels, resume link, and social profiles."
+        icon={<User size={13} />}
+      />
 
-      <form onSubmit={handleSave} className="flex flex-col gap-10">
+      <form onSubmit={handleSave} className="flex flex-col gap-8">
         {/* ── Basic Info ──────────────────────────────── */}
-        <Section title="Basic Information" icon={<User size={20} />}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <AdminCard title="Personal & Professional Identity" subtitle="Core identity details shown on the hero banner and navigation.">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Field
+                label="Full Name"
+                name="name"
+                value={form.name ?? ""}
+                onChange={handleChange}
+                placeholder="Sabarishwaran S"
+                required
+              />
+              <Field
+                label="Display Name"
+                name="display_name"
+                value={form.display_name ?? ""}
+                onChange={handleChange}
+                placeholder="Sabari (shown on portfolio logo & banner)"
+              />
+            </div>
             <Field
-              label="Full Name"
-              name="name"
-              value={form.name ?? ""}
+              label="Headline"
+              name="headline"
+              value={form.headline ?? ""}
               onChange={handleChange}
-              placeholder="Sabarishwaran S"
-              required
+              placeholder="e.g. Flutter Developer | Full-Stack Mobile Engineer"
             />
-            <Field
-              label="Display Name"
-              name="display_name"
-              value={form.display_name ?? ""}
-              onChange={handleChange}
-              placeholder="Sabari (shown on portfolio)"
-            />
+            <div className="space-y-2">
+              <label className="block text-xs md:text-sm font-semibold text-slate-200 tracking-wide">
+                Professional Bio & Summary
+              </label>
+              <textarea
+                name="bio"
+                value={form.bio ?? ""}
+                onChange={handleChange}
+                rows={5}
+                placeholder="Introduce yourself, your engineering philosophy, and what problems you solve..."
+                className="w-full bg-white/[0.04] border border-white/10 rounded-xl p-4 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all resize-none leading-relaxed"
+              />
+            </div>
           </div>
-          <Field
-            label="Headline"
-            name="headline"
-            value={form.headline ?? ""}
-            onChange={handleChange}
-            placeholder="Flutter Developer | Full-Stack Developer"
-          />
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-white/80" style={{ marginBottom: '10px', marginLeft: '4px' }}>Bio</label>
-            <textarea
-              name="bio"
-              value={form.bio ?? ""}
-              onChange={handleChange}
-              rows={5}
-              placeholder="Tell visitors about yourself..."
-              className="w-full bg-[#0a0a0a]/50 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-[#FDE047] focus:shadow-[0_0_10px_rgba(253,224,71,0.1)] transition-all resize-none"
-              style={{ paddingTop: '14px', paddingBottom: '14px', paddingLeft: '16px', paddingRight: '16px' }}
-            />
-          </div>
-        </Section>
+        </AdminCard>
 
         {/* ── Contact Info ────────────────────────────── */}
         <Section title="Contact Information" icon={<Mail size={20} />}>

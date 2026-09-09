@@ -8,6 +8,7 @@ import {
   Plus, Edit2, Trash2, Loader2, CheckCircle, AlertCircle,
   X, GraduationCap, Calendar
 } from "lucide-react";
+import { AdminPageHeader, AdminModal, AdminField, AdminDateField } from "@/components/admin/admin-ui";
 
 const EMPTY_EDU = {
   institution: "",
@@ -145,215 +146,193 @@ export default function AdminEducation() {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-extrabold text-white mb-1">Education</h1>
-          <p className="text-[var(--text-secondary)]">
-            {items.length} record{items.length !== 1 ? "s" : ""} · Saved to MySQL
-          </p>
-        </div>
-        <button onClick={openAdd}
-          className="flex items-center gap-2 px-6 py-3 bg-[#FDE047] text-black font-bold rounded-xl hover:bg-[#FDE047]/90 hover:shadow-[0_0_20px_rgba(253,224,71,0.4)] transition-all">
-          <Plus size={18} /> Add Education
-        </button>
-      </div>
+    <div className="space-y-10 animate-fade-in">
+      <AdminPageHeader
+        badge="Academic History"
+        title="Education &"
+        titleAccent="Qualifications"
+        subtitle={`Academic foundations, university degrees, and engineering certifications. (${items.length} records)`}
+        icon={<GraduationCap size={13} />}
+        action={
+          <button
+            onClick={openAdd}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[#00B8D4] text-black font-bold text-sm shadow-[0_0_20px_rgba(0,229,255,0.3)] hover:shadow-[0_0_30px_rgba(0,229,255,0.5)] transition-all cursor-pointer"
+          >
+            <Plus size={18} />
+            <span>Add Education</span>
+          </button>
+        }
+      />
 
-      <div className="space-y-4">
+      {/* List Grid */}
+      <div>
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-[var(--primary)]" size={32} />
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="animate-spin text-[var(--primary)]" size={36} />
           </div>
         ) : items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4 text-[var(--text-secondary)] bg-white/[0.03] border border-white/10 rounded-2xl">
-            <GraduationCap size={48} className="opacity-30" />
-            <p className="text-lg">No education records yet.</p>
-            <button onClick={openAdd} className="text-[#FDE047] hover:underline text-sm">Add your first record →</button>
+          <div className="flex flex-col items-center justify-center py-20 gap-4 text-slate-400 bg-white/[0.02] border border-white/[0.08] rounded-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500">
+              <GraduationCap size={28} />
+            </div>
+            <p className="text-base font-semibold text-white">No education records yet</p>
+            <p className="text-sm text-slate-400 max-w-sm text-center">Add your degree, college, CGPA, and coursework details.</p>
+            <button
+              onClick={openAdd}
+              className="mt-2 text-[var(--primary)] hover:underline text-sm font-bold cursor-pointer"
+            >
+              + Add First Qualification
+            </button>
           </div>
         ) : (
-          items.map((item) => (
-            <div key={item.id}
-              className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 flex flex-col md:flex-row gap-4 hover:border-white/20 transition-colors group">
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-white">{item.institution}</h3>
-                {(item.degree || item.field) && (
-                  <p className="text-[#FDE047] font-medium mt-0.5">
-                    {[item.degree, item.field].filter(Boolean).join(" · ")}
-                  </p>
-                )}
-                <div className="flex flex-wrap gap-4 text-sm text-white/50 mt-2">
-                  <span className="flex items-center gap-1.5">
-                    <Calendar size={13} />
-                    {formatDate(item.start_date)} — {formatDate(item.end_date)}
-                  </span>
-                  {item.grade && <span>Grade: {item.grade}</span>}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-2xl border border-white/[0.08] bg-[#0c101a]/80 backdrop-blur-xl p-6 md:p-8 hover:border-[var(--primary)]/30 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-200 group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="w-11 h-11 rounded-xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 flex items-center justify-center text-[var(--primary)] shrink-0">
+                      <GraduationCap size={22} />
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => openEdit(item)}
+                        className="p-2 rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                        title="Edit Education"
+                      >
+                        <Edit2 size={15} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id, item.institution)}
+                        disabled={deletingId === item.id}
+                        className="p-2 rounded-lg border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all disabled:opacity-40 cursor-pointer"
+                        title="Delete Education"
+                      >
+                        {deletingId === item.id ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <h3 className="text-lg md:text-xl font-bold text-white tracking-tight leading-snug mb-1">
+                    {item.degree || "Degree"}
+                    {item.field ? ` in ${item.field}` : ""}
+                  </h3>
+                  <p className="text-sm font-semibold text-[var(--primary)] mb-3">{item.institution}</p>
+
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 font-mono mb-4">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10">
+                      <Calendar size={12} className="text-[var(--primary)]" />
+                      {formatDate(item.start_date)} — {formatDate(item.end_date)}
+                    </span>
+                    {item.grade && (
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 font-bold">
+                        CGPA: {item.grade}
+                      </span>
+                    )}
+                  </div>
+
+                  {item.description && (
+                    <p className="text-xs md:text-sm text-slate-300 leading-relaxed pt-3 border-t border-white/5">
+                      {item.description}
+                    </p>
+                  )}
                 </div>
-                {item.description && (
-                  <p className="text-sm text-white/60 mt-3 line-clamp-2">{item.description}</p>
-                )}
               </div>
-              <div className="flex md:flex-col gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => openEdit(item)}
-                  className="p-2.5 text-white/40 hover:text-[#FDE047] hover:bg-[#FDE047]/10 rounded-xl transition-all" title="Edit">
-                  <Edit2 size={16} />
-                </button>
-                <button onClick={() => handleDelete(item.id, item.institution)}
-                  disabled={deletingId === item.id}
-                  className="p-2.5 text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all disabled:opacity-50" title="Delete">
-                  {deletingId === item.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
-                </button>
-              </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
 
-      {modalOpen && createPortal(
-        <div style={{position:'fixed',inset:0,zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px',background:'rgba(0,0,0,0.85)',backdropFilter:'blur(6px)'}}>
-          <div style={{background:'#121212',border:'1px solid rgba(245,197,66,0.35)',boxShadow:'0 0 60px rgba(245,197,66,0.2)',borderRadius:'16px',width:'100%',maxWidth:'640px',display:'flex',flexDirection:'column',maxHeight:'90vh'}}>
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 rounded-t-2xl">
-              <span className="text-xl font-bold text-white">{editing ? "Edit Education" : "Add Education"}</span>
-              <button type="button" onClick={closeModal} className="text-white/40 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
-              <div className="flex-1 overflow-y-auto p-6 space-y-5">
-              <EField label="Institution *" name="institution" value={form.institution} onChange={handleChange} placeholder="Anna University" required />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <EField label="Degree" name="degree" value={form.degree} onChange={handleChange} placeholder="B.E. / B.Tech / BSc" />
-                <EField label="Field of Study" name="field" value={form.field} onChange={handleChange} placeholder="Computer Science" />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <DatePickerField label="Start Date" name="start_date" value={form.start_date} onChange={handleChange} />
-                <DatePickerField label="End Date" name="end_date" value={form.end_date} onChange={handleChange} />
-              </div>
-              <EField label="Grade / CGPA" name="grade" value={form.grade} onChange={handleChange} placeholder="8.5 CGPA / 85%" />
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-white/80">Description</label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows={3}
-                  placeholder="Activities, achievements, notable courses..."
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--primary)] transition-all resize-none" />
-              </div>
-
-              <EField label="Display Order" name="display_order" value={String(form.display_order)} onChange={handleChange} type="number" placeholder="0" />
-
-              {saveStatus === "error" && (
-                <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
-                  <AlertCircle size={16} /> {errorMsg}
-                </div>
-              )}
-              {saveStatus === "success" && (
-                <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 text-sm">
-                  <CheckCircle size={16} /> Saved to MySQL!
-                </div>
-              )}
-
-              </div>
-
-              <div className="flex gap-3 px-6 py-5 border-t border-white/10 shrink-0 rounded-b-2xl">
-                <button type="submit" disabled={saveStatus === "saving"}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#F5C542] text-black font-bold rounded-xl hover:bg-[#F5C542]/90 transition-all disabled:opacity-60">
-                  {saveStatus === "saving" ? <Loader2 size={17} className="animate-spin" /> : <CheckCircle size={17} />}
-                  {saveStatus === "saving" ? "Saving..." : editing ? "Save Changes" : "Add Education"}
-                </button>
-                <button type="button" onClick={closeModal}
-                  className="flex-1 py-3 border border-white/10 text-white/60 rounded-xl hover:bg-white/5 hover:text-white transition-all">
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>,
-        document.body
-      )}
-    </div>
-  );
-}
-
-function DatePickerField({
-  label,
-  name,
-  value,
-  onChange,
-  required,
-}: {
-  label: string;
-  name: string;
-  value: string;
-  onChange: (e: any) => void;
-  required?: boolean;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const openCalendar = () => {
-    try {
-      inputRef.current?.showPicker?.();
-    } catch {
-      inputRef.current?.focus();
-    }
-  };
-
-  return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center">
-        <label className="block text-sm font-medium text-white/80">{label}</label>
-        <span
-          onClick={openCalendar}
-          className="text-[11px] text-[#F5C542] hover:underline cursor-pointer flex items-center gap-1 font-medium"
-        >
-          Open Calendar
-        </span>
-      </div>
-      <div
-        onClick={openCalendar}
-        className="relative flex items-center w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 cursor-pointer hover:border-[#F5C542]/50 hover:bg-white/[0.08] transition-all group"
+      {/* Roomy Modal */}
+      <AdminModal
+        open={modalOpen}
+        onClose={closeModal}
+        title={editing ? "Edit Academic Qualification" : "Add Education Record"}
+        subtitle="Specify institution, degree program, graduation dates, and academic grade achievements."
+        onSubmit={handleSave}
+        submitLabel={editing ? "Save Qualification" : "Add Qualification"}
+        isSaving={saveStatus === "saving"}
+        saveStatus={saveStatus}
+        errorMsg={errorMsg}
+        maxWidth="3xl"
       >
-        <input
-          ref={inputRef}
-          type="date"
-          name={name}
-          value={value}
-          onChange={onChange}
-          required={required}
-          onClick={(e) => {
-            e.stopPropagation();
-            try {
-              (e.currentTarget as any).showPicker?.();
-            } catch {}
-          }}
-          className="w-full bg-transparent text-white font-medium focus:outline-none cursor-pointer [color-scheme:dark]"
+        <AdminField
+          label="Institution / University Name"
+          name="institution"
+          value={form.institution}
+          onChange={handleChange}
+          placeholder="e.g. Anna University, PSG College of Technology"
+          required
         />
-        <button
-          type="button"
-          tabIndex={-1}
-          onClick={(e) => {
-            e.stopPropagation();
-            openCalendar();
-          }}
-          className="p-1 text-white/40 group-hover:text-[#F5C542] hover:bg-white/10 rounded-lg transition-all ml-1 shrink-0 cursor-pointer"
-          title="Pick date from calendar"
-        >
-          <Calendar size={18} />
-        </button>
-      </div>
-    </div>
-  );
-}
 
-function EField({ label, name, value, onChange, placeholder, type = "text", required }: {
-  label: string; name: string; value: string; onChange: (e: any) => void;
-  placeholder?: string; type?: string; required?: boolean;
-}) {
-  return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-white/80">{label}</label>
-      <input type={type} name={name} value={value} onChange={onChange} placeholder={placeholder} required={required}
-        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--primary)] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.1)] transition-all" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <AdminField
+            label="Degree Program"
+            name="degree"
+            value={form.degree}
+            onChange={handleChange}
+            placeholder="e.g. B.Tech / B.E. / BSc"
+          />
+          <AdminField
+            label="Field of Study / Major"
+            name="field"
+            value={form.field}
+            onChange={handleChange}
+            placeholder="e.g. Information Technology, Computer Science"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <AdminDateField
+            label="Start Date"
+            name="start_date"
+            value={form.start_date}
+            onChange={handleChange}
+          />
+          <AdminDateField
+            label="End Date (or Expected)"
+            name="end_date"
+            value={form.end_date}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <AdminField
+            label="Grade / CGPA"
+            name="grade"
+            value={form.grade}
+            onChange={handleChange}
+            placeholder="e.g. 8.5 CGPA or 85%"
+          />
+          <AdminField
+            label="Display Order"
+            name="display_order"
+            value={String(form.display_order)}
+            onChange={handleChange}
+            type="number"
+            placeholder="0"
+            helperText="Lower order displays higher"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-xs md:text-sm font-semibold text-slate-200 tracking-wide">
+            Description & Honors
+          </label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows={3}
+            placeholder="Key subjects, final year projects, leadership activities, club roles..."
+            className="w-full bg-white/[0.04] border border-white/10 rounded-xl p-4 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all resize-none leading-relaxed"
+          />
+        </div>
+      </AdminModal>
     </div>
   );
 }

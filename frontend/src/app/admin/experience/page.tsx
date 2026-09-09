@@ -8,6 +8,7 @@ import {
   Plus, Edit2, Trash2, Loader2, CheckCircle, AlertCircle,
   X, Briefcase, MapPin, Calendar
 } from "lucide-react";
+import { AdminPageHeader, AdminModal, AdminField, AdminDateField } from "@/components/admin/admin-ui";
 
 const EMPTY_EXP = {
   company: "",
@@ -169,81 +170,121 @@ export default function AdminExperience() {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-extrabold text-white mb-1">Experience</h1>
-          <p className="text-[var(--text-secondary)]">
-            {items.length} position{items.length !== 1 ? "s" : ""} · Saved to MySQL
-          </p>
-        </div>
-        <button onClick={openAdd}
-          className="flex items-center gap-2 px-6 py-3 bg-[#FDE047] text-black font-bold rounded-xl hover:bg-[#FDE047]/90 hover:shadow-[0_0_20px_rgba(253,224,71,0.4)] transition-all">
-          <Plus size={18} /> Add Experience
-        </button>
-      </div>
+    <div className="space-y-10 animate-fade-in">
+      <AdminPageHeader
+        badge="Career Milestones"
+        title="Work"
+        titleAccent="Experience"
+        subtitle={`Track and manage professional positions, production achievements, and technologies. (${items.length} recorded)`}
+        icon={<Briefcase size={13} />}
+        action={
+          <button
+            onClick={openAdd}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[#00B8D4] text-black font-bold text-sm shadow-[0_0_20px_rgba(0,229,255,0.3)] hover:shadow-[0_0_30px_rgba(0,229,255,0.5)] transition-all cursor-pointer"
+          >
+            <Plus size={18} />
+            <span>Add Experience</span>
+          </button>
+        }
+      />
 
       {/* List */}
-      <div className="space-y-4">
+      <div className="space-y-5">
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-[var(--primary)]" size={32} />
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="animate-spin text-[var(--primary)]" size={36} />
           </div>
         ) : items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4 text-[var(--text-secondary)] bg-white/[0.03] border border-white/10 rounded-2xl">
-            <Briefcase size={48} className="opacity-30" />
-            <p className="text-lg">No experience records yet.</p>
-            <button onClick={openAdd} className="text-[#FDE047] hover:underline text-sm">Add your first position →</button>
+          <div className="flex flex-col items-center justify-center py-20 gap-4 text-slate-400 bg-white/[0.02] border border-white/[0.08] rounded-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500">
+              <Briefcase size={28} />
+            </div>
+            <p className="text-base font-semibold text-white">No experience entries found</p>
+            <p className="text-sm text-slate-400 max-w-sm text-center">Add your professional work history so clients and recruiters can review your achievements.</p>
+            <button
+              onClick={openAdd}
+              className="mt-2 text-[var(--primary)] hover:underline text-sm font-bold cursor-pointer"
+            >
+              + Create First Position
+            </button>
           </div>
         ) : (
           items.map((item) => (
-            <div key={item.id}
-              className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 flex flex-col md:flex-row gap-4 hover:border-white/20 transition-colors group">
-              <div className="flex-1">
-                <div className="flex flex-wrap items-start gap-3 mb-2">
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{item.role}</h3>
-                    <p className="text-[#FDE047] font-medium">{item.company}</p>
-                  </div>
-                  {Boolean(item.currently_working) ? (
-                    <span className="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-xs font-semibold">
-                      Current
-                    </span>
-                  ) : null}
-                </div>
-                <div className="flex flex-wrap gap-4 text-sm text-white/50 mb-3">
-                  {item.location && (
-                    <span className="flex items-center gap-1.5">
-                      <MapPin size={13} /> {item.location}
-                    </span>
+            <div
+              key={item.id}
+              className="rounded-2xl border border-white/[0.08] bg-[#0c101a]/80 backdrop-blur-xl p-6 md:p-8 hover:border-[var(--primary)]/30 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-200 group flex flex-col md:flex-row items-start justify-between gap-6"
+            >
+              <div className="flex items-start gap-5 flex-1 min-w-0">
+                {/* Logo Avatar */}
+                <div className="w-12 h-12 rounded-2xl bg-[var(--primary)]/10 border border-[var(--primary)]/25 flex items-center justify-center text-[var(--primary)] shrink-0 overflow-hidden mt-1">
+                  {item.logo_url ? (
+                    <img src={item.logo_url} alt={item.company} className="w-full h-full object-cover" />
+                  ) : (
+                    <Briefcase size={20} />
                   )}
-                  <span className="flex items-center gap-1.5">
-                    <Calendar size={13} />
-                    {formatDate(item.start_date)} — {item.currently_working ? "Present" : formatDate(item.end_date)}
-                  </span>
                 </div>
-                {item.description && (
-                  <p className="text-sm text-white/60 line-clamp-2">{item.description}</p>
-                )}
-                {item.technologies && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {item.technologies.split(",").map((t) => t.trim()).filter(Boolean).map((t) => (
-                      <span key={t} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/60">
-                        {t}
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-3 mb-1.5">
+                    <h3 className="text-xl font-bold text-white tracking-tight">{item.role}</h3>
+                    {Boolean(item.currently_working) ? (
+                      <span className="px-3 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 rounded-full text-xs font-bold tracking-wide">
+                        ● Current Role
                       </span>
-                    ))}
+                    ) : null}
                   </div>
-                )}
+
+                  <p className="text-base font-semibold text-[var(--primary)] mb-3">{item.company}</p>
+
+                  <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm text-slate-400 mb-4 font-mono">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Calendar size={13} className="text-[var(--primary)]" />
+                      {formatDate(item.start_date)} — {item.currently_working ? "Present" : formatDate(item.end_date)}
+                    </span>
+                    {item.location && (
+                      <span className="inline-flex items-center gap-1.5">
+                        <MapPin size={13} className="text-[#F5C542]" />
+                        {item.location}
+                      </span>
+                    )}
+                  </div>
+
+                  {item.description && (
+                    <p className="text-sm text-slate-300 leading-relaxed max-w-4xl mb-4 whitespace-pre-line">
+                      {item.description}
+                    </p>
+                  )}
+
+                  {item.technologies && (
+                    <div className="flex flex-wrap gap-2 pt-2 border-t border-white/5">
+                      {item.technologies.split(",").map((t) => t.trim()).filter(Boolean).map((t) => (
+                        <span
+                          key={t}
+                          className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-medium text-slate-300"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="flex md:flex-col gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => openEdit(item)}
-                  className="p-2.5 text-white/40 hover:text-[#FDE047] hover:bg-[#FDE047]/10 rounded-xl transition-all" title="Edit">
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 self-end md:self-start shrink-0 pt-2 md:pt-0">
+                <button
+                  onClick={() => openEdit(item)}
+                  className="p-2.5 rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer"
+                  title="Edit Experience"
+                >
                   <Edit2 size={16} />
                 </button>
-                <button onClick={() => handleDelete(item.id, item.company)}
+                <button
+                  onClick={() => handleDelete(item.id, item.company)}
                   disabled={deletingId === item.id}
-                  className="p-2.5 text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all disabled:opacity-50" title="Delete">
+                  className="p-2.5 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all disabled:opacity-40 cursor-pointer"
+                  title="Delete Experience"
+                >
                   {deletingId === item.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                 </button>
               </div>
@@ -252,186 +293,125 @@ export default function AdminExperience() {
         )}
       </div>
 
-      {/* Modal */}
-      {modalOpen && createPortal(
-        <div style={{position:'fixed',inset:0,zIndex:99999,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px',background:'rgba(0,0,0,0.85)',backdropFilter:'blur(6px)'}}>
-          <div style={{background:'#121212',border:'1px solid rgba(245,197,66,0.35)',boxShadow:'0 0 60px rgba(245,197,66,0.2)',borderRadius:'16px',width:'100%',maxWidth:'640px',display:'flex',flexDirection:'column',maxHeight:'90vh'}}>
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0 rounded-t-2xl">
-              <span className="text-xl font-bold text-white">{editing ? "Edit Experience" : "Add Experience"}</span>
-              <button type="button" onClick={closeModal} className="text-white/40 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
-              <div className="flex-1 overflow-y-auto p-6 space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <MField label="Company *" name="company" value={form.company} onChange={handleChange} placeholder="Google" required />
-                <MField label="Role *" name="role" value={form.role} onChange={handleChange} placeholder="Software Engineer" required />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <MField label="Location" name="location" value={form.location} onChange={handleChange} placeholder="Bangalore, India" />
-                <MField label="Company Logo URL" name="logo_url" value={form.logo_url} onChange={handleChange} placeholder="https://..." type="url" />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <DatePickerField
-                  label="Start Date *"
-                  name="start_date"
-                  value={form.start_date}
-                  onChange={handleChange}
-                  required
-                />
-                <DatePickerField
-                  label="End Date"
-                  name="end_date"
-                  value={form.end_date}
-                  onChange={handleChange}
-                  disabled={form.currently_working}
-                  helperText={form.currently_working ? "Present (currently working)" : undefined}
-                />
-              </div>
-
-              <label className="flex items-center gap-3 cursor-pointer select-none">
-                <input type="checkbox" name="currently_working" checked={form.currently_working} onChange={handleChange} className="w-4 h-4 accent-[#FDE047] cursor-pointer" />
-                <span className="text-sm text-white/80">Currently working here</span>
-              </label>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-white/80">Description</label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows={4}
-                  placeholder="What did you work on? Key responsibilities..."
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--primary)] transition-all resize-none" />
-              </div>
-
-              <MField label="Technologies (comma separated)" name="technologies" value={form.technologies} onChange={handleChange} placeholder="React, Node.js, MySQL" />
-              <MField label="Display Order" name="display_order" value={String(form.display_order)} onChange={handleChange} type="number" placeholder="0" />
-
-              {saveStatus === "error" && (
-                <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
-                  <AlertCircle size={16} /> {errorMsg}
-                </div>
-              )}
-              {saveStatus === "success" && (
-                <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 text-sm">
-                  <CheckCircle size={16} /> Saved to MySQL!
-                </div>
-              )}
-
-              </div>
-
-              <div className="flex gap-3 px-6 py-5 border-t border-white/10 shrink-0 rounded-b-2xl">
-                <button type="submit" disabled={saveStatus === "saving"}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#F5C542] text-black font-bold rounded-xl hover:bg-[#F5C542]/90 transition-all disabled:opacity-60">
-                  {saveStatus === "saving" ? <Loader2 size={17} className="animate-spin" /> : <CheckCircle size={17} />}
-                  {saveStatus === "saving" ? "Saving..." : editing ? "Save Changes" : "Add Experience"}
-                </button>
-                <button type="button" onClick={closeModal}
-                  className="flex-1 py-3 border border-white/10 text-white/60 rounded-xl hover:bg-white/5 hover:text-white transition-all">
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>,
-        document.body
-      )}
-    </div>
-  );
-}
-
-function DatePickerField({
-  label,
-  name,
-  value,
-  onChange,
-  required,
-  disabled,
-  helperText,
-}: {
-  label: string;
-  name: string;
-  value: string;
-  onChange: (e: any) => void;
-  required?: boolean;
-  disabled?: boolean;
-  helperText?: string;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const openCalendar = () => {
-    if (disabled) return;
-    try {
-      inputRef.current?.showPicker?.();
-    } catch {
-      inputRef.current?.focus();
-    }
-  };
-
-  return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center">
-        <label className="block text-sm font-medium text-white/80">{label}</label>
-        {helperText ? (
-          <span className="text-[11px] text-white/40">{helperText}</span>
-        ) : !disabled ? (
-          <span
-            onClick={openCalendar}
-            className="text-[11px] text-[#F5C542] hover:underline cursor-pointer flex items-center gap-1 font-medium"
-          >
-            Open Calendar
-          </span>
-        ) : null}
-      </div>
-      <div
-        onClick={openCalendar}
-        className={`relative flex items-center w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 cursor-pointer hover:border-[#F5C542]/50 hover:bg-white/[0.08] transition-all group ${
-          disabled ? "opacity-30 cursor-not-allowed pointer-events-none" : ""
-        }`}
+      {/* Spacious Modal */}
+      <AdminModal
+        open={modalOpen}
+        onClose={closeModal}
+        title={editing ? "Edit Position" : "Add Experience Milestone"}
+        subtitle="Fill in company, role, dates and achievements. Dates support instant click-to-calendar selection."
+        onSubmit={handleSave}
+        submitLabel={editing ? "Save Position" : "Add Position"}
+        isSaving={saveStatus === "saving"}
+        saveStatus={saveStatus}
+        errorMsg={errorMsg}
+        maxWidth="3xl"
       >
-        <input
-          ref={inputRef}
-          type="date"
-          name={name}
-          value={value}
-          onChange={onChange}
-          required={required}
-          disabled={disabled}
-          onClick={(e) => {
-            e.stopPropagation();
-            try {
-              (e.currentTarget as any).showPicker?.();
-            } catch {}
-          }}
-          className="w-full bg-transparent text-white font-medium focus:outline-none cursor-pointer [color-scheme:dark]"
-        />
-        <button
-          type="button"
-          tabIndex={-1}
-          onClick={(e) => {
-            e.stopPropagation();
-            openCalendar();
-          }}
-          className="p-1 text-white/40 group-hover:text-[#F5C542] hover:bg-white/10 rounded-lg transition-all ml-1 shrink-0 cursor-pointer"
-          title="Pick date from calendar"
-        >
-          <Calendar size={18} />
-        </button>
-      </div>
-    </div>
-  );
-}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <AdminField
+            label="Company Name"
+            name="company"
+            value={form.company}
+            onChange={handleChange}
+            placeholder="e.g. Google, Rabbit QR, Freelance"
+            required
+          />
+          <AdminField
+            label="Role / Title"
+            name="role"
+            value={form.role}
+            onChange={handleChange}
+            placeholder="e.g. Flutter Developer, Tech Lead"
+            required
+          />
+        </div>
 
-function MField({ label, name, value, onChange, placeholder, type = "text", required }: {
-  label: string; name: string; value: string; onChange: (e: any) => void;
-  placeholder?: string; type?: string; required?: boolean;
-}) {
-  return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-white/80">{label}</label>
-      <input type={type} name={name} value={value} onChange={onChange} placeholder={placeholder} required={required}
-        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--primary)] focus:shadow-[0_0_0_2px_rgba(0,229,255,0.1)] transition-all" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <AdminField
+            label="Location"
+            name="location"
+            value={form.location}
+            onChange={handleChange}
+            placeholder="e.g. Coimbatore, Tamil Nadu, Remote"
+          />
+          <AdminField
+            label="Company Logo URL"
+            name="logo_url"
+            value={form.logo_url}
+            onChange={handleChange}
+            placeholder="https://... logo.png"
+            type="url"
+          />
+        </div>
+
+        <div className="p-5 rounded-2xl border border-white/[0.08] bg-white/[0.02] space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <AdminDateField
+              label="Start Date"
+              name="start_date"
+              value={form.start_date}
+              onChange={handleChange}
+              required
+            />
+            <AdminDateField
+              label="End Date"
+              name="end_date"
+              value={form.end_date}
+              onChange={handleChange}
+              disabled={form.currently_working}
+              helperText={form.currently_working ? "Disabled (currently working here)" : undefined}
+            />
+          </div>
+
+          <label className="flex items-center gap-3 cursor-pointer pt-2 select-none">
+            <input
+              type="checkbox"
+              name="currently_working"
+              checked={form.currently_working}
+              onChange={handleChange}
+              className="w-4 h-4 accent-[var(--primary)] cursor-pointer"
+            />
+            <span className="text-sm font-medium text-slate-200">I am currently working in this role</span>
+          </label>
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-xs md:text-sm font-semibold text-slate-200 tracking-wide">
+            Responsibilities & Impact
+          </label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows={4}
+            placeholder="Highlight key responsibilities, features shipped, API integrations, and outcomes..."
+            className="w-full bg-white/[0.04] border border-white/10 rounded-xl p-4 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all resize-none leading-relaxed"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2">
+            <AdminField
+              label="Technologies"
+              name="technologies"
+              value={form.technologies}
+              onChange={handleChange}
+              placeholder="e.g. Flutter, Dart, REST API, Postman"
+              helperText="Comma-separated skills"
+            />
+          </div>
+          <div>
+            <AdminField
+              label="Display Order"
+              name="display_order"
+              value={String(form.display_order)}
+              onChange={handleChange}
+              type="number"
+              placeholder="0"
+              helperText="Lower numbers show first"
+            />
+          </div>
+        </div>
+      </AdminModal>
     </div>
   );
 }
