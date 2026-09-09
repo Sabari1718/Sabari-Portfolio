@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Profile } from "@/types";
-import { Download, ArrowDown, MapPin, Briefcase } from "lucide-react";
+import { Download, ArrowDown, MapPin, Briefcase, Terminal } from "lucide-react";
 import { getFileUrl } from "@/services/api";
 import { CountUp } from "@/components/ui/CountUp";
 import { extractProfileStats } from "@/lib/profile-stats";
@@ -81,14 +81,19 @@ export function HeroSection({ profile, projectCount }: Props) {
               </motion.div>
             )}
 
-            {/* Greeting / Subheading */}
-            <p className="text-[var(--primary)] font-bold tracking-[0.25em] uppercase text-sm md:text-base mb-4">
-              {profileStats.greeting_text || "Hello, I'm"}
-            </p>
+            {/* Greeting / Subheading with Developer Terminal Style */}
+            <div className="flex justify-center lg:justify-start mb-4">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 font-mono text-xs md:text-sm shadow-[0_0_15px_rgba(0,229,255,0.15)] backdrop-blur-md">
+                <Terminal size={14} className="text-cyan-400 animate-pulse flex-shrink-0" />
+                <span className="text-slate-400 font-semibold">//</span>
+                <span className="font-bold tracking-wider text-cyan-300 uppercase">{profileStats.greeting_text || "Hello, I'm"}</span>
+              </div>
+            </div>
 
-            {/* Name */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight">
+            {/* Name with Developer Aesthetic */}
+            <h1 className="hero-developer-name text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 leading-tight tracking-tight">
               {profile?.display_name || profile?.name || "Sabarishwaran S"}
+              <span className="hero-dev-dot">.</span>
             </h1>
 
             {/* Animated Title */}
@@ -244,22 +249,30 @@ function AnimatedTitles({ titles }: { titles: string[] }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((i) => (i + 1) % titles.length);
-    }, 2500);
+    }, 2800);
     return () => clearInterval(interval);
   }, [titles.length]);
 
   return (
-    <div className="h-20 md:h-24 overflow-hidden mb-4">
-      <motion.h2
-        key={index}
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -40, opacity: 0 }}
-        transition={{ duration: 0.4 }}
-        className="text-xl md:text-2xl lg:text-3xl font-bold text-[var(--primary)]"
-      >
-        {titles[index]}
-      </motion.h2>
+    <div className="hero-role-wrapper flex items-center justify-center lg:justify-start min-h-[3.75rem] md:min-h-[4.25rem] mb-4">
+      <div className="hero-role-inner flex items-center gap-1.5 sm:gap-2">
+        <span className="hero-role-tag">&lt;</span>
+        <div className="overflow-hidden py-1">
+          <motion.div
+            key={index}
+            initial={{ y: 28, opacity: 0, filter: "blur(4px)" }}
+            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+            exit={{ y: -28, opacity: 0, filter: "blur(4px)" }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+          >
+            <span className="hero-developer-title">
+              {titles[index]}
+            </span>
+          </motion.div>
+        </div>
+        <span className="hero-role-tag">/&gt;</span>
+        <span className="hero-dev-cursor" />
+      </div>
     </div>
   );
 }
