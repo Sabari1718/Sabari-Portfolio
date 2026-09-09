@@ -36,8 +36,42 @@ export default async function Home() {
         socialLinks={socialLinks}
       />
 
-      <footer className="footer">
-        <p>© {new Date().getFullYear()} {profile?.name || 'Sabarishwaran S'}. Built with ❤️ using Next.js & Node.js</p>
+      <footer className="footer border-t border-white/5 py-8">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs md:text-sm text-slate-400">
+          <p>© {new Date().getFullYear()} {profile?.name || 'Sabarishwaran S'}. Built with ❤️ using Next.js & Node.js</p>
+          <div className="flex items-center gap-5 font-medium">
+            <a
+              href={profile?.github_url || "https://github.com/Sabari1718"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 hover:text-[var(--primary)] transition-colors"
+            >
+              GitHub ↗
+            </a>
+            <span className="text-white/20">•</span>
+            <a
+              href={profile?.linkedin_url || "https://linkedin.com/in/sabarishwaran"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 hover:text-[var(--primary)] transition-colors"
+            >
+              LinkedIn ↗
+            </a>
+            {profile?.resume_url && (
+              <>
+                <span className="text-white/20">•</span>
+                <a
+                  href={profile.resume_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-300 hover:text-[#F5C542] transition-colors"
+                >
+                  Resume ↗
+                </a>
+              </>
+            )}
+          </div>
+        </div>
       </footer>
     </main>
   );

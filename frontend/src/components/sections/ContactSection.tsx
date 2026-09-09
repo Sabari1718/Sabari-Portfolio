@@ -125,26 +125,62 @@ export function ContactSection({
             ))}
           </div>
 
-          {/* Social Links from DB */}
-          {socialLinks.length > 0 && (
-            <div className="pt-6 border-t border-white/10">
-              <p className="text-xs text-[var(--text-secondary)] uppercase tracking-widest mb-4">Connect</p>
-              <div className="flex flex-wrap gap-3">
-                {socialLinks.map((link) => (
-                  <a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/70 hover:text-white hover:border-[var(--primary)]/50 hover:bg-[var(--primary)]/10 transition-all duration-300 text-sm font-medium"
-                  >
-                    <SocialIcon platform={link.platform} />
-                    {link.platform}
-                  </a>
-                ))}
-              </div>
+          {/* Social Profiles & Developer Links */}
+          <div className="pt-6 border-t border-white/10" style={{ marginTop: '16px' }}>
+            <p className="text-xs text-[var(--text-secondary)] uppercase tracking-widest font-semibold mb-4">
+              Connect With Me
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href={profile?.github_url || "https://github.com/Sabari1718"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/80 hover:text-white hover:border-[var(--primary)]/50 hover:bg-[var(--primary)]/10 hover:shadow-[0_0_20px_rgba(0,229,255,0.2)] transition-all duration-300 text-sm font-semibold group cursor-pointer"
+              >
+                <GithubIcon size={18} className="text-white group-hover:text-[var(--primary)] transition-colors" />
+                <span>GitHub</span>
+                <ExternalLink size={12} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+              </a>
+
+              <a
+                href={profile?.linkedin_url || "https://linkedin.com/in/sabarishwaran"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/80 hover:text-white hover:border-[#0077B5]/60 hover:bg-[#0077B5]/15 hover:shadow-[0_0_20px_rgba(0,119,181,0.25)] transition-all duration-300 text-sm font-semibold group cursor-pointer"
+              >
+                <LinkedinIcon size={18} className="text-[#38BDF8] group-hover:text-white transition-colors" />
+                <span>LinkedIn</span>
+                <ExternalLink size={12} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+              </a>
+
+              {profile?.twitter_url && (
+                <a
+                  href={profile.twitter_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/80 hover:text-white hover:border-white/30 hover:bg-white/10 transition-all duration-300 text-sm font-semibold group cursor-pointer"
+                >
+                  <GlobeIcon size={18} className="text-slate-300" />
+                  <span>Twitter / X</span>
+                  <ExternalLink size={12} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+                </a>
+              )}
+
+              {socialLinks.map((link) => (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/80 hover:text-white hover:border-[var(--primary)]/50 hover:bg-[var(--primary)]/10 transition-all duration-300 text-sm font-semibold group cursor-pointer"
+                >
+                  <SocialIcon platform={link.platform} />
+                  <span>{link.platform}</span>
+                  <ExternalLink size={12} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+                </a>
+              ))}
             </div>
-          )}
+          </div>
         </motion.div>
 
         {/* Right: Form */}
