@@ -196,7 +196,7 @@ export function ContactSection({
                 <div className="grid md:grid-cols-2" style={{ gap: '24px' }}>
                   <div className="flex flex-col gap-2">
                     <label htmlFor="name" className="text-sm text-white/70 font-medium">Your Name</label>
-                    <Input id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="Sabarishwaran" />
+                    <Input id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="Enter your name" />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label htmlFor="email" className="text-sm text-white/70 font-medium">Email Address</label>
