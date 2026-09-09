@@ -171,13 +171,21 @@ export function HeroSection({ profile, projectCount }: Props) {
             transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
             className="flex-shrink-0 flex justify-center"
           >
-            <div className="profile-photo-wrapper">
+            <div className="profile-photo-wrapper group">
+              {/* Developer Ambient Glow */}
+              <div className="profile-photo-ambient-glow" />
+
+              {/* Developer Orbit / Radar Ring */}
+              <div className="profile-photo-tech-outer" />
+
+              {/* Developer Glowing Neon Ring */}
               <div className="profile-photo-ring" />
+
               <div className="profile-photo-inner">
                 <img
                   src={profileImageUrl || "https://ui-avatars.com/api/?name=S&background=121212&color=00E5FF&size=400"}
                   alt={profile?.name || "Sabarishwaran"}
-                  className="w-full h-full object-cover rounded-full"
+                  className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
                       "https://ui-avatars.com/api/?name=" +
@@ -185,6 +193,12 @@ export function HeroSection({ profile, projectCount }: Props) {
                       "&background=121212&color=00E5FF&size=400";
                   }}
                 />
+              </div>
+
+              {/* Developer Status / Code Tag */}
+              <div className="profile-code-chip">
+                <span className="chip-dot" />
+                <span className="font-mono text-[11px] font-semibold tracking-wide text-cyan-300">&lt;sabari.dev /&gt;</span>
               </div>
               {/* Floating badges */}
               <motion.div

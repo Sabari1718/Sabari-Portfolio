@@ -242,7 +242,8 @@ a { text-decoration: none; transition: all 0.3s ease; }
 /* Profile Photo */
 .profile-photo-wrapper {
   position: relative;
-  width: 280px; height: 280px;
+  width: 280px;
+  height: 280px;
 }
 
 @media (min-width: 768px) {
@@ -253,13 +254,79 @@ a { text-decoration: none; transition: all 0.3s ease; }
   .profile-photo-wrapper { width: 380px; height: 380px; }
 }
 
+/* Ambient Developer Cyber Glow behind photo */
+.profile-photo-ambient-glow {
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.28) 0%, rgba(99, 102, 241, 0.16) 45%, transparent 70%);
+  filter: blur(22px);
+  z-index: 0;
+  pointer-events: none;
+  animation: devGlowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes devGlowPulse {
+  0% { opacity: 0.55; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1.03); }
+}
+
+/* Outer Tech Radar / Orbit Ring */
+.profile-photo-tech-outer {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(0, 229, 255, 0.32);
+  pointer-events: none;
+  z-index: 1;
+  animation: spinReverse 25s linear infinite;
+}
+
+.profile-photo-tech-outer::before {
+  content: '';
+  position: absolute;
+  top: 15%;
+  right: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00E5FF;
+  box-shadow: 0 0 10px #00E5FF, 0 0 16px #00E5FF;
+}
+
+.profile-photo-tech-outer::after {
+  content: '';
+  position: absolute;
+  bottom: 20%;
+  left: -3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #818cf8;
+  box-shadow: 0 0 8px #818cf8;
+}
+
+@keyframes spinReverse {
+  from { transform: rotate(360deg); }
+  to   { transform: rotate(0deg); }
+}
+
+/* Developer Neon Gradient Ring */
 .profile-photo-ring {
   position: absolute;
-  inset: -4px;
+  inset: -3px;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, var(--primary), #7c3aed, var(--accent), var(--primary));
-  animation: spinRing 6s linear infinite;
-  padding: 3px;
+  background: conic-gradient(
+    from 0deg,
+    #00E5FF 0%,
+    #38BDF8 25%,
+    #6366F1 50%,
+    #00F0FF 75%,
+    #00E5FF 100%
+  );
+  animation: spinRing 7s linear infinite;
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.35), inset 0 0 15px rgba(0, 229, 255, 0.2);
+  z-index: 2;
 }
 
 @keyframes spinRing {
@@ -272,8 +339,38 @@ a { text-decoration: none; transition: all 0.3s ease; }
   inset: 4px;
   border-radius: 50%;
   overflow: hidden;
-  background: var(--surface);
-  border: 3px solid var(--background);
+  background: #090d16;
+  border: 3px solid #080b12;
+  z-index: 3;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+/* Developer Live Status / Code Tag Badge */
+.profile-code-chip {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  background: rgba(11, 17, 32, 0.94);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 14px rgba(0, 229, 255, 0.2);
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.profile-code-chip .chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Floating Badges */
@@ -281,18 +378,30 @@ a { text-decoration: none; transition: all 0.3s ease; }
   position: absolute;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 7px;
+  padding: 8px 15px;
   border-radius: 60px;
-  background: rgba(15, 20, 32, 0.9);
-  border: 1px solid rgba(0, 229, 255, 0.2);
+  background: rgba(11, 16, 28, 0.92);
+  border: 1px solid rgba(0, 229, 255, 0.28);
   backdrop-filter: blur(16px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 15px rgba(0, 229, 255, 0.12);
   white-space: nowrap;
+  z-index: 5;
 }
 
-.floating-badge-1 { top: 8%; right: -20px; }
-.floating-badge-2 { bottom: 12%; left: -24px; }
+.floating-badge-1 {
+  top: 8%;
+  right: -20px;
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(56, 189, 248, 0.2);
+}
+
+.floating-badge-2 {
+  bottom: 12%;
+  left: -24px;
+  border-color: rgba(99, 102, 241, 0.45);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(99, 102, 241, 0.22);
+}
 
 /* Stats Row & Cards */
 .hero-stats-grid {
