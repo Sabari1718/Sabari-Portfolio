@@ -14,7 +14,7 @@ interface Props {
   projectCount: number;
 }
 
-const TITLES = ["Flutter Developer", "Full-Stack Developer", "Mobile App Developer", "React & Next.js Developer"];
+const TITLES = ["Flutter Developer", "Full-Stack Developer", "Mobile App Developer"];
 
 export function HeroSection({ profile, projectCount }: Props) {
   const profileImageUrl = profile?.profile_image ? getFileUrl(profile.profile_image) : null;
