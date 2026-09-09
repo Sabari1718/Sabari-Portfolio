@@ -14,7 +14,8 @@ interface CategoryMeta {
 
 const CATEGORY_META: Record<string, CategoryMeta> = {
   "Mobile Development": { label: "Mobile Development", icon: "📱", color: "#00E5FF", order: 1 },
-  "Frontend": { label: "Frontend", icon: "🎨", color: "#38BDF8", order: 2 },
+  "Web Development": { label: "Web Development", icon: "🌐", color: "#38BDF8", order: 2 },
+  "Frontend": { label: "Web Development", icon: "🌐", color: "#38BDF8", order: 2 },
   "Backend": { label: "Backend", icon: "⚙️", color: "#A78BFA", order: 3 },
   "Database": { label: "Database", icon: "🗄️", color: "#FB923C", order: 4 },
   "Tools": { label: "Tools", icon: "🛠️", color: "#FBBF24", order: 5 },
@@ -28,7 +29,7 @@ function getEffectiveCategory(skill: Skill): string {
   // If already set to a valid non-empty category, normalize it
   if (raw && raw !== "Other" && raw !== "Select category...") {
     if (/mobile/i.test(raw)) return "Mobile Development";
-    if (/front/i.test(raw)) return "Frontend";
+    if (/front|web/i.test(raw)) return "Web Development";
     if (/back/i.test(raw)) return "Backend";
     if (/data/i.test(raw)) return "Database";
     if (/tool|devops/i.test(raw)) return "Tools";
@@ -39,8 +40,8 @@ function getEffectiveCategory(skill: Skill): string {
   if (/flutter|dart|mobile|rest\s*api|bloc|provider|getx|android|ios/i.test(name)) {
     return "Mobile Development";
   }
-  if (/react|next|tailwind|type\s*script|java\s*script|html|css|redux|vue/i.test(name)) {
-    return "Frontend";
+  if (/react|next|tailwind|type\s*script|java\s*script|html|css|redux|vue|web/i.test(name)) {
+    return "Web Development";
   }
   if (/node|express|nest|fastapi|django|spring|graphql/i.test(name)) {
     return "Backend";

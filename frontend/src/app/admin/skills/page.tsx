@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 const SKILL_CATEGORIES = [
-  "Frontend", "Backend", "Mobile", "Database", "DevOps",
+  "Web Development", "Frontend", "Backend", "Mobile", "Database", "DevOps",
   "Cloud", "Tools", "Languages", "Design", "Other"
 ];
 
