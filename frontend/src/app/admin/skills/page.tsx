@@ -110,7 +110,14 @@ export default function AdminSkills() {
         setTimeout(closeModal, 1200);
       } else {
         setSaveStatus("error");
-        setErrorMsg(res.message || "Failed to save skill.");
+        if (res.status === 401 || res.message?.includes("401") || res.message?.includes("expired")) {
+          setErrorMsg("Your session expired. Redirecting to login...");
+          setTimeout(() => {
+            window.location.href = "/login?expired=true";
+          }, 1200);
+        } else {
+          setErrorMsg(res.message || "Failed to save skill.");
+        }
       }
     } catch {
       setSaveStatus("error");

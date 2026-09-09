@@ -21,10 +21,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!token || token === "undefined" || token === "null") {
       localStorage.removeItem("token");
       router.push("/login");
-    } else {
-      setIsAuthenticated(true);
-      fetchProfile();
+      return;
     }
+
+    // Verify token validity with backend
+    const checkAuth = async () => {
+      try {
+        const authRes = await PortfolioAPI.getCurrentUser();
+        if (!authRes.success) {
+          localStorage.removeItem("token");
+          router.push("/login?expired=true");
+          return;
+        }
+        setIsAuthenticated(true);
+        fetchProfile();
+      } catch {
+        setIsAuthenticated(true);
+        fetchProfile();
+      }
+    };
+
+    checkAuth();
   }, [router]);
 
   const fetchProfile = async () => {

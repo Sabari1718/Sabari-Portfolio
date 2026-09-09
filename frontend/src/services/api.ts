@@ -36,6 +36,12 @@ async function fetchAPI(endpoint: string, options: RequestInit & { skipContentTy
   try {
     const response = await fetch(`${API_URL}${endpoint}`, finalOptions);
     if (!response.ok) {
+      if (response.status === 401) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+        }
+        return { success: false, status: 401, message: 'Session expired. Please log in again.' };
+      }
       const text = await response.text();
       console.error(`API ${response.status} on ${endpoint}:`, text);
       return { success: false, message: `Server error ${response.status}` };
@@ -56,6 +62,9 @@ export function getFileUrl(path: string | null | undefined): string | null {
 }
 
 export const PortfolioAPI = {
+  // ── Auth ──────────────────────────────────────────────────
+  getCurrentUser: () => fetchAPI('/auth/me', { cache: 'no-store' } as any),
+
   // ── Profile ──────────────────────────────────────────────
   getProfile: () => fetchAPI('/profile', { cache: 'no-store' } as any),
 
