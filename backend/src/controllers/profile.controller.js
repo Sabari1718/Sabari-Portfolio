@@ -13,10 +13,10 @@ async function ensureStatsColumns() {
         const [cols] = await database_1.default.query('SHOW COLUMNS FROM profile');
         const existing = new Set(cols.map((c) => c.Field));
         if (!existing.has('years_experience')) {
-            await database_1.default.query("ALTER TABLE profile ADD COLUMN years_experience VARCHAR(50) DEFAULT '2+'");
+            await database_1.default.query("ALTER TABLE profile ADD COLUMN years_experience VARCHAR(50) DEFAULT '1+'");
         }
         if (!existing.has('projects_count')) {
-            await database_1.default.query("ALTER TABLE profile ADD COLUMN projects_count VARCHAR(50) DEFAULT '1+'");
+            await database_1.default.query("ALTER TABLE profile ADD COLUMN projects_count VARCHAR(50) DEFAULT '10+'");
         }
         if (!existing.has('technologies_count')) {
             await database_1.default.query("ALTER TABLE profile ADD COLUMN technologies_count VARCHAR(50) DEFAULT '15+'");
@@ -42,7 +42,32 @@ const getProfile = async (req, res) => {
             res.status(404).json({ success: false, message: 'Profile not found' });
             return;
         }
-        res.status(200).json({ success: true, data: profiles[0] });
+        const profile = { ...profiles[0] };
+        // Synchronize embedded bio stats if available
+        if (profile.bio && typeof profile.bio === 'string' && profile.bio.includes('<!--STATS:')) {
+            try {
+                const match = profile.bio.match(/<!--STATS:([\s\S]*?)-->/);
+                if (match && match[1]) {
+                    const parsed = JSON.parse(match[1]);
+                    if (parsed.years_experience)
+                        profile.years_experience = parsed.years_experience;
+                    if (parsed.projects_count)
+                        profile.projects_count = parsed.projects_count;
+                    if (parsed.technologies_count)
+                        profile.technologies_count = parsed.technologies_count;
+                    if (parsed.repos_count)
+                        profile.repos_count = parsed.repos_count;
+                    if (parsed.badge_text)
+                        profile.badge_text = parsed.badge_text;
+                    if (parsed.greeting_text)
+                        profile.greeting_text = parsed.greeting_text;
+                }
+            }
+            catch (err) {
+                // ignore JSON parse error
+            }
+        }
+        res.status(200).json({ success: true, data: profile });
     }
     catch (error) {
         console.error('Error fetching profile:', error);
@@ -76,10 +101,28 @@ const updateProfile = async (req, res) => {
         const safeLinkedinUrl = linkedin_url?.trim() ?? null;
         const safePortfolioUrl = portfolio_url?.trim() ?? null;
         const safeTwitterUrl = twitter_url?.trim() ?? null;
-        const safeYearsExp = years_experience !== undefined ? (years_experience ? String(years_experience).trim() : null) : null;
-        const safeProjectsCnt = projects_count !== undefined ? (projects_count ? String(projects_count).trim() : null) : null;
-        const safeTechCnt = technologies_count !== undefined ? (technologies_count ? String(technologies_count).trim() : null) : null;
-        const safeReposCnt = repos_count !== undefined ? (repos_count ? String(repos_count).trim() : null) : null;
+        let safeYearsExp = years_experience !== undefined && years_experience !== null && String(years_experience).trim() !== "" ? String(years_experience).trim() : null;
+        let safeProjectsCnt = projects_count !== undefined && projects_count !== null && String(projects_count).trim() !== "" ? String(projects_count).trim() : null;
+        let safeTechCnt = technologies_count !== undefined && technologies_count !== null && String(technologies_count).trim() !== "" ? String(technologies_count).trim() : null;
+        let safeReposCnt = repos_count !== undefined && repos_count !== null && String(repos_count).trim() !== "" ? String(repos_count).trim() : null;
+        // If bio has embedded stats, sync from there if not directly provided
+        if (safeBio && safeBio.includes('<!--STATS:')) {
+            try {
+                const match = safeBio.match(/<!--STATS:([\s\S]*?)-->/);
+                if (match && match[1]) {
+                    const parsed = JSON.parse(match[1]);
+                    if (!safeYearsExp && parsed.years_experience)
+                        safeYearsExp = String(parsed.years_experience).trim();
+                    if (!safeProjectsCnt && parsed.projects_count)
+                        safeProjectsCnt = String(parsed.projects_count).trim();
+                    if (!safeTechCnt && parsed.technologies_count)
+                        safeTechCnt = String(parsed.technologies_count).trim();
+                    if (!safeReposCnt && parsed.repos_count)
+                        safeReposCnt = String(parsed.repos_count).trim();
+                }
+            }
+            catch (err) { }
+        }
         // Check if profile exists
         const [existingProfile] = await database_1.default.query('SELECT * FROM profile LIMIT 1');
         const profiles = existingProfile;
@@ -94,7 +137,7 @@ const updateProfile = async (req, res) => {
                 safeName, safeDisplayName, safeHeadline, safeBio, safeProfileImage,
                 safeLocation, safeEmail, safePhone, safeResumeUrl,
                 safeGithubUrl, safeLinkedinUrl, safePortfolioUrl, safeTwitterUrl,
-                safeYearsExp || '2+', safeProjectsCnt || '1+', safeTechCnt || '15+', safeReposCnt || '10+'
+                safeYearsExp || '1+', safeProjectsCnt || '10+', safeTechCnt || '15+', safeReposCnt || '10+'
             ]);
             res.status(201).json({ success: true, message: 'Profile created successfully' });
         }
@@ -102,10 +145,10 @@ const updateProfile = async (req, res) => {
             // Update existing profile (preserve existing profile_image/stats if not provided)
             const currentProfile = profiles[0];
             const finalProfileImage = profile_image !== undefined ? safeProfileImage : currentProfile.profile_image;
-            const finalYearsExp = years_experience !== undefined ? safeYearsExp : (currentProfile.years_experience ?? '2+');
-            const finalProjectsCnt = projects_count !== undefined ? safeProjectsCnt : (currentProfile.projects_count ?? '1+');
-            const finalTechCnt = technologies_count !== undefined ? safeTechCnt : (currentProfile.technologies_count ?? '15+');
-            const finalReposCnt = repos_count !== undefined ? safeReposCnt : (currentProfile.repos_count ?? '10+');
+            const finalYearsExp = safeYearsExp !== null ? safeYearsExp : (currentProfile.years_experience ?? '1+');
+            const finalProjectsCnt = safeProjectsCnt !== null ? safeProjectsCnt : (currentProfile.projects_count ?? '10+');
+            const finalTechCnt = safeTechCnt !== null ? safeTechCnt : (currentProfile.technologies_count ?? '15+');
+            const finalReposCnt = safeReposCnt !== null ? safeReposCnt : (currentProfile.repos_count ?? '10+');
             const query = `
         UPDATE profile 
         SET name = ?, display_name = ?, headline = ?, bio = ?, profile_image = ?,

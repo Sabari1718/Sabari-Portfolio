@@ -39,8 +39,8 @@ export function HeroSection({ profile, projectCount }: Props) {
     return { value: num, suffix: suffix || (str.match(/^\d+$/) ? "+" : "") };
   };
 
-  const expStat = parseStat(profileStats.years_experience, 2, "+");
-  const projStat = parseStat(profileStats.projects_count, projectCount || 1, "+");
+  const expStat = parseStat(profileStats.years_experience, 1, "+");
+  const projStat = parseStat(profileStats.projects_count, 10, "+");
   const techStat = parseStat(profileStats.technologies_count, 15, "+");
   const repoStat = parseStat(profileStats.repos_count, 10, "+");
 

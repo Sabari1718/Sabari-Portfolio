@@ -24,8 +24,8 @@ const EMPTY_PROFILE: Partial<Profile> = {
   linkedin_url: "",
   portfolio_url: "",
   twitter_url: "",
-  years_experience: "2+",
-  projects_count: "1+",
+  years_experience: "1+",
+  projects_count: "10+",
   technologies_count: "15+",
   repos_count: "10+",
   badge_text: "Open to Opportunities",
@@ -55,8 +55,8 @@ export default function ProfileAdmin() {
           ...res.data,
           bio: cleanBio || prev.bio || DEFAULT_BIO,
           location: res.data.location || prev.location || "COIMBATORE",
-          years_experience: extractedStats.years_experience || prev.years_experience || "2+",
-          projects_count: extractedStats.projects_count || prev.projects_count || "1+",
+          years_experience: extractedStats.years_experience || prev.years_experience || "1+",
+          projects_count: extractedStats.projects_count || prev.projects_count || "10+",
           technologies_count: extractedStats.technologies_count || prev.technologies_count || "15+",
           repos_count: extractedStats.repos_count || prev.repos_count || "10+",
           badge_text: extractedStats.badge_text || prev.badge_text || "Open to Opportunities",
@@ -268,18 +268,18 @@ export default function ProfileAdmin() {
               <Field
                 label="Years Experience"
                 name="years_experience"
-                value={form.years_experience !== undefined && form.years_experience !== null ? String(form.years_experience) : "2+"}
+                value={form.years_experience !== undefined && form.years_experience !== null ? String(form.years_experience) : "1+"}
                 onChange={handleChange}
-                placeholder="2+"
+                placeholder="1+"
                 icon={<Briefcase size={16} />}
                 helperText="Displays as: Years Experience"
               />
               <Field
                 label="Projects Built"
                 name="projects_count"
-                value={form.projects_count !== undefined && form.projects_count !== null ? String(form.projects_count) : "1+"}
+                value={form.projects_count !== undefined && form.projects_count !== null ? String(form.projects_count) : "10+"}
                 onChange={handleChange}
-                placeholder="1+"
+                placeholder="10+"
                 icon={<Folder size={16} />}
                 helperText="Displays as: Projects Built"
               />
@@ -315,7 +315,7 @@ export default function ProfileAdmin() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-black/40 border border-white/5">
                 <div className="text-center p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
                   <div className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[#38BDF8]">
-                    {form.years_experience || "2+"}
+                    {form.years_experience || "1+"}
                   </div>
                   <div className="text-[10px] md:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5">
                     Years Experience
@@ -323,7 +323,7 @@ export default function ProfileAdmin() {
                 </div>
                 <div className="text-center p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
                   <div className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[#38BDF8]">
-                    {form.projects_count || "1+"}
+                    {form.projects_count || "10+"}
                   </div>
                   <div className="text-[10px] md:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5">
                     Projects Built

@@ -34,22 +34,22 @@ export function extractProfileStats(profile: Profile | null) {
       const match = cleanBio.match(/<!--STATS:([\s\S]*?)-->/);
       if (match && match[1]) {
         const parsed = JSON.parse(match[1]);
-        if (!stats.years_experience && parsed.years_experience) {
+        if (parsed.years_experience !== undefined && parsed.years_experience !== null && String(parsed.years_experience).trim() !== "") {
           stats.years_experience = parsed.years_experience;
         }
-        if (!stats.projects_count && parsed.projects_count) {
+        if (parsed.projects_count !== undefined && parsed.projects_count !== null && String(parsed.projects_count).trim() !== "") {
           stats.projects_count = parsed.projects_count;
         }
-        if (!stats.technologies_count && parsed.technologies_count) {
+        if (parsed.technologies_count !== undefined && parsed.technologies_count !== null && String(parsed.technologies_count).trim() !== "") {
           stats.technologies_count = parsed.technologies_count;
         }
-        if (!stats.repos_count && parsed.repos_count) {
+        if (parsed.repos_count !== undefined && parsed.repos_count !== null && String(parsed.repos_count).trim() !== "") {
           stats.repos_count = parsed.repos_count;
         }
-        if (!stats.badge_text && parsed.badge_text) {
+        if (parsed.badge_text !== undefined && parsed.badge_text !== null && String(parsed.badge_text).trim() !== "") {
           stats.badge_text = parsed.badge_text;
         }
-        if (!stats.greeting_text && parsed.greeting_text) {
+        if (parsed.greeting_text !== undefined && parsed.greeting_text !== null && String(parsed.greeting_text).trim() !== "") {
           stats.greeting_text = parsed.greeting_text;
         }
       }
@@ -61,8 +61,8 @@ export function extractProfileStats(profile: Profile | null) {
 
   return {
     stats: {
-      years_experience: stats.years_experience || "2+",
-      projects_count: stats.projects_count || "1+",
+      years_experience: stats.years_experience || "1+",
+      projects_count: stats.projects_count || "10+",
       technologies_count: stats.technologies_count || "15+",
       repos_count: stats.repos_count || "10+",
       badge_text: stats.badge_text || "Open to Opportunities",
@@ -83,10 +83,10 @@ export function embedProfileStats(
 ): string {
   const clean = (rawBio || "").replace(/<!--STATS:[\s\S]*?-->/g, "").trim();
   const payload = JSON.stringify({
-    years_experience: stats.years_experience || "2+",
-    projects_count: stats.projects_count || "1+",
-    technologies_count: stats.technologies_count || "15+",
-    repos_count: stats.repos_count || "10+",
+    years_experience: stats.years_experience !== undefined && stats.years_experience !== null && String(stats.years_experience).trim() !== "" ? String(stats.years_experience).trim() : "1+",
+    projects_count: stats.projects_count !== undefined && stats.projects_count !== null && String(stats.projects_count).trim() !== "" ? String(stats.projects_count).trim() : "10+",
+    technologies_count: stats.technologies_count !== undefined && stats.technologies_count !== null && String(stats.technologies_count).trim() !== "" ? String(stats.technologies_count).trim() : "15+",
+    repos_count: stats.repos_count !== undefined && stats.repos_count !== null && String(stats.repos_count).trim() !== "" ? String(stats.repos_count).trim() : "10+",
     badge_text: stats.badge_text || "Open to Opportunities",
     greeting_text: stats.greeting_text || "Hello, I'm",
   });
