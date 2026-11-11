@@ -11,9 +11,15 @@ const database_1 = __importDefault(require("../config/database"));
 const getProjects = async (req, res) => {
     try {
         const showAll = req.query.all === 'true';
+        const orderClause = `
+      ORDER BY 
+        is_pinned DESC,
+        CASE WHEN display_order > 0 THEN display_order ELSE 99999 END ASC,
+        created_at DESC
+    `;
         const query = showAll
-            ? 'SELECT * FROM projects ORDER BY is_pinned DESC, display_order ASC, created_at DESC'
-            : 'SELECT * FROM projects WHERE is_visible = TRUE ORDER BY is_pinned DESC, display_order ASC, created_at DESC';
+            ? `SELECT * FROM projects ${orderClause}`
+            : `SELECT * FROM projects WHERE is_visible = TRUE ${orderClause}`;
         const [projects] = await database_1.default.query(query);
         res.status(200).json({ success: true, data: projects });
     }

@@ -38,11 +38,23 @@ export default function AdminProjects() {
   const [errorMsg, setErrorMsg] = useState("");
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
+  const sortProjectList = (list: Project[]) => {
+    return [...list].sort((a, b) => {
+      const pinA = a.is_pinned ? 1 : 0;
+      const pinB = b.is_pinned ? 1 : 0;
+      if (pinB !== pinA) return pinB - pinA;
+
+      const orderA = a.display_order && a.display_order > 0 ? a.display_order : 99999;
+      const orderB = b.display_order && b.display_order > 0 ? b.display_order : 99999;
+      return orderA - orderB;
+    });
+  };
+
   const fetchProjects = async () => {
     setLoading(true);
     try {
       const res = await PortfolioAPI.getProjects(true); // adminMode: show all including hidden
-      if (res.success) setProjects(res.data || []);
+      if (res.success) setProjects(sortProjectList(res.data || []));
     } catch {
     } finally {
       setLoading(false);
@@ -162,12 +174,7 @@ export default function AdminProjects() {
         const updated = prev.map((proj) =>
           proj.id === p.id ? { ...proj, is_pinned: nextVal } : proj
         );
-        return [...updated].sort((a, b) => {
-          const pinA = a.is_pinned ? 1 : 0;
-          const pinB = b.is_pinned ? 1 : 0;
-          if (pinB !== pinA) return pinB - pinA;
-          return (a.display_order || 0) - (b.display_order || 0);
-        });
+        return sortProjectList(updated);
       });
     }
   };
@@ -238,7 +245,8 @@ export default function AdminProjects() {
             <table className="w-full text-sm text-left">
               <thead className="text-xs uppercase bg-white/5 border-b border-white/10 text-white/60">
                 <tr>
-                  <th className="px-6 py-4">Pin to Top</th>
+                  <th className="px-5 py-4 text-center"># Order</th>
+                  <th className="px-5 py-4">Pin to Top</th>
                   <th className="px-6 py-4">Project</th>
                   <th className="px-6 py-4">Category</th>
                   <th className="px-6 py-4">Status</th>
@@ -256,7 +264,12 @@ export default function AdminProjects() {
                       project.is_pinned ? "bg-cyan-500/[0.05] border-l-4 border-l-cyan-400" : ""
                     } ${!project.is_visible ? "opacity-50" : ""}`}
                   >
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-4 text-center">
+                      <span className="inline-flex items-center justify-center min-w-[32px] h-7 px-2 rounded-lg bg-white/5 border border-white/10 text-white font-mono font-bold text-xs">
+                        {project.display_order && project.display_order > 0 ? `#${project.display_order}` : "—"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
                       <button
                         type="button"
                         onClick={() => handleTogglePin(project)}
@@ -423,7 +436,7 @@ export default function AdminProjects() {
                       <option value="archived">Archived</option>
                     </select>
                   </div>
-                  <ModalField label="Display Order" name="display_order" value={String(form.display_order)} onChange={handleChange} placeholder="0" type="number" />
+                  <ModalField label="Display Order (Rank: 1 = Top First, 2 = Second...)" name="display_order" value={String(form.display_order ?? "")} onChange={handleChange} placeholder="1" type="number" />
                 </div>
 
                 {/* Checkboxes */}

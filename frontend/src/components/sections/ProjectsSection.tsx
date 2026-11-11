@@ -11,12 +11,17 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
 
   if (!projects || projects.length === 0) return null;
 
-  // Ensure pinned projects always stay at the very top
+  // Ensure pinned projects always stay at the very top, followed by custom display_order (1, 2, 3...)
   const sortedProjects = [...projects].sort((a, b) => {
     const pinA = a.is_pinned ? 1 : 0;
     const pinB = b.is_pinned ? 1 : 0;
     if (pinB !== pinA) return pinB - pinA;
-    return (a.display_order || 0) - (b.display_order || 0);
+
+    const orderA = a.display_order && a.display_order > 0 ? a.display_order : 99999;
+    const orderB = b.display_order && b.display_order > 0 ? b.display_order : 99999;
+    if (orderA !== orderB) return orderA - orderB;
+
+    return 0;
   });
 
   // Build filter tabs from project types
@@ -105,18 +110,18 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                   {/* Top Badges */}
                   <div className="absolute top-3.5 left-3.5 right-3.5 flex justify-between items-center pointer-events-none">
                     <div className="flex items-center gap-2">
-                      {project.is_pinned && (
+                      {Boolean(project.is_pinned) ? (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/25 border border-cyan-400 text-cyan-300 text-xs font-bold backdrop-blur-md shadow-[0_0_12px_rgba(0,229,255,0.35)]">
                           <Pin size={11} className="rotate-45 fill-current" />
                           Pinned
                         </span>
-                      )}
-                      {project.featured && (
+                      ) : null}
+                      {Boolean(project.featured) ? (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold backdrop-blur-md shadow-[0_0_12px_rgba(245,158,11,0.25)]">
                           <Star size={11} fill="currentColor" />
                           Featured
                         </span>
-                      )}
+                      ) : null}
                     </div>
 
                     {project.type && (
