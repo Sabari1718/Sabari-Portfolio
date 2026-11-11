@@ -8,8 +8,8 @@ export const getProjects = async (req: Request, res: Response): Promise<void> =>
   try {
     const showAll = req.query.all === 'true';
     const query = showAll
-      ? 'SELECT * FROM projects ORDER BY display_order ASC, created_at DESC'
-      : 'SELECT * FROM projects WHERE is_visible = TRUE ORDER BY display_order ASC, created_at DESC';
+      ? 'SELECT * FROM projects ORDER BY is_pinned DESC, display_order ASC, created_at DESC'
+      : 'SELECT * FROM projects WHERE is_visible = TRUE ORDER BY is_pinned DESC, display_order ASC, created_at DESC';
 
     const [projects] = await pool.query(query);
     res.status(200).json({ success: true, data: projects });
@@ -51,7 +51,7 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
   try {
     const {
       title, category, slug, short_description, description,
-      image_url, github_url, live_url, featured, status,
+      image_url, github_url, live_url, featured, is_pinned, status,
       type, display_order, is_visible
     } = req.body;
 
@@ -69,8 +69,8 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
 
     const query = `
       INSERT INTO projects 
-        (title, category, slug, short_description, description, image_url, github_url, live_url, featured, status, type, display_order, is_visible)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (title, category, slug, short_description, description, image_url, github_url, live_url, featured, is_pinned, status, type, display_order, is_visible)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     
     const [result] = await pool.query(query, [
@@ -82,11 +82,12 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
       image_url?.trim() ?? null,
       github_url?.trim() ?? null,
       live_url?.trim() ?? null,
-      featured === true || featured === 'true' ? 1 : 0,
+      featured === true || featured === 'true' || featured === 1 ? 1 : 0,
+      is_pinned === true || is_pinned === 'true' || is_pinned === 1 ? 1 : 0,
       status?.trim() ?? 'completed',
       type?.trim() ?? 'web',
       display_order ?? 0,
-      is_visible === false || is_visible === 'false' ? 0 : 1
+      is_visible === false || is_visible === 'false' || is_visible === 0 ? 0 : 1
     ]);
     
     const insertId = (result as any).insertId;
@@ -109,7 +110,7 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
     const { id } = req.params;
     const {
       title, category, slug, short_description, description,
-      image_url, github_url, live_url, featured, status,
+      image_url, github_url, live_url, featured, is_pinned, status,
       type, display_order, is_visible
     } = req.body;
 
@@ -123,7 +124,7 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
     const query = `
       UPDATE projects 
       SET title = ?, category = ?, slug = ?, short_description = ?, description = ?,
-          image_url = ?, github_url = ?, live_url = ?, featured = ?, status = ?,
+          image_url = ?, github_url = ?, live_url = ?, featured = ?, is_pinned = ?, status = ?,
           type = ?, display_order = ?, is_visible = ?
       WHERE id = ?
     `;
@@ -137,11 +138,12 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
       image_url?.trim() ?? null,
       github_url?.trim() ?? null,
       live_url?.trim() ?? null,
-      featured === true || featured === 'true' ? 1 : 0,
+      featured === true || featured === 'true' || featured === 1 ? 1 : 0,
+      is_pinned === true || is_pinned === 'true' || is_pinned === 1 ? 1 : 0,
       status?.trim() ?? 'completed',
       type?.trim() ?? 'web',
       display_order ?? 0,
-      is_visible === false || is_visible === 'false' ? 0 : 1,
+      is_visible === false || is_visible === 'false' || is_visible === 0 ? 0 : 1,
       id
     ]);
     

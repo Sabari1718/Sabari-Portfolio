@@ -4,17 +4,25 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Section, MassSectionHeader } from "@/components/ui/section";
 import { Project } from "@/types";
-import { Code, ExternalLink, Star, Sparkles, Smartphone, Globe, ArrowUpRight } from "lucide-react";
+import { Code, ExternalLink, Star, Sparkles, Smartphone, Globe, ArrowUpRight, Pin } from "lucide-react";
 
 export function ProjectsSection({ projects }: { projects: Project[] }) {
   const [activeFilter, setActiveFilter] = useState("All");
 
   if (!projects || projects.length === 0) return null;
 
-  // Build filter tabs from project types
-  const types = ["All", ...Array.from(new Set(projects.map((p) => p.type || "Other").filter(Boolean)))];
+  // Ensure pinned projects always stay at the very top
+  const sortedProjects = [...projects].sort((a, b) => {
+    const pinA = a.is_pinned ? 1 : 0;
+    const pinB = b.is_pinned ? 1 : 0;
+    if (pinB !== pinA) return pinB - pinA;
+    return (a.display_order || 0) - (b.display_order || 0);
+  });
 
-  const filtered = activeFilter === "All" ? projects : projects.filter((p) => (p.type || "Other") === activeFilter);
+  // Build filter tabs from project types
+  const types = ["All", ...Array.from(new Set(sortedProjects.map((p) => p.type || "Other").filter(Boolean)))];
+
+  const filtered = activeFilter === "All" ? sortedProjects : sortedProjects.filter((p) => (p.type || "Other") === activeFilter);
 
   const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
   const item = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
@@ -96,12 +104,20 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
 
                   {/* Top Badges */}
                   <div className="absolute top-3.5 left-3.5 right-3.5 flex justify-between items-center pointer-events-none">
-                    {project.featured ? (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold backdrop-blur-md shadow-[0_0_12px_rgba(245,158,11,0.25)]">
-                        <Star size={11} fill="currentColor" />
-                        Featured
-                      </span>
-                    ) : <div />}
+                    <div className="flex items-center gap-2">
+                      {project.is_pinned && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/25 border border-cyan-400 text-cyan-300 text-xs font-bold backdrop-blur-md shadow-[0_0_12px_rgba(0,229,255,0.35)]">
+                          <Pin size={11} className="rotate-45 fill-current" />
+                          Pinned
+                        </span>
+                      )}
+                      {project.featured && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold backdrop-blur-md shadow-[0_0_12px_rgba(245,158,11,0.25)]">
+                          <Star size={11} fill="currentColor" />
+                          Featured
+                        </span>
+                      )}
+                    </div>
 
                     {project.type && (
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-[var(--primary)] text-xs font-semibold backdrop-blur-md">

@@ -6,7 +6,7 @@ import { PortfolioAPI } from "@/services/api";
 import { Project } from "@/types";
 import {
   Plus, Edit2, Trash2, Eye, EyeOff, Star, Loader2,
-  CheckCircle, AlertCircle, X, Folder, ExternalLink, GitFork
+  CheckCircle, AlertCircle, X, Folder, ExternalLink, GitFork, Pin
 } from "lucide-react";
 
 const EMPTY_PROJECT = {
@@ -19,6 +19,7 @@ const EMPTY_PROJECT = {
   github_url: "",
   live_url: "",
   featured: false,
+  is_pinned: false,
   status: "completed",
   type: "web",
   display_order: 0,
@@ -72,6 +73,7 @@ export default function AdminProjects() {
       github_url: p.github_url || "",
       live_url: p.live_url || "",
       featured: p.featured,
+      is_pinned: Boolean(p.is_pinned),
       status: p.status || "completed",
       type: p.type || "web",
       display_order: p.display_order || 0,
@@ -123,6 +125,7 @@ export default function AdminProjects() {
     const payload = {
       ...form,
       featured: form.featured ? true : false,
+      is_pinned: form.is_pinned ? true : false,
       is_visible: form.is_visible ? true : false,
       display_order: Number(form.display_order) || 0,
     };
@@ -145,6 +148,27 @@ export default function AdminProjects() {
     } catch {
       setSaveStatus("error");
       setErrorMsg("Network error. Could not reach the server.");
+    }
+  };
+
+  const handleTogglePin = async (p: Project) => {
+    const nextVal = !p.is_pinned;
+    const res = await PortfolioAPI.updateProject(p.id, {
+      ...p,
+      is_pinned: nextVal,
+    });
+    if (res.success) {
+      setProjects((prev) => {
+        const updated = prev.map((proj) =>
+          proj.id === p.id ? { ...proj, is_pinned: nextVal } : proj
+        );
+        return [...updated].sort((a, b) => {
+          const pinA = a.is_pinned ? 1 : 0;
+          const pinB = b.is_pinned ? 1 : 0;
+          if (pinB !== pinA) return pinB - pinA;
+          return (a.display_order || 0) - (b.display_order || 0);
+        });
+      });
     }
   };
 
@@ -214,6 +238,7 @@ export default function AdminProjects() {
             <table className="w-full text-sm text-left">
               <thead className="text-xs uppercase bg-white/5 border-b border-white/10 text-white/60">
                 <tr>
+                  <th className="px-6 py-4">Pin to Top</th>
                   <th className="px-6 py-4">Project</th>
                   <th className="px-6 py-4">Category</th>
                   <th className="px-6 py-4">Status</th>
@@ -228,11 +253,33 @@ export default function AdminProjects() {
                   <tr
                     key={project.id}
                     className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
-                      !project.is_visible ? "opacity-50" : ""
-                    }`}
+                      project.is_pinned ? "bg-cyan-500/[0.05] border-l-4 border-l-cyan-400" : ""
+                    } ${!project.is_visible ? "opacity-50" : ""}`}
                   >
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-white">{project.title}</div>
+                      <button
+                        type="button"
+                        onClick={() => handleTogglePin(project)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                          project.is_pinned
+                            ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_12px_rgba(0,229,255,0.3)] font-bold"
+                            : "bg-white/[0.03] text-white/40 hover:text-cyan-400 hover:bg-white/10 border border-white/10"
+                        }`}
+                        title={project.is_pinned ? "Pinned to Top! Click to unpin." : "Click to Pin to Top"}
+                      >
+                        <Pin size={14} className={project.is_pinned ? "rotate-45 fill-cyan-400 text-cyan-300" : "rotate-45"} />
+                        <span>{project.is_pinned ? "Pinned" : "Pin"}</span>
+                      </button>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <div className="font-semibold text-white">{project.title}</div>
+                        {project.is_pinned && (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 uppercase">
+                            Pinned
+                          </span>
+                        )}
+                      </div>
                       <div className="text-xs text-white/40 mt-0.5">{project.slug}</div>
                     </td>
                     <td className="px-6 py-4 text-white/60">{project.category || "—"}</td>
@@ -381,6 +428,13 @@ export default function AdminProjects() {
 
                 {/* Checkboxes */}
                 <div className="flex flex-wrap gap-8 pt-2">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input type="checkbox" name="is_pinned" checked={form.is_pinned} onChange={handleChange}
+                      className="w-4 h-4 accent-cyan-400 bg-[#1A1A1A] border-white/20 rounded cursor-pointer" />
+                    <span className="text-sm font-semibold text-cyan-300 group-hover:text-cyan-200 transition-colors flex items-center gap-1.5">
+                      <Pin size={15} className="rotate-45 fill-cyan-400" /> Pin to Top (Shows First)
+                    </span>
+                  </label>
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange}
                       className="w-4 h-4 accent-[#F5C542] bg-[#1A1A1A] border-white/20 rounded cursor-pointer" />

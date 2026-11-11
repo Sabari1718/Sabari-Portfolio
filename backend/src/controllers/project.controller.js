@@ -12,8 +12,8 @@ const getProjects = async (req, res) => {
     try {
         const showAll = req.query.all === 'true';
         const query = showAll
-            ? 'SELECT * FROM projects ORDER BY display_order ASC, created_at DESC'
-            : 'SELECT * FROM projects WHERE is_visible = TRUE ORDER BY display_order ASC, created_at DESC';
+            ? 'SELECT * FROM projects ORDER BY is_pinned DESC, display_order ASC, created_at DESC'
+            : 'SELECT * FROM projects WHERE is_visible = TRUE ORDER BY is_pinned DESC, display_order ASC, created_at DESC';
         const [projects] = await database_1.default.query(query);
         res.status(200).json({ success: true, data: projects });
     }
@@ -52,7 +52,7 @@ exports.getProjectBySlug = getProjectBySlug;
 // @access  Private (Admin)
 const createProject = async (req, res) => {
     try {
-        const { title, category, slug, short_description, description, image_url, github_url, live_url, featured, status, type, display_order, is_visible } = req.body;
+        const { title, category, slug, short_description, description, image_url, github_url, live_url, featured, is_pinned, status, type, display_order, is_visible } = req.body;
         // Validation
         if (!title || typeof title !== 'string' || title.trim().length === 0) {
             res.status(400).json({ success: false, message: 'Project title is required' });
@@ -65,8 +65,8 @@ const createProject = async (req, res) => {
         const safeSlug = slug.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
         const query = `
       INSERT INTO projects 
-        (title, category, slug, short_description, description, image_url, github_url, live_url, featured, status, type, display_order, is_visible)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (title, category, slug, short_description, description, image_url, github_url, live_url, featured, is_pinned, status, type, display_order, is_visible)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
         const [result] = await database_1.default.query(query, [
             title.trim(),
@@ -77,11 +77,12 @@ const createProject = async (req, res) => {
             image_url?.trim() ?? null,
             github_url?.trim() ?? null,
             live_url?.trim() ?? null,
-            featured === true || featured === 'true' ? 1 : 0,
+            featured === true || featured === 'true' || featured === 1 ? 1 : 0,
+            is_pinned === true || is_pinned === 'true' || is_pinned === 1 ? 1 : 0,
             status?.trim() ?? 'completed',
             type?.trim() ?? 'web',
             display_order ?? 0,
-            is_visible === false || is_visible === 'false' ? 0 : 1
+            is_visible === false || is_visible === 'false' || is_visible === 0 ? 0 : 1
         ]);
         const insertId = result.insertId;
         res.status(201).json({ success: true, message: 'Project created successfully', data: { id: insertId } });
@@ -102,7 +103,7 @@ exports.createProject = createProject;
 const updateProject = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, category, slug, short_description, description, image_url, github_url, live_url, featured, status, type, display_order, is_visible } = req.body;
+        const { title, category, slug, short_description, description, image_url, github_url, live_url, featured, is_pinned, status, type, display_order, is_visible } = req.body;
         if (!title || typeof title !== 'string' || title.trim().length === 0) {
             res.status(400).json({ success: false, message: 'Project title is required' });
             return;
@@ -111,7 +112,7 @@ const updateProject = async (req, res) => {
         const query = `
       UPDATE projects 
       SET title = ?, category = ?, slug = ?, short_description = ?, description = ?,
-          image_url = ?, github_url = ?, live_url = ?, featured = ?, status = ?,
+          image_url = ?, github_url = ?, live_url = ?, featured = ?, is_pinned = ?, status = ?,
           type = ?, display_order = ?, is_visible = ?
       WHERE id = ?
     `;
@@ -124,11 +125,12 @@ const updateProject = async (req, res) => {
             image_url?.trim() ?? null,
             github_url?.trim() ?? null,
             live_url?.trim() ?? null,
-            featured === true || featured === 'true' ? 1 : 0,
+            featured === true || featured === 'true' || featured === 1 ? 1 : 0,
+            is_pinned === true || is_pinned === 'true' || is_pinned === 1 ? 1 : 0,
             status?.trim() ?? 'completed',
             type?.trim() ?? 'web',
             display_order ?? 0,
-            is_visible === false || is_visible === 'false' ? 0 : 1,
+            is_visible === false || is_visible === 'false' || is_visible === 0 ? 0 : 1,
             id
         ]);
         if (result.affectedRows === 0) {

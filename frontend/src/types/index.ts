@@ -34,6 +34,7 @@ export interface Project {
   github_url: string | null;
   live_url: string | null;
   featured: boolean;
+  is_pinned?: boolean;
   status: string;
   type: string;
   display_order: number;
