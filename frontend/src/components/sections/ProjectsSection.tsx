@@ -21,7 +21,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
     const orderB = b.display_order && b.display_order > 0 ? b.display_order : 99999;
     if (orderA !== orderB) return orderA - orderB;
 
-    return 0;
+    return (b.id || 0) - (a.id || 0);
   });
 
   // Build filter tabs from project types

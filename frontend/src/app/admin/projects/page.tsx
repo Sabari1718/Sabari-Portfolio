@@ -6,7 +6,8 @@ import { PortfolioAPI } from "@/services/api";
 import { Project } from "@/types";
 import {
   Plus, Edit2, Trash2, Eye, EyeOff, Star, Loader2,
-  CheckCircle, AlertCircle, X, Folder, ExternalLink, GitFork, Pin
+  CheckCircle, AlertCircle, X, Folder, ExternalLink, GitFork, Pin,
+  ChevronUp, ChevronDown
 } from "lucide-react";
 
 const EMPTY_PROJECT = {
@@ -46,7 +47,9 @@ export default function AdminProjects() {
 
       const orderA = a.display_order && a.display_order > 0 ? a.display_order : 99999;
       const orderB = b.display_order && b.display_order > 0 ? b.display_order : 99999;
-      return orderA - orderB;
+      if (orderA !== orderB) return orderA - orderB;
+
+      return (b.id || 0) - (a.id || 0);
     });
   };
 
@@ -163,19 +166,77 @@ export default function AdminProjects() {
     }
   };
 
+  const handleMove = async (index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= projects.length) return;
+
+    const updated = [...projects];
+    const [moved] = updated.splice(index, 1);
+    if (!moved) return;
+    updated.splice(targetIndex, 0, moved);
+
+    // Re-assign display_order sequentially 1, 2, 3...
+    const reordered = updated.map((proj, idx) => ({
+      ...proj,
+      display_order: idx + 1,
+    }));
+
+    setProjects(reordered);
+
+    try {
+      const projA = reordered[index];
+      const projB = reordered[targetIndex];
+      if (projA && projB) {
+        await Promise.all([
+          PortfolioAPI.updateProject(projA.id, { ...projA, display_order: projA.display_order }),
+          PortfolioAPI.updateProject(projB.id, { ...projB, display_order: projB.display_order }),
+        ]);
+      }
+    } catch (e) {
+      console.error("Failed to persist reorder", e);
+    }
+  };
+
   const handleTogglePin = async (p: Project) => {
     const nextVal = !p.is_pinned;
-    const res = await PortfolioAPI.updateProject(p.id, {
-      ...p,
-      is_pinned: nextVal,
-    });
-    if (res.success) {
-      setProjects((prev) => {
-        const updated = prev.map((proj) =>
-          proj.id === p.id ? { ...proj, is_pinned: nextVal } : proj
-        );
-        return sortProjectList(updated);
-      });
+    let updated: Project[];
+
+    if (nextVal) {
+      // Pin to top: place at index 0, mark pinned and order 1
+      const others = projects.filter((proj) => proj.id !== p.id);
+      updated = [{ ...p, is_pinned: true, display_order: 1 }, ...others].map((proj, idx) => ({
+        ...proj,
+        display_order: idx + 1,
+      }));
+    } else {
+      // Unpin: remove pin status, keep current order or move to bottom
+      updated = projects.map((proj) =>
+        proj.id === p.id ? { ...proj, is_pinned: false } : proj
+      );
+    }
+
+    setProjects(updated);
+
+    try {
+      const target = updated.find((x) => x.id === p.id);
+      if (target) {
+        await PortfolioAPI.updateProject(target.id, {
+          ...target,
+          is_pinned: target.is_pinned,
+          display_order: target.display_order,
+        });
+      }
+      if (nextVal && updated.length > 1) {
+        const second = updated[1];
+        if (second) {
+          await PortfolioAPI.updateProject(second.id, {
+            ...second,
+            display_order: second.display_order,
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Failed to update pin", e);
     }
   };
 
@@ -257,7 +318,7 @@ export default function AdminProjects() {
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project) => (
+                {projects.map((project, index) => (
                   <tr
                     key={project.id}
                     className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
@@ -265,9 +326,37 @@ export default function AdminProjects() {
                     } ${!project.is_visible ? "opacity-50" : ""}`}
                   >
                     <td className="px-5 py-4 text-center">
-                      <span className="inline-flex items-center justify-center min-w-[32px] h-7 px-2 rounded-lg bg-white/5 border border-white/10 text-white font-mono font-bold text-xs">
-                        {project.display_order && project.display_order > 0 ? `#${project.display_order}` : "—"}
-                      </span>
+                      <div className="flex items-center justify-center gap-1.5">
+                        <span className={`inline-flex items-center justify-center min-w-[34px] h-7 px-2 rounded-lg font-mono font-bold text-xs ${
+                          project.is_pinned
+                            ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40"
+                            : project.display_order && project.display_order > 0
+                            ? "bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20"
+                            : "bg-white/5 border border-white/10 text-white/50"
+                        }`}>
+                          #{index + 1}
+                        </span>
+                        <div className="flex flex-col">
+                          <button
+                            type="button"
+                            disabled={index === 0}
+                            onClick={() => handleMove(index, -1)}
+                            className="p-0.5 rounded text-white/40 hover:text-cyan-300 hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-white/40 transition-all cursor-pointer"
+                            title="Move Up"
+                          >
+                            <ChevronUp size={13} />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={index === projects.length - 1}
+                            onClick={() => handleMove(index, 1)}
+                            className="p-0.5 rounded text-white/40 hover:text-cyan-300 hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-white/40 transition-all cursor-pointer"
+                            title="Move Down"
+                          >
+                            <ChevronDown size={13} />
+                          </button>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-5 py-4">
                       <button
