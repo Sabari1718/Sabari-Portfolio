@@ -11,15 +11,15 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
 
   if (!projects || projects.length === 0) return null;
 
-  // Ensure pinned projects always stay at the very top, followed by custom display_order (1, 2, 3...)
+  // Strict rank order: 1, 2, 3... always stay at the top in exact numerical order
   const sortedProjects = [...projects].sort((a, b) => {
-    const pinA = a.is_pinned ? 1 : 0;
-    const pinB = b.is_pinned ? 1 : 0;
-    if (pinB !== pinA) return pinB - pinA;
-
     const orderA = a.display_order && a.display_order > 0 ? a.display_order : 99999;
     const orderB = b.display_order && b.display_order > 0 ? b.display_order : 99999;
     if (orderA !== orderB) return orderA - orderB;
+
+    const pinA = a.is_pinned ? 1 : 0;
+    const pinB = b.is_pinned ? 1 : 0;
+    if (pinB !== pinA) return pinB - pinA;
 
     return (b.id || 0) - (a.id || 0);
   });
@@ -110,7 +110,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                   {/* Top Badges */}
                   <div className="absolute top-3.5 left-3.5 right-3.5 flex justify-between items-center pointer-events-none">
                     <div className="flex items-center gap-2">
-                      {Boolean(project.is_pinned) ? (
+                      {Boolean(project.is_pinned || project.display_order === 1) ? (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/25 border border-cyan-400 text-cyan-300 text-xs font-bold backdrop-blur-md shadow-[0_0_12px_rgba(0,229,255,0.35)]">
                           <Pin size={11} className="rotate-45 fill-current" />
                           Pinned

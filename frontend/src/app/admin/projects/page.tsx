@@ -41,13 +41,13 @@ export default function AdminProjects() {
 
   const sortProjectList = (list: Project[]) => {
     return [...list].sort((a, b) => {
-      const pinA = a.is_pinned ? 1 : 0;
-      const pinB = b.is_pinned ? 1 : 0;
-      if (pinB !== pinA) return pinB - pinA;
-
       const orderA = a.display_order && a.display_order > 0 ? a.display_order : 99999;
       const orderB = b.display_order && b.display_order > 0 ? b.display_order : 99999;
       if (orderA !== orderB) return orderA - orderB;
+
+      const pinA = a.is_pinned ? 1 : 0;
+      const pinB = b.is_pinned ? 1 : 0;
+      if (pinB !== pinA) return pinB - pinA;
 
       return (b.id || 0) - (a.id || 0);
     });
@@ -88,7 +88,7 @@ export default function AdminProjects() {
       github_url: p.github_url || "",
       live_url: p.live_url || "",
       featured: p.featured,
-      is_pinned: Boolean(p.is_pinned),
+      is_pinned: Boolean(p.is_pinned || p.display_order === 1),
       status: p.status || "completed",
       type: p.type || "web",
       display_order: p.display_order || 0,
@@ -109,6 +109,16 @@ export default function AdminProjects() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
+
+    if (name === "is_pinned") {
+      setForm((prev: any) => ({
+        ...prev,
+        is_pinned: checked,
+        display_order: checked ? 1 : (Number(prev.display_order) === 1 ? 0 : prev.display_order),
+      }));
+      return;
+    }
+
     setForm((prev: any) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -179,62 +189,58 @@ export default function AdminProjects() {
     const reordered = updated.map((proj, idx) => ({
       ...proj,
       display_order: idx + 1,
+      is_pinned: idx === 0,
     }));
 
     setProjects(reordered);
 
     try {
-      const projA = reordered[index];
-      const projB = reordered[targetIndex];
-      if (projA && projB) {
-        await Promise.all([
-          PortfolioAPI.updateProject(projA.id, { ...projA, display_order: projA.display_order }),
-          PortfolioAPI.updateProject(projB.id, { ...projB, display_order: projB.display_order }),
-        ]);
-      }
+      await Promise.all(
+        reordered.map((proj) =>
+          PortfolioAPI.updateProject(proj.id, {
+            ...proj,
+            display_order: proj.display_order,
+            is_pinned: proj.display_order === 1,
+          })
+        )
+      );
     } catch (e) {
       console.error("Failed to persist reorder", e);
     }
   };
 
   const handleTogglePin = async (p: Project) => {
-    const nextVal = !p.is_pinned;
+    const isCurrentlyFirst = p.display_order === 1 || Boolean(p.is_pinned);
     let updated: Project[];
 
-    if (nextVal) {
+    if (!isCurrentlyFirst) {
       // Pin to top: place at index 0, mark pinned and order 1
       const others = projects.filter((proj) => proj.id !== p.id);
-      updated = [{ ...p, is_pinned: true, display_order: 1 }, ...others].map((proj, idx) => ({
-        ...proj,
-        display_order: idx + 1,
-      }));
+      updated = [{ ...p, is_pinned: true, display_order: 1 }, ...others];
     } else {
-      // Unpin: remove pin status, keep current order or move to bottom
-      updated = projects.map((proj) =>
-        proj.id === p.id ? { ...proj, is_pinned: false } : proj
-      );
+      // Unpin: move to end
+      const others = projects.filter((proj) => proj.id !== p.id);
+      updated = [...others, { ...p, is_pinned: false }];
     }
 
-    setProjects(updated);
+    const reordered = updated.map((proj, idx) => ({
+      ...proj,
+      display_order: idx + 1,
+      is_pinned: idx === 0,
+    }));
+
+    setProjects(reordered);
 
     try {
-      const target = updated.find((x) => x.id === p.id);
-      if (target) {
-        await PortfolioAPI.updateProject(target.id, {
-          ...target,
-          is_pinned: target.is_pinned,
-          display_order: target.display_order,
-        });
-      }
-      if (nextVal && updated.length > 1) {
-        const second = updated[1];
-        if (second) {
-          await PortfolioAPI.updateProject(second.id, {
-            ...second,
-            display_order: second.display_order,
-          });
-        }
-      }
+      await Promise.all(
+        reordered.map((proj) =>
+          PortfolioAPI.updateProject(proj.id, {
+            ...proj,
+            display_order: proj.display_order,
+            is_pinned: proj.display_order === 1,
+          })
+        )
+      );
     } catch (e) {
       console.error("Failed to update pin", e);
     }
@@ -318,72 +324,74 @@ export default function AdminProjects() {
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project, index) => (
-                  <tr
-                    key={project.id}
-                    className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
-                      project.is_pinned ? "bg-cyan-500/[0.05] border-l-4 border-l-cyan-400" : ""
-                    } ${!project.is_visible ? "opacity-50" : ""}`}
-                  >
-                    <td className="px-5 py-4 text-center">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <span className={`inline-flex items-center justify-center min-w-[34px] h-7 px-2 rounded-lg font-mono font-bold text-xs ${
-                          project.is_pinned
-                            ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40"
-                            : project.display_order && project.display_order > 0
-                            ? "bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20"
-                            : "bg-white/5 border border-white/10 text-white/50"
-                        }`}>
-                          #{index + 1}
-                        </span>
-                        <div className="flex flex-col">
-                          <button
-                            type="button"
-                            disabled={index === 0}
-                            onClick={() => handleMove(index, -1)}
-                            className="p-0.5 rounded text-white/40 hover:text-cyan-300 hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-white/40 transition-all cursor-pointer"
-                            title="Move Up"
-                          >
-                            <ChevronUp size={13} />
-                          </button>
-                          <button
-                            type="button"
-                            disabled={index === projects.length - 1}
-                            onClick={() => handleMove(index, 1)}
-                            className="p-0.5 rounded text-white/40 hover:text-cyan-300 hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-white/40 transition-all cursor-pointer"
-                            title="Move Down"
-                          >
-                            <ChevronDown size={13} />
-                          </button>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4">
-                      <button
-                        type="button"
-                        onClick={() => handleTogglePin(project)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                          project.is_pinned
-                            ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_12px_rgba(0,229,255,0.3)] font-bold"
-                            : "bg-white/[0.03] text-white/40 hover:text-cyan-400 hover:bg-white/10 border border-white/10"
-                        }`}
-                        title={project.is_pinned ? "Pinned to Top! Click to unpin." : "Click to Pin to Top"}
-                      >
-                        <Pin size={14} className={project.is_pinned ? "rotate-45 fill-cyan-400 text-cyan-300" : "rotate-45"} />
-                        <span>{project.is_pinned ? "Pinned" : "Pin"}</span>
-                      </button>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="font-semibold text-white">{project.title}</div>
-                        {project.is_pinned && (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 uppercase">
-                            Pinned
+                {projects.map((project, index) => {
+                  const isPinned = project.display_order === 1 || Boolean(project.is_pinned);
+                  return (
+                    <tr
+                      key={project.id}
+                      className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
+                        isPinned ? "bg-cyan-500/[0.05] border-l-4 border-l-cyan-400" : ""
+                      } ${!project.is_visible ? "opacity-50" : ""}`}
+                    >
+                      <td className="px-5 py-4 text-center">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <span className={`inline-flex items-center justify-center min-w-[34px] h-7 px-2 rounded-lg font-mono font-bold text-xs ${
+                            isPinned
+                              ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40"
+                              : project.display_order && project.display_order > 0
+                              ? "bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20"
+                              : "bg-white/5 border border-white/10 text-white/50"
+                          }`}>
+                            #{index + 1}
                           </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-white/40 mt-0.5">{project.slug}</div>
-                    </td>
+                          <div className="flex flex-col">
+                            <button
+                              type="button"
+                              disabled={index === 0}
+                              onClick={() => handleMove(index, -1)}
+                              className="p-0.5 rounded text-white/40 hover:text-cyan-300 hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-white/40 transition-all cursor-pointer"
+                              title="Move Up"
+                            >
+                              <ChevronUp size={13} />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={index === projects.length - 1}
+                              onClick={() => handleMove(index, 1)}
+                              className="p-0.5 rounded text-white/40 hover:text-cyan-300 hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-white/40 transition-all cursor-pointer"
+                              title="Move Down"
+                            >
+                              <ChevronDown size={13} />
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <button
+                          type="button"
+                          onClick={() => handleTogglePin(project)}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                            isPinned
+                              ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_12px_rgba(0,229,255,0.3)] font-bold"
+                              : "bg-white/[0.03] text-white/40 hover:text-cyan-400 hover:bg-white/10 border border-white/10"
+                          }`}
+                          title={isPinned ? "Pinned to Top (#1)! Click to unpin." : "Click to Pin to Top (#1)"}
+                        >
+                          <Pin size={14} className={isPinned ? "rotate-45 fill-cyan-400 text-cyan-300" : "rotate-45"} />
+                          <span>{isPinned ? "Pinned" : "Pin"}</span>
+                        </button>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="font-semibold text-white">{project.title}</div>
+                          {isPinned && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 uppercase">
+                              Pinned
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-white/40 mt-0.5">{project.slug}</div>
+                      </td>
                     <td className="px-6 py-4 text-white/60">{project.category || "—"}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
@@ -453,7 +461,8 @@ export default function AdminProjects() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                );
+              })}
               </tbody>
             </table>
           </div>
